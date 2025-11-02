@@ -1,6 +1,6 @@
 <div align="center">
   <img src="public/images/logo.png" alt="MeuApp MVC" width="140">
-  <h1>MeuApp MVC - Projeto PHP com TWIG</h1>
+  <h1>MeuApp MVC - Projeto PHP com Apache, Bootstrap e TWIG</h1>
   <p>Base educacional e profissional para projetos PHP 8+ com Twig, Bootstrap e documentação viva</p>
 
   <p>
