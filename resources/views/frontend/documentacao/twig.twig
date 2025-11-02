@@ -1,0 +1,167 @@
+{# =============================================================
+   Arquivo: documentacao/twig.twig
+   Seção: Twig Template Engine
+   Descrição: Explicação do motor de templates Twig usado no MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — TWIG{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {# AOS CSS só no modo não-export #}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    {% if not export %}
+        <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="150">
+            <a href="/pdf/twig" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+    O Twig Template Engine
+    </h2>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="60">
+      O <strong>Twig</strong> é o motor de templates adotado pelo <strong>MeuApp MVC</strong> para gerenciar
+      a camada de apresentação. Seu objetivo principal é <strong>separar a lógica de negócio do layout visual</strong>,
+      mantendo o código limpo, seguro e de fácil manutenção.
+    </p>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="120">
+      Desenvolvido originalmente para o framework <em>Symfony</em>, o Twig é amplamente utilizado em aplicações modernas
+      baseadas no padrão <strong>MVC</strong>. Sua sintaxe é simples e expressiva, permitindo a criação de templates dinâmicos
+      com estruturas de controle, herança e componentes reutilizáveis.
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="180"{% endif %}>
+      <pre>
+&#123;&#123; variable &#125;&#125;              → Exibe conteúdo escapado (seguro)
+&#123;&#37; if condition &#37;&#125; ... &#123;&#37; endif &#37;&#125;   → Estruturas condicionais
+&#123;&#37; for item in list &#37;&#125; ... &#123;&#37; endfor &#37;&#125; → Laços de repetição
+&#123;&#37; include 'partials/footer.twig' &#37;&#125; → Inclusão de templates
+      </pre>
+    </div>
+
+    <!-- ===================== SUBSEÇÕES ===================== -->
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up">
+      {% if export %}
+        1. Herança de templates
+      {% else %}
+        <i class="fas fa-layer-group"></i> Herança de templates
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="80">
+      O Twig utiliza um poderoso sistema de <strong>herança de templates</strong>, que permite definir uma
+      estrutura base (geralmente chamada de <code>base.twig</code>) e estendê-la em todas as demais views.
+      Isso assegura consistência visual e facilita a manutenção da aplicação.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="120">
+      {% if export %}
+        2. Reutilização com includes e partials
+      {% else %}
+        <i class="fas fa-clone"></i> Reutilização com includes e partials
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="160">
+      Componentes como cabeçalhos, menus e rodapés são extraídos em <em>partials</em>, promovendo reutilização
+      e organização. O Twig permite incluir esses blocos dinamicamente, mantendo o código enxuto e modular.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="200">
+      {% if export %}
+        3. Boas práticas e segurança
+      {% else %}
+        <i class="fas fa-shield-alt"></i> Boas práticas e segurança
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3" data-aos="fade-up" data-aos-delay="240">
+      <li><i class="fas fa-check text-success"></i> O Twig escapa automaticamente o conteúdo para evitar <em>XSS</em>.</li>
+      <li><i class="fas fa-check text-success"></i> Evite escrever lógica de negócio nas views — use controllers.</li>
+      <li><i class="fas fa-check text-success"></i> Utilize filtros (<code>|upper</code>, <code>|lower</code>, <code>|date</code> etc.).</li>
+      <li><i class="fas fa-check text-success"></i> Use <code>macros</code> e <code>blocks</code> para componentes reutilizáveis.</li>
+      <li><i class="fas fa-check text-success"></i> Mantenha o HTML limpo e sem lógica incorporada.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="280">
+      {% if export %}
+        4. Template base.twig
+      {% else %}
+        <i class="fas fa-code"></i> Template base.twig
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="320">
+      Este arquivo <code>(/var/www/meuapp/resources/views/layouts/base.twig)</code> é o layout principal — todos os outros templates herdam dele via:
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="360"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/var/www/meuapp/resources/views/layouts/base.twig',
+        '{% extends "layouts/base.twig" %}',
+        'twig',
+        'light'
+      ) }}
+    </div>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="400">
+      {% if export %}
+        5. Limpando o cache do TWIG
+      {% else %}
+        <i class="fas fa-list-ol"></i> Limpando o cache do TWIG
+      {% endif %}
+    </h3>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="440"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/var/www/meuapp/storage/cache/twig',
+        'sudo rm -rf /var/www/meuapp/storage/cache/twig/*',
+        'bash',
+        'light'
+      ) }}
+    </div>
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="200">
+      {% if export %}
+        6.  Nos meus templates, usei animações AOS
+      {% else %}
+        <i class="fas fa-shield-alt"></i>  Apliquei às views animações com AOS
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3" data-aos="fade-up" data-aos-delay="240">
+      <li><i class="fas fa-check text-success"></i> data-aos="fade-up" em títulos e parágrafos principais;</li>
+      <li><i class="fas fa-check text-success"></i> data-aos="flip-up" nos blocos de código (ui.codeblock_pro);</li>
+      <li><i class="fas fa-check text-success"></i> Delays progressivos (80, 160, 240...) pra gerar fluidez;</li>
+      <li><i class="fas fa-check text-success"></i> Mantive total compatibilidade com export (PDF sem animações).</li>
+    </ul>
+
+    <div class="alert alert-info small mt-3" data-aos="fade-up" data-aos-delay="480">
+      <i class="fas fa-lightbulb"></i>
+      O Twig é um dos pilares do padrão MVC — ele mantém a view limpa, desacoplada da lógica e garante
+      manutenibilidade em aplicações de médio e grande porte.
+    </div>
+  </section>
+</div>
+{% endblock %}

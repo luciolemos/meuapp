@@ -1,0 +1,235 @@
+{# =============================================================
+   Arquivo: documentacao/diagnóstico.twig
+   Seção: Configuração do projeto
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Links{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {# AOS CSS só no modo não-export #}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+
+        {% if not export %}
+            <div class="text-end mb-3">
+                <a href="/pdf/diagnostico" class="btn btn-outline-danger">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+            </div>
+        {% endif %}
+
+  <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+
+  <!-- ===================== FRAMEWORKS / LIBS ===================== -->
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+      Frameworks e Bibliotecas
+    </h2>
+
+    <ul class="list-group mb-3">
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+        <span><i class="fas fa-magic text-info"></i> AOS (Animate On Scroll)</span>
+        <a href="https://michalsnik.github.io/aos/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> Site oficial
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        <span><i class="fas fa-cube text-primary"></i> Twig Template Engine</span>
+        <a href="https://twig.symfony.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> twig.symfony.com
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+        <span><i class="fab fa-bootstrap text-purple"></i> Bootstrap</span>
+        <a href="https://getbootstrap.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> getbootstrap.com
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+        <span><i class="fas fa-file-pdf text-danger"></i> Dompdf</span>
+        <a href="https://github.com/dompdf/dompdf" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fab fa-github"></i> repositório oficial
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>
+        <span><i class="fas fa-cubes text-dark"></i> Composer</span>
+        <a href="https://getcomposer.org/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> getcomposer.org
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="280"{% endif %}>
+        <span><i class="fab fa-font-awesome-flag text-info"></i> Font Awesome</span>
+        <a href="https://fontawesome.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> fontawesome.com
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== LINGUAGENS / PADRÕES ===================== -->
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-up"{% endif %}>
+      Linguagens e Padrões
+    </h2>
+
+    <ul class="list-group mb-3">
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+        <span><i class="fab fa-html5 text-danger"></i> HTML (WHATWG)</span>
+        <a href="https://html.spec.whatwg.org/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> especificação
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        <span><i class="fab fa-css3-alt text-primary"></i> CSS (W3C)</span>
+        <a href="https://www.w3.org/TR/CSS/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> w3.org/TR/CSS/
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+        <span><i class="fab fa-php text-indigo"></i> PHP</span>
+        <a href="https://www.php.net/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> php.net
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== BANCO DE DADOS ===================== -->
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-up"{% endif %}>
+      Banco de Dados
+    </h2>
+
+    <ul class="list-group mb-3">
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+        <span><i class="fas fa-database text-success"></i> MySQL</span>
+        <a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> mysql.com
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== SERVIDOR / SO / WSL ===================== -->
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-up"{% endif %}>
+      Servidor, SO e Ferramentas de Ambiente
+    </h2>
+
+    <ul class="list-group mb-3">
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+        <span><i class="fas fa-server text-dark"></i> Apache HTTP Server</span>
+        <a href="https://httpd.apache.org/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> httpd.apache.org
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        <span><i class="fab fa-debian text-danger"></i> Debian</span>
+        <a href="https://www.debian.org/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> debian.org
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+        <span><i class="fab fa-ubuntu text-warning"></i> Ubuntu</span>
+        <a href="https://ubuntu.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> ubuntu.com
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+        <span><i class="fab fa-windows text-primary"></i> WSL (Windows Subsystem for Linux)</span>
+        <a href="https://learn.microsoft.com/windows/wsl/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> docs oficiais
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>
+        <span><i class="fab fa-git-alt text-danger"></i> Git</span>
+        <a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> git-scm.com
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="280"{% endif %}>
+        <span><i class="fas fa-code text-secondary"></i> Visual Studio Code</span>
+        <a href="https://code.visualstudio.com/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> code.visualstudio.com
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== OUTROS ÚTEIS (ETC) ===================== -->
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-up"{% endif %}>
+      Outros úteis (ETC)
+    </h2>
+
+    <ul class="list-group mb-3">
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+        <span><i class="fas fa-table text-info"></i> DataTables</span>
+        <a href="https://datatables.net/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> datatables.net
+        </a>
+      </li>
+
+      <li class="list-group-item d-flex justify-content-between align-items-center"
+          {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        <span><i class="fas fa-tachometer-alt text-primary"></i> AdminLTE</span>
+        <a href="https://adminlte.io/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-external-link-alt"></i> adminlte.io
+        </a>
+      </li>
+    </ul>
+
+    <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+      <i class="fas fa-info-circle"></i>
+      Todos os links acima apontam para sites mantidos pelos próprios projetos — ideais para documentação,
+      downloads e notas de versão.
+    </div>
+  </section>
+
+
+    </div>
+{% endblock %}

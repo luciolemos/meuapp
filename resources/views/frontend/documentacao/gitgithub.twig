@@ -1,0 +1,397 @@
+{# =============================================================
+   Arquivo: documentacao/gitgithub.twig
+   Assunto : Git & GitHub no MeuApp MVC
+   Autor: Lucio Lemos
+   Atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Git & GitHub{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {# AOS CSS só no modo não-export #}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+{# ===== Base de delays progressivos ===== #}
+{% set D0 = 60 %}   {# delay inicial #}
+{% set STEP = 60 %} {# incremento padrão #}
+{% set FAST = 40 %} {# incremento curto #}
+{% set S = 0 %}     {# acumulador #}
+
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+  {% if not export %}
+        <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="150">
+            <a href="/pdf/ambiente" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+      <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+  {{ ui.header(title, subtitle, description, author, date, export) }}
+  
+
+  {# ===================== 1. VISÃO GERAL ===================== #}
+  {% set S = D0 + STEP %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      1. Por que Git &amp; GitHub no MeuApp MVC?
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      O <strong>MeuApp MVC</strong> é versionado desde a primeira linha de código. Git garante histórico confiável,
+      revisões seguras e experimentação através de branchs. O GitHub centraliza colaboração, automações e entrega
+      contínua — do code review ao deploy com pipelines. A disciplina de commits e PRs mantém a documentação viva
+      alinhada com o código. Git é um sistema de controle de versão distribuído. Ele registra alterações no código 
+      em repositórios locais, permitindo commits, comparações, branches, merges e reversões. GitHub é uma plataforma 
+      de hospedagem de repositórios Git, colaboração e CI/CD. 
+    </p>
+
+    {% include 'components/alert.twig' with {
+      variant: 'info',
+      size: 'sm',
+      icon: 'fas fa-lightbulb',
+      content: '<strong>Regra de ouro:</strong> cada alteração relevante nasce em uma branch temática, recebe commit claro, passa por revisão e entra em main via Pull Request.',
+      extra_class: 'mt-3',
+      export: export,
+      aos_effect: 'fade-up',
+      aos_delay: S + STEP
+    } %}
+  </section>
+
+  {# ===================== 2. FLUXO DE TRABALHO ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      2. Fluxo de Trabalho Padronizado
+    </h2>
+
+    {% set workflow_ascii %}
+main (produção)
+  │
+  ├── hotfix/*  → Correções críticas
+  │
+  └── develop (pré-release)
+        └── feature/*
+              └── bugfix/*
+    {% endset %}
+
+    {% if export %}
+      {{ ui.codeblock_pro('Fluxo Git', workflow_ascii|trim, 'txt', 'light') }}
+    {% else %}
+      {% set workflow_mermaid %}
+        <div class="mermaid">
+          %%{init: {"gitGraph": {"mainBranchName": "main"}}}%%
+          gitGraph LR:
+            commit id: "release"
+            branch develop
+            checkout develop
+            commit id: "setup-ci"
+            branch feature/docs
+            checkout feature/docs
+            commit id: "doc-git"
+            checkout develop
+            merge feature/docs id: "merge-docs"
+            branch hotfix/log
+            checkout hotfix/log
+            commit id: "fix-log"
+            checkout main
+            merge hotfix/log id: "deploy-fix"
+            merge develop id: "release-main"
+        </div>
+      {% endset %}
+
+      {% include 'components/diagram.twig' with {
+        title: 'Visualizando branches e merges',
+        title_icon: 'fas fa-code-branch',
+        content: workflow_mermaid,
+        caption: '<i class="fas fa-info-circle"></i> Feature branches nascem de develop, hotfixes saem de main. Cada merge passa por revisão e pipeline.',
+        extra_class: 'mt-2',
+        export: export,
+        aos_effect: 'zoom-in',
+        aos_delay: S + STEP
+      } %}
+    {% endif %}
+  </section>
+
+  {# ===================== 3. CONFIGURAÇÃO INICIAL ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      3. Configuração de Ambiente e SSH
+    </h2>
+
+    {{ ui.codeblock_pro(
+      'setup-git.sh',
+      'luciolemos@dev:~$ sudo apt install git\nluciolemos@dev:~$ git config --global user.name "Seu Nome"\nluciolemos@dev:~$ git config --global user.email "seu.email@dominio.com"\n\n# Gera chave SSH\nluciolemos@dev:~$ ssh-keygen -t ed25519 -C "seu.email@dominio.com"\nluciolemos@dev:~$ cat ~/.ssh/id_ed25519.pub',
+      'bash',
+      'light'
+    ) }}
+
+    {% include 'components/alert.twig' with {
+      variant: 'light',
+      size: 'sm',
+      icon: 'fas fa-key text-primary',
+      content: 'Cadastre a chave pública em <strong>GitHub &gt; Settings &gt; SSH and GPG keys</strong>. Em ambientes corporativos, utilize tokens ou SSO conforme políticas internas.',
+      extra_class: 'border-start border-primary mt-3 p-3',
+      export: export,
+      aos_effect: 'fade-up',
+      aos_delay: S + STEP
+    } %}
+  </section>
+
+
+  {# ===================== 2. INSTALAÇÃO & CONFIG ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3"
+        {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      4. Instalação e Configuração Inicial
+    </h2>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      {{ ui.codeblock_pro('Instalação (Ubuntu/Debian)',
+' sudo apt update
+ sudo apt install git', 'bash', 'light') }}
+    </div>
+
+    <div class="mt-3" {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro('Configuração global',
+' git config --global user.name "Seu Nome"
+ git config --global user.email "seu@email.com"
+ git config --global init.defaultBranch main
+ git config --global core.autocrlf input', 'bash', 'light') }}
+    </div>
+  </section>
+
+    {# ===================== 3. INICIANDO O REPOSITÓRIO ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3"
+        {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      5. Criando repositório e primeiro commit
+    </h2>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp', [
+        'git init',
+        'git status',
+        'git add .',
+        'git commit -m "feat: primeira estrutura MVC"'
+      ], 'light') }}
+    </div>
+
+    <div class="mt-3" {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro('.gitignore (exemplo)',
+'/vendor/
+storage/*
+!storage/.gitkeep
+/node_modules/
+/.env
+.DS_Store
+.idea
+*.log', 'gitignore', 'light') }}
+    </div>
+  </section>
+
+   {# ===================== 5. BRANCHES, MERGE E REBASE ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3"
+        {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      6. Branches, Merge e Rebase
+    </h2>
+
+    
+      <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + FAST }}"{% endif %}>
+        {{ ui.codeblock_pro('Fluxo básico de branch',
+' git checkout -b feature/login
+ # ... edite, adicione commits ...
+ git checkout main
+ git pull --rebase origin main
+ git merge feature/login
+ git push origin main', 'bash', 'light') }}
+      </div>
+   
+  </section>
+
+  {# ===================== 4. CONVENÇÕES DE COMMIT ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      7. Convenções de Branch &amp; Commit
+    </h2>
+
+    {% set regras = [
+      '<strong>Branches</strong> — use prefixos <code>feature/</code>, <code>bugfix/</code>, <code>hotfix/</code> e <code>docs/</code>.',
+      '<strong>Commits</strong> — siga o padrão <code>tipo(escopo): descrição</code> (ex.: <code>feat(router): suporte a fallback admin</code>).',
+      '<strong>Escopo</strong> curto</strong> — indique módulo ou arquivo principal (<code>view</code>, <code>controller</code>, <code>ci</code>).',
+      '<strong>Mensagem</strong> imperativa</strong> — descreva o que o commit faz, não como.',
+      '<strong>Referencie issues</strong> — <code>Fixes #123</code> ou <code>Refs #456</code> unem código à documentação.',
+      '<strong>Um commit, uma intenção</strong> — facilita revisão e reversão.'
+    ] %}
+
+    <ul class="small text-muted mb-0">
+      {% for regra in regras %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + loop.index * FAST }}"{% endif %}>{{ regra|raw }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {# ===================== 5. PULL REQUESTS E CODE REVIEW ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      8. Pull Requests, Revisões e Proteções
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Cada PR descreve objetivo, testes realizados e checklist de impacto. Branch protections exigem <em>status checks</em>
+      aprovados e pelo menos uma revisão. Labels (ex.: <code>enhancement</code>, <code>bug</code>, <code>docs</code>)
+      alimentam o changelog e liberam automações como releases.
+    </p>
+
+    {{ ui.codeblock_pro(
+      'pull_request_template.md',
+      '## Resumo\n- [ ] Descreva a motivação e contexto\n\n## Checklist\n- [ ] Testes locais executados\n- [ ] Atualizei documentação ou comentários\n- [ ] Não quebrei rotas ou PDFs\n\n## Evidências\nAdicione logs, screenshots ou comandos relevantes.',
+      'markdown',
+      'dark'
+    ) }}
+  </section>
+
+  {# ===================== 6. GITHUB ACTIONS & SECRETS ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      9. Automatizações com GitHub Actions
+    </h2>
+
+    {{ ui.codeblock_pro(
+      '.github/workflows/ci.yml',
+      'name: MeuApp CI\n\non:\n  pull_request:\n  push:\n    branches: [ main, develop ]\n\njobs:\n  tests:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: shivammathur/setup-php@v2\n        with:\n          php-version: "8.2"\n      - run: composer install --prefer-dist --no-progress\n      - run: composer test',
+      'yaml',
+      'light'
+    ) }}
+
+    {% include 'components/alert.twig' with {
+      variant: 'info',
+      size: 'sm',
+      icon: 'fas fa-shield-alt',
+      content: 'Use <strong>GitHub Secrets</strong> para armazenar tokens, chaves SSH e credenciais de deploy. Nunca commite segredos em <code>.env</code>.',
+      extra_class: 'mt-3',
+      export: export,
+      aos_effect: 'fade-up',
+      aos_delay: S + STEP
+    } %}
+  </section>
+
+  {# ===================== 7. TRABALHANDO COM ISSUES E PROJECTS ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      10. Issues, Projects e Documentação Viva
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Issues formam backlog priorizado. Projects (Kanban) mostram progresso e travam merges se itens estiverem
+      bloqueados. Cada issue linka documentação correspondente (ex.: <em>estrutura</em>, <em>whatsphp</em>, <em>escalabilidade</em>)
+      garantindo que código e guias evoluam juntos.
+    </p>
+
+    <div class="row g-3">
+      {% set cards = [
+        {'icon':'fas fa-clipboard-list text-primary','title':'Templates de Issue','text':'Padronize bugs, features e tarefas evitando ruído.'},
+        {'icon':'fas fa-columns text-success','title':'Projects board','text':'Acompanhe status e automatize transições de cards.'},
+        {'icon':'fas fa-book text-warning','title':'Wiki / Docs','text':'Centralize decisões de arquitetura e ADRs vinculados às PRs.'}
+      ] %}
+      {% for card in cards %}
+        <div class="col-md-4" {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + loop.index * FAST }}"{% endif %}>
+          <div class="tech-card border rounded shadow-sm p-4 h-100 text-center">
+            <i class="{{ card.icon }} fa-2x mb-3"></i>
+            <h3 class="h6 fw-bold">{{ card.title }}</h3>
+            <p class="small text-muted mb-0">{{ card.text }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# ===================== 8. TROUBLESHOOTING ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section bg-light p-3 rounded">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      11. Troubleshooting rápido
+    </h2>
+
+    {% set problemas = [
+      {'titulo':'Merge conflicts frequentes','solucao':'Atualize develop antes de abrir o PR, use <code>git pull --rebase</code> e resolva conflitos por arquivo.'},
+      {'titulo':'Histórico poluído','solucao':'Prefira <code>git rebase</code> a <code>git merge</code> para alinhar branches. Reescreva commits locais com <code>git commit --amend</code> ou <code>git rebase -i</code> antes do push.'},
+      {'titulo':'Pipelines lentos','solucao':'Cache de dependências com <code>actions/cache</code> e execução paralela para testes de unidade e integração.'},
+      {'titulo':'Deploy interrompido','solucao':'Configure <em>environments</em> no GitHub com aprovações manuais e logs centralizados no mesmo repositório.'}
+    ] %}
+
+    <ul class="small text-muted mb-0">
+      {% for problema in problemas %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + loop.index * FAST }}"{% endif %}>
+          <strong>{{ problema.titulo }}:</strong> {{ problema.solucao|raw }}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {# ===================== 9. PRÓXIMOS PASSOS ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-4 pdf-section bg-light p-3 rounded">
+    <h2 class="h4 text-secondary mb-3">
+       12. Continue explorando
+    </h2>
+
+    <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Amplie a colaboração automatizando releases, assinando tags e integrando segurança (Dependabot, CodeQL).
+      Customize o fluxo conforme seu time amadurece — do trunk based ao GitFlow.
+    </p>
+
+    {% set ctas = [
+      {'href':'/documentacao/boaspraticas','icon':'fas fa-shield-alt','label':'Boas Práticas do MeuApp'},
+      {'href':'/documentacao/escalabilidade','icon':'fas fa-project-diagram','label':'Escalabilidade & Observabilidade'},
+      {'href':'/documentacao/status','icon':'fas fa-tasks','label':'Checklist de auditoria'}
+    ] %}
+
+    <div class="d-flex flex-wrap gap-2">
+      {% for cta in ctas %}
+        <span {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + loop.index * FAST }}"{% endif %}>
+          {% include 'components/button.twig' with {
+            href: cta.href,
+            text: cta.label,
+            icon: cta.icon,
+            variant: 'primary',
+            size: 'sm'
+          } %}
+        </span>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        AOS.init({ duration: 650, easing: 'ease-out', once: true, offset: 12 });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

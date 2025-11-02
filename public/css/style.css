@@ -1,0 +1,159 @@
+/* ============================
+   GLOBAL BASE STYLES
+   ============================ */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #0d6efd;
+}
+
+/* Cards e efeitos gerais */
+.card,
+.hover-shadow {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover,
+.hover-shadow:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Fade-in animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.fade-in:nth-child(1) { animation-delay: 0.1s; }
+.fade-in:nth-child(2) { animation-delay: 0.2s; }
+.fade-in:nth-child(3) { animation-delay: 0.3s; }
+.fade-in:nth-child(4) { animation-delay: 0.4s; }
+.fade-in:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+.site-footer {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.site-footer .footer-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-footer .footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================
+   Sections / Rhythm
+   ============================ */
+:root {
+  --section-gap: 4rem;
+}
+
+.section-block {
+  padding: 4rem 0;
+  margin: 0;
+  scroll-margin-top: 80px;
+}
+
+.section-block + .section-block {
+  margin-top: var(--section-gap);
+}
+
+.section-divider {
+  margin: calc(var(--section-gap) / 2) auto;
+  width: min(160px, 40%);
+  border: 0;
+  border-top: 2px solid rgba(13, 110, 253, 0.15);
+}
+
+[data-bs-theme="dark"] .section-divider {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================
+   Diagram Wrapper Component
+   ============================ */
+.diagram-wrapper {
+  background-color: var(--bs-body-bg, #ffffff);
+  border: 1px solid var(--bs-border-color, #d7dce1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.diagram-title {
+  font-weight: 600;
+}
+
+.diagram-caption {
+  color: var(--bs-secondary-color, #6c757d);
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+}
+
+.diagram-wrapper .mermaid svg {
+  width: 100%;
+}
+
+.diagram-wrapper .mermaid svg text,
+.diagram-wrapper .mermaid svg tspan {
+  fill: var(--bs-body-color, #212529) !important;
+}
+
+.diagram-wrapper .mermaid svg rect,
+.diagram-wrapper .mermaid svg path,
+.diagram-wrapper .mermaid svg line,
+.diagram-wrapper .mermaid svg polygon {
+  stroke: var(--bs-body-color, #212529);
+}
+
+.diagram-wrapper .mermaid .actor,
+.diagram-wrapper .mermaid .actor > rect {
+  fill: var(--bs-tertiary-bg, #f6f7f9);
+}
+
+[data-bs-theme="dark"] .diagram-wrapper .mermaid .actor,
+[data-bs-theme="dark"] .diagram-wrapper .mermaid .actor > rect {
+  fill: rgba(255, 255, 255, 0.05);
+}
+
+.diagram-wrapper .mermaid svg .messageLine0,
+.diagram-wrapper .mermaid svg .messageLine1 {
+  stroke: var(--bs-primary, #0d6efd) !important;
+}
+
+
+.section-divider {
+  margin: calc(var(--section-gap) / 2) auto;
+  width: min(160px, 40%);
+  border: 0;
+  border-top: 2px solid rgba(13, 110, 253, 0.15);
+}
+[data-bs-theme="dark"] .section-divider {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}

@@ -1,0 +1,72 @@
+{# =============================================================
+   Componente: components/diagram.twig
+   Propósito : Envolver diagramas (Mermaid, SVG, imagens, ASCII) com
+               estilos consistentes e legenda opcional.
+   Uso básico:
+       {% set mermaid %}
+         <div class="mermaid">
+           flowchart LR
+             A --> B
+         </div>
+       {% endset %}
+
+       {% include 'components/diagram.twig' with {
+           title: 'Fluxo da Requisição',
+           title_icon: 'fas fa-project-diagram',
+           title_class: 'h6 text-primary mb-3',
+           content: mermaid,
+           caption: '<i class="fas fa-info-circle"></i> Descrição do fluxo.',
+           extra_class: 'mt-4',
+           export: export,
+           aos_effect: 'zoom-in',
+           aos_delay: 120
+       } %}
+
+   Parâmetros aceitos:
+     - title        : título exibido acima do conteúdo.
+     - title_icon   : classe opcional para ícone junto ao título.
+     - title_class  : classes extras para o título (default: h6 + utilitários).
+     - content      : HTML já renderizado (Mermaid, figure, etc.).
+     - caption      : texto/HTML exibido no rodapé do diagrama.
+     - extra_class  : classes adicionais aplicadas ao wrapper.
+     - export       : booleano — remove atributos AOS no PDF.
+     - aos_effect   : animação AOS para o wrapper.
+     - aos_delay    : atraso (ms) da animação AOS.
+   ============================================================= #}
+
+{% set classes = ['diagram-wrapper'] %}
+{% set extraClasses = extra_class|default('')|trim %}
+{% if extraClasses %}
+  {% set classes = classes|merge(extraClasses|split(' ')|filter(v => v)) %}
+{% endif %}
+
+{% set wrapperAttrs = {
+  'class': classes|join(' ')|trim
+} %}
+
+{% if aos_effect|default(false) and not export|default(false) %}
+  {% set wrapperAttrs = wrapperAttrs|merge({
+    'data-aos': aos_effect,
+    'data-aos-delay': aos_delay|default(0) ? aos_delay
+  }) %}
+{% endif %}
+
+<div{% for attr,val in wrapperAttrs %} {{ attr }}{% if val is not same as(true) %}="{{ val }}"{% endif %}{% endfor %}>
+  {% if title|default(false) %}
+    {% set headingClass = title_class|default('diagram-title h6 text-primary mb-3') %}
+    <h3 class="{{ headingClass }}">
+      {% if title_icon|default(false) %}
+        <i class="{{ title_icon }} me-2"></i>
+      {% endif %}
+      {{ title }}
+    </h3>
+  {% endif %}
+
+  {{ content|raw }}
+
+  {% if caption|default(false) %}
+    <p class="diagram-caption mb-0">
+      {{ caption|raw }}
+    </p>
+  {% endif %}
+</div>

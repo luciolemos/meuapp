@@ -1,0 +1,252 @@
+{# =============================================================
+   Arquivo: documentacao/apache.twig
+   Seção: Servidor Apache HTTP
+   Descrição: Introdução, instalação, configuração e uso do Apache no MeuApp MVC.
+   Autor: Lucio Lemos (Equipe MeuApp)
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Servidor Apache HTTP{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="60">
+      <a href="/pdf/apache" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+  {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  {# ===================== 1. O QUE É O APACHE ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">1. O que é o Apache HTTP Server?</h2>
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="90"{% endif %}>
+      O <strong>Apache HTTP Server</strong> é um dos servidores web mais utilizados do mundo, desenvolvido pela 
+      <em>Apache Software Foundation</em>. Ele é responsável por receber requisições HTTP, processá-las e responder 
+      com páginas web dinâmicas ou estáticas.
+    </p>
+    <ul class="small text-muted mb-0">
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>Software <strong>open-source</strong> multiplataforma.</li>
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>Altamente configurável via arquivos <code>.conf</code> e <code>.htaccess</code>.</li>
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>Suporte a módulos como PHP, SSL, rewrite e cache.</li>
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>Fundamental para rodar o stack LAMP (Linux, Apache, MySQL e PHP).</li>
+    </ul>
+  </section>
+
+  {# ===================== 2. INSTALAÇÃO ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">2. Instalação no Ubuntu/Debian</h2>
+    <p class="small text-muted mb-3" {% if not export %}data-aos="fade-up" data-aos-delay="90"{% endif %}>
+      No ambiente Linux (Debian/Ubuntu), a instalação é simples usando o gerenciador de pacotes <code>apt</code>:
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+      {{ ui.codeblock_pro(
+        'bash',
+        'sudo apt update
+sudo apt install apache2 -y
+sudo systemctl enable apache2
+sudo systemctl status apache2',
+        'bash',
+        'light'
+      ) }}
+    </div>
+
+    <p class="small text-muted mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+      Após a instalação, acesse <code>http://localhost</code> e você verá a página padrão do Apache.
+    </p>
+  </section>
+
+  {# ===================== 3. PRINCIPAIS COMANDOS ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">3. Principais comandos de gerenciamento</h2>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="90"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:~$', [
+        'sudo systemctl start apache2      # Inicia o serviço',
+        'sudo systemctl stop apache2       # Para o serviço',
+        'sudo systemctl restart apache2    # Reinicia o serviço',
+        'sudo systemctl reload apache2     # Recarrega configs sem reiniciar',
+        'sudo systemctl status apache2     # Verifica status'
+      ], 'light') }}
+    </div>
+
+    <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+      <i class="fas fa-info-circle"></i>
+      É possível usar <code>sudo apache2ctl configtest</code> para verificar a sintaxe dos arquivos de configuração antes de reiniciar o serviço.
+    </div>
+  </section>
+
+  {# ===================== 4. ESTRUTURA DE DIRETÓRIOS ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">4. Estrutura de diretórios do Apache</h2>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="90"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/etc/apache2/',
+        'apache2.conf           # Configuração principal
+sites-available/       # Configurações de Virtual Hosts disponíveis
+sites-enabled/         # Links simbólicos dos sites ativos
+mods-available/        # Módulos disponíveis
+mods-enabled/          # Módulos carregados
+conf-available/        # Configurações extras disponíveis
+conf-enabled/          # Configurações ativas
+logs/                  # Registros de acesso e erro',
+        'bash',
+        'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 5. CONFIGURANDO UM VIRTUALHOST ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">5. Criando um Virtual Host</h2>
+    <p class="small text-muted mb-3" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+      O <strong>Virtual Host</strong> permite hospedar múltiplos sites no mesmo servidor, definindo domínios e diretórios independentes.
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/etc/apache2/sites-available/meuapp.conf',
+'<VirtualHost *:80>
+    ServerName meuapp.local
+    DocumentRoot /var/www/meuapp/public
+
+    <Directory /var/www/meuapp/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/meuapp_error.log
+    CustomLog ${APACHE_LOG_DIR}/meuapp_access.log combined
+</VirtualHost>',
+        'apache',
+        'dark'
+      ) }}
+    </div>
+
+    <div {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:~$', [
+        'sudo a2ensite meuapp.conf',
+        'sudo a2enmod rewrite',
+        'sudo systemctl reload apache2'
+      ], 'light') }}
+    </div>
+  </section>
+
+  {# ===================== 6. ARQUIVO .HTACCESS ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">6. O arquivo <code>.htaccess</code></h2>
+    <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+      O arquivo <code>.htaccess</code> permite sobrescrever regras do Apache por diretório, sendo amplamente usado para:
+    </p>
+    <ul class="small text-muted mb-3">
+      <li>Gerenciar URLs amigáveis (via <code>mod_rewrite</code>).</li>
+      <li>Restringir acesso a arquivos sensíveis.</li>
+      <li>Definir páginas de erro personalizadas.</li>
+      <li>Ativar cache de recursos estáticos.</li>
+    </ul>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="100"{% endif %}>
+      {{ ui.codeblock_pro(
+        'public/.htaccess',
+'# Segurança básica e comportamento
+Options -Indexes -MultiViews
+DirectoryIndex index.php index.html
+
+# Protege arquivos sensíveis
+<FilesMatch "(^\.|\.env|composer\.(json|lock)|.*\.(sql|bak|old|zip)$)">
+  Require all denied
+</FilesMatch>
+
+# Reescrita para front-controller (URLs limpas)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>',
+        'apache',
+        'dark'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 7. DIAGNÓSTICOS E LOGS ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">7. Verificando logs e status</h2>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="90"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:~$', [
+        'sudo tail -f /var/log/apache2/error.log',
+        'sudo tail -f /var/log/apache2/access.log',
+        'sudo apache2ctl configtest',
+        'sudo apache2ctl -M | grep rewrite'
+      ], 'light') }}
+    </div>
+  </section>
+
+  {# ===================== 8. PRÓXIMOS PASSOS ===================== #}
+  <section class="mb-4 pdf-section bg-light p-3 rounded">
+    <h2 class="h4 text-secondary mb-3">8. Próximos passos</h2>
+    <p class="small text-muted"
+       {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+      Explore mais sobre módulos, segurança e otimização de performance do Apache:
+    </p>
+
+    {% set ctas = [
+      {'href':'/documentacao/htaccess','icon':'fas fa-lock','label':'Entender o .htaccess'},
+      {'href':'/documentacao/whatsphp','icon':'fab fa-php','label':'Integrar com PHP'},
+      {'href':'/documentacao/twig','icon':'fas fa-code','label':'Entender Twig'},
+      {'href':'/documentacao/composer','icon':'fas fa-tools','label':'Aprender Composer'},
+      {'href':'/documentacao/stack','icon':'fas fa-layer-group','label':'Ver Stack Completa'}
+    ] %}
+
+    <div class="d-flex flex-wrap gap-2">
+      {% for c in ctas %}
+        <span {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 70 }}"{% endif %}>
+          {% include 'components/button.twig' with {
+            href: c.href,
+            text: c.label,
+            icon: c.icon,
+            variant: 'outline-primary',
+            size: 'sm'
+          } %}
+        </span>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({ duration: 650, easing: 'ease-out', once: true, offset: 12 });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

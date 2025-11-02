@@ -1,0 +1,220 @@
+{# =============================================================
+   Arquivo: partials/macros.twig
+   Projeto: MeuApp MVC
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{# =============================================================
+   🔹 MACRO — TERMINAL_PRO
+   Simula saída de terminal (Linux, MySQL, Composer, etc.)
+   Compatível com PDF e web (Dompdf)
+   ============================================================= #}
+{% macro terminal_pro(prompt, lines, theme) %}
+{% set theme_class = theme|default('dark') %}
+{% set bg = theme_class == 'light' ? '#f8f9fa' : '#1e1e1e' %}
+{% set header_bg = theme_class == 'light' ? '#e9ecef' : '#2d2d2d' %}
+{% set text_color = theme_class == 'light' ? '#212529' : '#eaeaea' %}
+{% set border_color = theme_class == 'light' ? '#ccc' : '#333' %}
+{% set prompt_color = theme_class == 'light' ? '#198754' : '#00c853' %}
+
+<div class="terminal-pro {{ theme_class }}" style="
+    border: 1px solid {{ border_color }};
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    background-color: {{ bg }};
+    font-family: 'DejaVu Sans Mono', monospace;
+    overflow: hidden;
+    page-break-inside: avoid;
+">
+    <!-- Cabeçalho estilo VSCode -->
+    <div style="
+        background-color: {{ header_bg }};
+        border-bottom: 1px solid {{ border_color }};
+        padding: 6px 12px;
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 12px;
+        color: {{ text_color }};
+    ">
+        <div style="display: flex; gap: 6px; margin-right: 12px;">
+            <span style="width: 10px; height: 10px; background-color: #ff5f56; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background-color: #ffbd2e; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background-color: #27c93f; border-radius: 50%; display: inline-block;"></span>
+        </div>
+        <strong>{{ prompt|default('terminal@meuapp') }}</strong>
+    </div>
+
+    <!-- Corpo do terminal -->
+    <pre style="
+        background-color: {{ bg }};
+        color: {{ text_color }};
+        padding: 10px 14px;
+        margin: 0;
+        font-size: 10.3px;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        border: none;
+    ">
+{% for cmd in lines %}
+<span style="color: {{ prompt_color }}; font-weight: bold;">{{ prompt|default('$') }}</span> {{ cmd }}
+{% if not loop.last %}{{ "\n" }}{% endif %}
+{% endfor %}
+    </pre>
+</div>
+{% endmacro %}
+
+
+{# =============================================================
+   🔹 MACRO — CODEBLOCK_PRO
+   Exibe blocos de código estilo VSCode (ex: PHP, Apache, JSON)
+   ============================================================= #}
+{% macro codeblock_pro(title, code, lang, theme) %}
+{% set theme_class = theme|default('dark') %}
+{% set bg = theme_class == 'light' ? '#f8f9fa' : '#1e1e1e' %}
+{% set header_bg = theme_class == 'light' ? '#e9ecef' : '#2d2d2d' %}
+{% set text_color = theme_class == 'light' ? '#212529' : '#eaeaea' %}
+{% set border_color = theme_class == 'light' ? '#ccc' : '#333' %}
+{% set lang_bg = theme_class == 'light' ? '#dee2e6' : '#343a40' %}
+{% set lang_fg = theme_class == 'light' ? '#212529' : '#f8f9fa' %}
+
+<div class="codeblock-pro {{ theme_class }}" style="
+    border: 1px solid {{ border_color }};
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    background-color: {{ bg }};
+    font-family: 'DejaVu Sans Mono', monospace;
+    overflow: hidden;
+    page-break-inside: avoid;
+">
+    <div style="
+        background-color: {{ header_bg }};
+        border-bottom: 1px solid {{ border_color }};
+        padding: 6px 12px;
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 12px;
+        color: {{ text_color }};
+    ">
+        <div style="display: flex; gap: 6px; margin-right: 12px;">
+            <span style="width: 10px; height: 10px; background-color: #ff5f56; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background-color: #ffbd2e; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background-color: #27c93f; border-radius: 50%; display: inline-block;"></span>
+        </div>
+        <strong>{{ title|default('arquivo.conf') }}</strong>
+        {% if lang %}
+            <span style="
+                margin-left: auto;
+                font-size: 10px;
+                background-color: {{ lang_bg }};
+                color: {{ lang_fg }};
+                padding: 2px 8px;
+                border-radius: 4px;
+                text-transform: uppercase;
+                opacity: 0.9;
+            ">{{ lang }}</span>
+        {% endif %}
+    </div>
+
+    <pre style="
+        background-color: {{ bg }};
+        color: {{ text_color }};
+        padding: 10px 14px;
+        margin: 0;
+        font-size: 10.3px;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        border: none;
+    ">{{ code|e }}</pre>
+</div>
+{% endmacro %}
+
+
+{# =============================================================
+   🔹 MACRO — FILETREE_PRO
+   Exibe estrutura de diretórios no estilo VSCode File Explorer
+   ============================================================= #}
+{% macro filetree_pro(title, structure, theme) %}
+{% set theme_class = theme|default('dark') %}
+{% set bg = theme_class == 'light' ? '#f8f9fa' : '#1e1e1e' %}
+{% set header_bg = theme_class == 'light' ? '#e9ecef' : '#2d2d2d' %}
+{% set border_color = theme_class == 'light' ? '#ccc' : '#333' %}
+{% set text_color = theme_class == 'light' ? '#212529' : '#eaeaea' %}
+
+<div class="filetree-pro {{ theme_class }}" style="
+    border: 1px solid {{ border_color }};
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    background-color: {{ bg }};
+    font-family: 'DejaVu Sans Mono', monospace;
+    overflow: hidden;
+    page-break-inside: avoid;
+">
+    <div style="
+        background-color: {{ header_bg }};
+        border-bottom: 1px solid {{ border_color }};
+        padding: 6px 12px;
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 12px;
+        color: {{ text_color }};
+    ">
+        <div style="display: flex; gap: 6px; margin-right: 12px;">
+            <span style="width: 10px; height: 10px; background-color: #ff5f56; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background-color: #ffbd2e; border-radius: 50%; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background-color: #27c93f; border-radius: 50%; display: inline-block;"></span>
+        </div>
+        <strong>{{ title|default('estrutura.txt') }}</strong>
+    </div>
+
+    <pre style="
+        background-color: {{ bg }};
+        color: {{ text_color }};
+        padding: 12px 16px;
+        margin: 0;
+        font-size: 10.3px;
+        line-height: 1.35;
+        white-space: pre;
+        border: none;
+    ">{{ structure
+        |replace({
+            '├──': '<span style="color:#888;">├──</span>',
+            '└──': '<span style="color:#888;">└──</span>',
+            '│   ': '<span style="color:#555;">│   </span>',
+            '.php': '<span style="color:#58a6ff;">.php</span>',
+            '.twig': '<span style="color:#f9c859;">.twig</span>',
+            '.json': '<span style="color:#6cf;">.json</span>',
+            '.css': '<span style="color:#ff79c6;">.css</span>',
+            '.js': '<span style="color:#ffd700;">.js</span>',
+            '.html': '<span style="color:#ffb86c;">.html</span>'
+        })
+        |raw
+    }}</pre>
+</div>
+{% endmacro %}
+
+{# ===================== NOTA/LEGENDA COM AOS ===================== #}
+{% macro note(text, export=false, effect='fade-up', delay=0, klass='small text-muted mb-1') %}
+  <p class="{{ klass }}"
+     {% if not export %}
+       data-aos="{{ effect }}"
+       {% if delay and delay > 0 %}data-aos-delay="{{ delay }}"{% endif %}
+     {% endif %}>
+    {{ text|raw }}
+  </p>
+{% endmacro %}
+
+{# ===================== CABEÇALHO DOS ARTIGOS ===================== #}
+{% macro header(title, subtitle, description, author, date, export) %}
+  {% include 'frontend/documentacao/partials/header.twig' with {
+      title: title,
+      subtitle: subtitle,
+      description: description,
+      author: author,
+      date: date,
+      export: export
+  } %}
+{% endmacro %}

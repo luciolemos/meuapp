@@ -1,0 +1,302 @@
+{# =============================================================
+   Arquivo: /resources/views/frontend/home.twig
+   Seção: Página Inicial (Hero + Sobre + Destaques)
+   Descrição: Página principal do MeuApp MVC com AOS e suporte a tema escuro.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% block title %}{{ app_name }} — Home{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* ======== HERO SECTION ======== */
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+            background-attachment: fixed;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(0,0,0,0.2), transparent 70%);
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ======== CARDS ======== */
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+        }
+
+        /* ======== SEÇÕES ======== */
+    </style>
+{% endblock %}
+
+{% block content %}
+<!-- ===================== HERO SECTION ===================== -->
+<section class="hero-section section-block text-center shadow-lg">
+    
+    <div class="container hero-content">
+    <header class="mb-4 text-center">
+        <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
+            <i class="fas fa-home me-2 text-warning"></i> {{ title }} ao <span class="text-warning">MeuApp</span> MVC
+        </h1>
+        <h2 class="text-success" data-aos="fade-up" data-aos-delay="150">
+            {{ subtitle }}
+        </h2>
+        <p class="lead" data-aos="fade-up"  data-aos-delay="300">{{ description }}</p>
+    </header>
+        <div class="col-lg-8 mx-auto mb-4" data-aos="zoom-in" data-aos-delay="450">
+            <p class="small text-light-50 text-justify">
+                O <strong>MeuApp MVC</strong> é uma base de desenvolvimento <strong>PHP moderna, modular e escalável</strong>,
+                criada para integrar <strong>estudo, prática e implantação profissional</strong> em um único ambiente.
+                Ele demonstra de forma clara o uso do padrão <strong>Model–View–Controller (MVC)</strong>, organizando o código em
+                camadas independentes de <em>lógica de negócio</em>, <em>apresentação</em> e <em>controle de fluxo</em>,
+                garantindo clareza, reuso e manutenção simplificada.
+            </p>
+        </div>
+        <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="550">
+
+
+       {% include 'components/button.twig' with {
+           href: '/documentacao/conceito',
+           text: 'Conceito do projeto',
+           icon: 'fas fa-book me-2',
+           variant: 'primary',
+           attrs: {
+            'role': 'button', 
+            'aria-label': 'Conhecendo o MeuApp MVC', 
+            'title': 'Ver a documentação do Twig no MeuApp MVC',
+            'target': '_self',
+            'rel': 'noopener noreferrer',
+            'data-bs-toggle': 'tooltip',
+            'data-bs-placement': 'bottom',
+            'data-bs-delay': '{"show":"500","hide":"100"}'
+            },
+           extra_class: 'btn btn-light btn-sm shadow-sm'
+
+       } %}
+            {# <a href="/documentacao" class="btn btn-light btn-sm shadow-sm">
+                <i class="fas fa-book me-2"></i> Ver Documentação
+            </a> #}
+{#             <a href="/sobre" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-info-circle me-2"></i> Sobre o Projeto
+            </a> #}
+        </div>
+    </div>
+</section>
+
+<!-- ===================== O que é o MeuApp MVC ===================== -->
+<section class="section-block" data-aos="fade-up">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-md-6" data-aos="fade-right">
+                <img src="/images/architecture-diagram.jpg" alt="Diagrama MeuApp MVC"
+                     class="img-fluid rounded shadow-sm">
+            </div>
+            <div class="col-md-6" data-aos="fade-left" data-aos-delay="150">
+                <h2 class="h4 text-primary fw-bold mb-3">
+                    <i class="fas fa-info-circle me-2"></i> O que é o MeuApp MVC?
+                </h2>
+                <p class="text-muted small text-justify mb-3">
+                    O <strong>MeuApp MVC</strong> é uma base de desenvolvimento PHP moderna, modular e escalável, criada para integrar estudo, prática e produção profissional em um único ambiente.
+                    Ele demonstra na prática o uso do padrão <strong>Model–View–Controller</strong>, separando lógica, visual e dados de forma organizada.
+                </p>
+                <p class="text-muted small text-justify mb-3">
+                    Combinando <strong>Twig</strong>, <strong>Bootstrap 5</strong> e <strong>Composer</strong>,
+                    o projeto oferece um ambiente limpo, documentado e escalável, pronto tanto para aprendizado quanto para implantação real.
+                </p>
+
+                       {% include 'components/button.twig' with {
+           href: '/sobre',
+           text: 'Saiba mais',
+           icon: 'fas fa-arrow-right me-2',
+           variant: 'outline-primary',
+           attrs: {
+            'role': 'button', 
+            'aria-label': 'Ver Documentação do MeuApp MVC', 
+            'title': 'Ver a documentação do MeuApp MVC',
+            'target': '_self',
+            'rel': 'noopener noreferrer',
+            'data-bs-toggle': 'tooltip',
+            'data-bs-placement': 'bottom',
+            'data-bs-delay': '{"show":"500","hide":"100"}'
+            },
+           extra_class: 'btn btn-outline-primary btn-sm'
+
+       } %}
+{#                 <a href="/sobre" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-arrow-right me-2"></i> Saiba mais
+                </a> #}
+            </div>
+        </div>
+    </div>
+</section>
+<hr class="section-divider">
+
+<!-- =====================  Construa. Aprenda. Escale  ===================== -->
+{% include "components/cards.twig" with {
+    section: 'conceitos',
+    title: 'CONSTRUA, APRENDA, ESCALE',
+    subtitle: 'O MeuApp MVC une boas práticas de desenvolvimento PHP com design moderno, documentação viva e exemplos reais.',
+    icon: 'fas fa-rocket'
+} %}
+<hr class="section-divider">
+
+<!-- =====================  CAMADAS DO PROJETO  ===================== -->
+{% include "components/cards.twig" with {
+    section: 'tecnicos',
+    title: 'CAMADAS DO PROJETO',
+    subtitle: 'Conheça as tecnologias que dão forma e estrutura ao MeuApp MVC.',
+    icon: 'fas fa-cogs'
+} %}
+<hr class="section-divider">
+
+<!-- =====================  BOAS PRÁTICAS  ===================== -->
+{% include "components/cards.twig" with {
+    section: 'boaspraticas',
+    title: 'BOAS PRÁTICAS',
+    subtitle: 'Pilares de qualidade, segurança e manutenção que sustentam o MeuApp.',
+    icon: 'fas fa-shield-alt'
+} %}
+<hr class="section-divider">
+
+<!-- =====================  STACK PRINCIPAL  ===================== -->
+{% include "components/cards.twig" with {
+    section: 'stack',
+    title: 'STACK PRINCIPAL',
+    subtitle: 'Tecnologias base que sustentam o fluxo do MeuApp, do backend ao frontend.',
+    icon: 'fas fa-layer-group'
+} %}
+<hr class="section-divider">
+
+<!-- ===================== Tecnologias do Projeto ===================== -->
+<section class="section-block" id="tecnologias">
+    <div class="container">
+        <h2 class="text-primary fw-bold mb-4 text-center">
+            <i class="fas fa-microchip me-2"></i> STACK DE TECNOLOGIAS
+        </h2>
+
+        <div class="row g-4 justify-content-center text-center" data-aos="fade-up">
+            {% set tecnologias = [
+                {'href': '/documentacao/descricao', 'icon': 'fab fa-php', 'titulo': 'PHP 8+', 'desc': 'Linguagem principal do projeto, moderna, rápida e estável.'},
+                {'href': '/documentacao/mvc', 'icon': 'fas fa-cogs', 'titulo': 'Arquitetura MVC', 'desc': 'Organiza o código em camadas lógicas separadas: Modelos, Controladores e Views.'},
+                {'href': '/documentacao/twig', 'icon': 'fas fa-code', 'titulo': 'Twig Templates', 'desc': 'Engine de templates segura e elegante, com herança e blocos reutilizáveis.'},
+                {'href': '/documentacao/bootstrap', 'icon': 'fab fa-bootstrap', 'titulo': 'Bootstrap 5', 'desc': 'Framework CSS moderno para design responsivo e elegante.'},
+                {'href': '/documentacao/htaccess', 'icon': 'fas fa-server', 'titulo': 'Apache', 'desc': 'Servidor HTTP que gerencia as rotas e o .htaccess do MeuApp MVC.'},
+                {'href': '/documentacao/ambiente', 'icon': 'fab fa-linux', 'titulo': 'WSL2 / Ubuntu', 'desc': 'Ambiente de desenvolvimento robusto e compatível com Docker.'},
+                {'href': '/documentacao/composer', 'icon': 'fas fa-cube', 'titulo': 'Composer', 'desc': 'Gerencia dependências e o autoload PSR-4 de forma automática.'},
+                {'href': '/documentacao/fontawesome', 'icon': 'fab fa-font-awesome', 'titulo': 'Font Awesome', 'desc': 'Biblioteca de ícones vetoriais modernos e acessíveis.'}
+            ] %}
+
+            {% for tech in tecnologias %}
+                <div class="col-12 col-sm-6 col-md-3 fade-in">
+                    <a href="{{ tech.href }}" class="text-decoration-none">
+                        <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+                            <i class="{{ tech.icon }} fa-2x mb-3 text-primary"></i>
+                            <h6 class="fw-semibold mb-1">{{ tech.titulo }}</h6>
+                            <p class="small mb-0">{{ tech.desc }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+/* ===============================
+   SEÇÃO DE TECNOLOGIAS (CLARO/ESCURO)
+   =============================== */
+.tech-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
+}
+
+/* ======== TEMA ESCURO ======== */
+[data-bs-theme="dark"] .tech-card {
+  background-color: #1f1f1f !important;
+  color: #eaeaea !important;
+  border-color: #333 !important;
+}
+
+[data-bs-theme="dark"] .tech-card:hover {
+  background-color: #242424 !important;
+  border-color: #0d6efd !important;
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.25);
+}
+
+[data-bs-theme="dark"] .tech-card h6 {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .tech-card p {
+  color: #b5b5b5 !important;
+}
+
+/* ======== TRANSIÇÕES SUAVES ======== */
+.tech-card i,
+.tech-card h6,
+.tech-card p {
+  transition: all 0.3s ease-in-out;
+}
+</style>
+
+<!-- ===================== Aprenda e evolua com o MeuApp MVC ===================== -->
+<section class="bg-primary text-light text-center section-block" data-aos="zoom-in">
+    <div class="container">
+        <h2 class="fw-bold mb-3">
+            <i class="fas fa-graduation-cap me-2"></i> Aprenda e evolua com o MeuApp MVC
+        </h2>
+        <p class="mb-4 small text-light-50 col-lg-8 mx-auto">
+            Explore a documentação completa, estude a estrutura MVC e implemente suas próprias ideias com uma base sólida e moderna.
+        </p>
+{#         <a href="/pdf/configuracao" class="btn btn-light btn-sm shadow-sm">
+            <i class="fas fa-file-pdf me-2"></i> Gerar Documentação Técnica
+        </a> #}
+        {% include 'components/button.twig' with {
+           href: '/pdf/conceito',
+           text: 'Gerar Documentação Técnica',
+           icon: 'fas fa-file-pdf me-2',
+           variant: 'primary',
+           attrs: {
+            'role': 'button', 
+            'aria-label': 'Ver a documentação do projeto', 
+            'title': 'Ver a documentação do Twig no MeuApp MVC',
+            'target': '_self',
+            'rel': 'noopener noreferrer',
+            'data-bs-toggle': 'tooltip',
+            'data-bs-placement': 'bottom',
+            'data-bs-delay': '{"show":"500","hide":"100"}'
+            },
+           extra_class: 'btn btn-light btn-sm shadow-sm'
+
+       } %}
+    </div>
+</section>
+{% endblock %}

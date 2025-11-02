@@ -1,0 +1,287 @@
+{# =============================================================
+   Arquivo: documentacao/boaspraticas.twig
+   Seção: Boas Práticas, Versionamento e Considerações Finais
+   Descrição: Consolida recomendações gerais para manutenção, versionamento e qualidade técnica.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Boas práticas{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% set title = "Boas Práticas de Programação" %}
+
+{% block content %}
+  <div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+      <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="120">
+        <a href="/pdf/boaspraticas" class="btn btn-outline-danger">
+          <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+        Boas Práticas de Programação
+      </h2>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        O desenvolvimento de um projeto moderno em PHP exige mais do que apenas código funcional.  
+        É necessário adotar práticas de versionamento, documentação contínua e padronização técnica 
+        que garantam a qualidade, a rastreabilidade e a evolução segura do sistema.  
+        Esta seção consolida recomendações gerais que sustentam o ciclo de vida do 
+        <strong>MeuApp MVC</strong>.
+      </p>
+
+      <!-- ===================== SUBSEÇÕES ===================== -->
+
+      <h3 class="h6 text-primary mt-4">
+  {% if export %}
+    1. Controle de versão com Git
+  {% else %}
+    <span data-aos="zoom-in"><i class="fab fa-git-alt"></i> Controle de versão com Git</span>
+  {% endif %}
+</h3>
+
+<p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+  O <strong>Git</strong> é o principal sistema de versionamento distribuído utilizado no 
+  desenvolvimento do <strong>MeuApp MVC</strong>. Trabalhe com branches, histórico claro e colaboração segura.
+</p>
+
+{# 1) Inicializa o repositório local no diretório do projeto #}
+<p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+  <i class="fas fa-check text-success"></i> <strong>git init</strong> — Cria um novo repositório Git no diretório atual, 
+  inicializando a estrutura de controle de versão (<code>.git/</code>).  
+  É o primeiro passo antes de começar a registrar o histórico do projeto.
+</p>
+<div {% if not export %}data-aos="flip-up" data-aos-delay="80"{% endif %}>
+  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['git init'], 'light') }}
+</div>
+
+{# 2) Adiciona arquivos ao stage (prepara para commit) #}
+<p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+  <i class="fas fa-check text-success"></i> <strong>git add .</strong> — Adiciona todos os arquivos modificados e novos ao <em>stage</em>, 
+  preparando-os para o próximo commit.  
+  Pode ser usado seletivamente (<code>git add arquivo.php</code>) para granularidade.
+</p>
+<div {% if not export %}data-aos="flip-up" data-aos-delay="160"{% endif %}>
+  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['git add .'], 'light') }}
+</div>
+
+{# 3) Cria o primeiro commit com mensagem descritiva #}
+<p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+  <i class="fas fa-check text-success"></i> <strong>git commit -m "Versão inicial do MeuApp MVC"</strong> —  
+  Registra o primeiro ponto de histórico do projeto com uma mensagem clara.  
+  O ideal é usar mensagens curtas e informativas, descrevendo a alteração.
+</p>
+<div {% if not export %}data-aos="flip-up" data-aos-delay="240"{% endif %}>
+  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['git commit -m "Versão inicial do MeuApp MVC"'], 'light') }}
+</div>
+
+{# 4) Vincula o repositório local a um repositório remoto (GitHub, GitLab etc.) #}
+<p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="280"{% endif %}>
+  <i class="fas fa-check text-success"></i> <strong>git remote add origin &lt;url&gt;</strong> —  
+  Conecta o repositório local ao servidor remoto, geralmente o GitHub.  
+  Exemplo: <code>git remote add origin https://github.com/usuario/meuapp.git</code>
+</p>
+<div {% if not export %}data-aos="flip-up" data-aos-delay="320"{% endif %}>
+  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['git remote add origin'], 'light') }}
+</div>
+
+{# 5) Envia o conteúdo local para o repositório remoto #}
+<p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
+  <i class="fas fa-check text-success"></i> <strong>git push -u origin main</strong> —  
+  Publica o conteúdo local no repositório remoto na branch <code>main</code>.  
+  A flag <code>-u</code> estabelece o vínculo entre a branch local e a remota, 
+  facilitando futuros <code>git push</code> e <code>git pull</code>.
+</p>
+<div {% if not export %}data-aos="flip-up" data-aos-delay="400"{% endif %}>
+  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['git push -u origin main'], 'light') }}
+</div>
+
+{# <p class="text-justify small" {% if not export %}data-aos="fade-up" data-aos-delay="460"{% endif %}>
+ O versionamento é o elo entre o código e a documentação.  
+  Cada commit deve refletir uma mudança clara, com mensagens descritivas e objetivas.  
+  Em equipes, é recomendável adotar convenções de commits e controle de merge requests.
+</p> #}
+
+<div class="alert alert-danger small mt-3"
+           {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+        <i class="fas fa-info-circle"></i>
+        O versionamento é o elo entre o código e a documentação.  
+  Cada commit deve refletir uma mudança clara, com mensagens descritivas e objetivas.  
+  Em equipes, é recomendável adotar convenções de commits e controle de merge requests.
+      </div>
+
+
+      <p class="text-justify small" {% if not export %}data-aos="fade-up" data-aos-delay="460"{% endif %}>
+        Cada commit deve refletir uma mudança clara, com mensagens descritivas.  
+        Considere convenções de commit e PRs/merge requests para revisões consistentes.
+      </p>
+
+      <h3 class="h6 text-primary mt-4">
+        {% if export %}
+          2. Documentação contínua
+        {% else %}
+          <span data-aos="zoom-in"><i class="fas fa-book"></i> Documentação contínua</span>
+        {% endif %}
+      </h3>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        Documente junto com o código. Gere relatórios com <strong>Dompdf</strong> e mantenha documentação viva em Markdown
+        (ex.: <code>/docs/</code>) ou Wiki do GitHub.
+      </p>
+
+      <ul class="small list-unstyled ms-3">
+        {% set docs = [
+          'Documente sempre novas dependências no <code>composer.json</code>.',
+          'Registre alterações de estrutura no arquivo <code>CHANGELOG.md</code>.',
+          'Mantenha o guia rápido de instalação (<code>README.md</code>) atualizado.',
+          'Inclua diagramas/fluxos em SVG ou PlantUML quando aplicável.'
+        ] %}
+        {% for d in docs %}
+          <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 80*loop.index }}"{% endif %}>
+            <i class="fas fa-check text-success"></i> {{ d|raw }}
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h3 class="h6 text-primary mt-4">
+        {% if export %}
+          3. Padronização de código
+        {% else %}
+          <span data-aos="zoom-in"><i class="fas fa-code"></i> Padronização de código</span>
+        {% endif %}
+      </h3>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        Siga <strong>PSR-1</strong>, <strong>PSR-4</strong> e <strong>PSR-12</strong> para manter consistência e compatibilidade.
+      </p>
+
+      <pre style="font-family: monospace; white-space: pre-wrap;"
+           {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+# Verificação automática de padronização
+composer require --dev squizlabs/php_codesniffer
+vendor/bin/phpcs --standard=PSR12 app/
+      </pre>
+
+      <p class="text-justify small" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+        Automatize <code>phpcs</code>/<code>phpcbf</code> em CI. Padronização reduz divergências e acelera revisões.
+      </p>
+
+      <h3 class="h6 text-primary mt-4">
+        {% if export %}
+          4. Manutenção preventiva e atualizações
+        {% else %}
+          <span data-aos="zoom-in"><i class="fas fa-tools"></i> Manutenção preventiva e atualizações</span>
+        {% endif %}
+      </h3>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        Estabeleça rotina de atualização e verificação para a longevidade do projeto.
+      </p>
+
+      <ul class="small list-unstyled ms-3">
+        {% set manut = [
+          'Atualizar dependências mensalmente com <code>composer update</code>.',
+          'Verificar extensões PHP instaladas e compatibilidade.',
+          'Limpar caches do Twig e do Dompdf periodicamente.',
+          'Executar testes de integração após cada atualização.',
+          'Realizar backups regulares do BD e de <code>/storage</code>.'
+        ] %}
+        {% for m in manut %}
+          <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 70*loop.index }}"{% endif %}>
+            <i class="fas fa-check text-success"></i> {{ m|raw }}
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h3 class="h6 text-primary mt-4">
+        {% if export %}
+          5. Boas práticas de implantação
+        {% else %}
+          <span data-aos="zoom-in"><i class="fas fa-rocket"></i> Boas práticas de implantação</span>
+        {% endif %}
+      </h3>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        Siga sequência lógica de deploy para reduzir riscos e manter rastreabilidade.
+      </p>
+
+      <pre style="font-family: monospace; white-space: pre-wrap;"
+           {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+1. Gerar build local e validar dependências:
+   composer install --no-dev --optimize-autoloader
+
+2. Testar ambiente em staging:
+   php -S localhost:8080 -t public/
+
+3. Publicar arquivos em servidor remoto:
+   rsync -avz --delete ./ user@server:/var/www/meuapp/
+
+4. Verificar logs de inicialização:
+   tail -n 20 /var/log/apache2/meuapp-error.log
+      </pre>
+
+      <p class="text-justify small" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+        Faça deploy a partir de branch estável e use versionamento semântico (<code>v1.0.0</code>, <code>v1.1.0</code>…).
+      </p>
+
+      <h3 class="h6 text-primary mt-4">
+        {% if export %}
+          6. Considerações finais
+        {% else %}
+          <span data-aos="zoom-in"><i class="fas fa-flag-checkered"></i> Considerações finais</span>
+        {% endif %}
+      </h3>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        O <strong>MeuApp MVC</strong> consolida arquitetura moderna, padronizada e extensível, útil para estudos e produção.
+      </p>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        O sucesso depende da qualidade do código, documentação e gestão do conhecimento. Compromisso com técnica e aprendizado contínuo.
+      </p>
+
+      <div class="alert alert-info small mt-3"
+           {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+        <i class="fas fa-info-circle"></i>
+        <strong>Documento concluído.</strong><br>
+        Manual técnico do <strong>MeuApp MVC</strong> — versão consolidada e validada.<br>
+        Gerado automaticamente via Twig e Dompdf.
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

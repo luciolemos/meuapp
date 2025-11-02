@@ -1,0 +1,495 @@
+{# =============================================================
+   Arquivo: documentacao/estrutura.twig
+   Seção: Estrutura do projeto
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos (Equipe MeuApp)
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% import "partials/macros.twig" as ui %}
+{% extends "layouts/base.twig" %}
+
+{% block title %}{{ app_name }} — Estrutura do Projeto{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+{# Base de delays progressivos #}
+{% set D0 = 60 %}         {# delay inicial de seção #}
+{% set STEP = 60 %}       {# incremento padrão #}
+{% set FAST = 40 %}       {# incremento mais curto p/ itens pequenos #}
+{% set S = 0 %}           {# acumulador de seção #}
+
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="{{ D0 }}">
+      <a href="/pdf/estrutura" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+  {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  {# ===================== 1. VISÃO GERAL ===================== #}
+  {% set S = D0 + STEP %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      1. Estrutura do Projeto (Workflow)
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      A arquitetura do <strong>MeuApp MVC</strong> é modular e hierárquica, desenhada para garantir organização,
+      manutenção facilitada e escalabilidade. Cada camada do projeto cumpre um papel bem definido, aplicando
+      <em>separação de responsabilidades</em> e respeitando o padrão <strong>MVC</strong>.
+    </p>
+
+    {% set architecture_chart_ascii %}
+Navegador (cliente) --HTTP--> public/index.php [Front Controller]
+            |
+            v
+Bootstrap & App carregam configurações
+            |
+            v
+Router Core resolve rota / método
+      /------------------------------\
+     v                                v
+Controllers Frontend          Controllers Admin
+            \________ Regras de negócio ________/
+                       Services / Domain
+            |
+            v
+Camadas de dados (DB, APIs, PDFs, Storage)
+            |
+            v
+Views Twig => HTML entregue ao usuário
+    {% endset %}
+
+    {% if export %}
+      {{ ui.codeblock_pro('Arquitetura Geral', architecture_chart_ascii|trim, 'txt', 'light') }}
+    {% else %}
+      {% set architecture_mermaid %}
+        <div class="mermaid">
+          %%{init: { "flowchart": { "htmlLabels": false, "wrap": true, "useMaxWidth": false, "nodeSpacing": 60, "rankSpacing": 70 } }}%%
+          flowchart LR
+            classDef etapa fill:#ffffff,stroke:#0d6efd,stroke-width:1px,color:#0b2750,rx:10,ry:10,font-size:16px,font-weight:600;
+            classDef dados fill:#eef4ff,stroke:#0d6efd,stroke-width:1px,color:#0b2750,rx:10,ry:10,font-size:15px,font-weight:600;
+            A["Navegador\nCliente HTTP"]:::etapa --> B["Servidor Web\nApache ou Nginx"]:::etapa
+            B --> C["public/index.php\nFront Controller"]:::etapa
+            C --> D["Bootstrap & App\nInicialização global"]:::etapa
+            D --> E["Router Core\nResolve rota/método"]:::etapa
+            E --> F["Controllers\nFrontend / Admin"]:::etapa
+            F --> G["Services & Domain\nRegras de negócio"]:::etapa
+            G --> H["Fontes de Dados\nDB, APIs, PDFs"]:::dados
+            F --> I["Views Twig\nLayouts e componentes"]:::etapa
+            I --> A
+            D --> J["Configuração\nEnv, Rotas, Twig"]:::etapa
+            G --> K["Storage\nCache, Logs, Uploads"]:::dados
+        </div>
+      {% endset %}
+
+      {% include 'components/diagram.twig' with {
+        title: '1.1 Arquitetura lógica do MeuApp MVC',
+        title_icon: 'fas fa-network-wired',
+        content: architecture_mermaid,
+        caption: '<i class="fas fa-info-circle"></i> O bootstrap delega ao Router; controllers orquestram serviços/domínio enquanto as views Twig entregam a interface ao navegador. A requisição percorre front controller → router → controllers; services/domain acessam dados e as views Twig devolvem a interface ao navegador.',
+        extra_class: 'mt-4',
+        export: export,
+        aos_effect: 'zoom-in',
+        aos_delay: S + STEP
+      } %}
+    {% endif %}
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP*2 }}"{% endif %}>
+      {{ ui.codeblock_pro('bash', 'luciolemos@dev:/var/www/meuapp$ tree -L 2', 'bash', 'light') }}
+    </div>
+
+    <p class="small text-muted mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + STEP*3 }}"{% endif %}>
+      A seguir, a árvore completa do projeto, com camadas e componentes:
+    </p>
+
+    {% set estrutura_unicode %}
+.
+├── app
+│   ├── Bootstrap
+│   ├── Console
+│   ├── Core
+│   ├── Domain
+│   ├── Http
+│   ├── Providers
+│   ├── public
+│   ├── README.md
+│   ├── Services
+│   ├── storage
+│   └── Support
+├── bootstrap
+│   └── app.php
+├── composer.json
+├── composer.lock
+├── config
+│   ├── app.php
+│   ├── config.php
+│   ├── database.php
+│   ├── menu_documentacao.json
+│   ├── routes
+│   └── twig.php
+├── estrutura.txt
+├── phpunit.xml
+├── public
+│   ├── css
+│   ├── fonts
+│   ├── hello.php
+│   ├── images
+│   ├── index.php
+│   ├── info.php
+│   ├── js
+│   └── tmp
+├── README.md
+├── resources
+│   └── views
+├── storage
+│   ├── cache
+│   ├── fonts
+│   ├── logs
+│   ├── pdf
+│   ├── tmp
+│   └── uploads
+├── tests
+│   └── Feature
+├── tmp
+│   └── pdf
+└── vendor
+    ├── autoload.php
+    ├── composer
+    ├── dompdf
+    ├── masterminds
+    ├── sabberworm
+    ├── symfony
+    ├── tecnickcom
+    └── twig
+    {% endset %}
+
+    {% set estrutura_ascii %}
+.
+|-- app
+|   |-- Bootstrap
+|   |-- Console
+|   |-- Core
+|   |-- Domain
+|   |-- Http
+|   |-- Providers
+|   |-- public
+|   |-- README.md
+|   |-- Services
+|   |-- storage
+|   `-- Support
+|-- bootstrap
+|   `-- app.php
+|-- composer.json
+|-- composer.lock
+|-- config
+|   |-- app.php
+|   |-- config.php
+|   |-- database.php
+|   |-- menu_documentacao.json
+|   |-- routes
+|   `-- twig.php
+|-- estrutura.txt
+|-- phpunit.xml
+|-- public
+|   |-- css
+|   |-- fonts
+|   |-- hello.php
+|   |-- images
+|   |-- index.php
+|   |-- info.php
+|   |-- js
+|   `-- tmp
+|-- README.md
+|-- resources
+|   `-- views
+|-- storage
+|   |-- cache
+|   |-- fonts
+|   |-- logs
+|   |-- pdf
+|   |-- tmp
+|   `-- uploads
+|-- tests
+|   `-- Feature
+|-- tmp
+|   `-- pdf
+`-- vendor
+    |-- autoload.php
+    |-- composer
+    |-- dompdf
+    |-- masterminds
+    |-- sabberworm
+    |-- symfony
+    |-- tecnickcom
+    `-- twig
+    {% endset %}
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP*4 }}"{% endif %}>
+      {% if export %}
+        {{ ui.codeblock_pro('/var/www/meuapp$', estrutura_ascii|trim, 'txt', 'light') }}
+      {% else %}
+        {{ ui.filetree_pro('/var/www/meuapp$', estrutura_unicode, 'light') }}
+      {% endif %}
+    </div>
+  </section>
+
+  {# ===================== 2. CAMADAS E RESPONSABILIDADES ===================== #}
+  {% set S = S + STEP*4 + STEP %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      2. Organização e Responsabilidade por Camada
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Cada diretório isola responsabilidades específicas, promovendo coesão entre módulos e clareza no fluxo.
+    </p>
+
+    {% set layers = [
+      {'icon':'fas fa-code text-primary','titulo':'Controllers','desc':'Gerenciam requisições HTTP e acionam views.'},
+      {'icon':'fas fa-database text-success','titulo':'Models','desc':'Regras de negócio e acesso a dados.'},
+      {'icon':'fas fa-eye text-info','titulo':'Views','desc':'Camada de apresentação via Twig.'},
+      {'icon':'fas fa-cog text-warning','titulo':'Core','desc':'Classes base: Router, Controller, Model, View.'},
+      {'icon':'fas fa-cubes text-danger','titulo':'Config','desc':'Rotas, env e configurações globais.'},
+      {'icon':'fas fa-folder-open text-secondary','titulo':'Public','desc':'Raiz pública (index.php, assets).'}
+    ] %}
+
+    {% if export %}
+      <ul class="small text-muted mb-0">
+        {% for l in layers %}
+          <li><strong>{{ l.titulo }}:</strong> {{ l.desc }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="row gy-4 mt-3">
+        {% for l in layers %}
+          <div class="col-md-4" data-aos="zoom-in" data-aos-delay="{{ S + loop.index * FAST }}">
+            <div class="tech-card border rounded shadow-sm h-100 p-4 text-center">
+              <i class="{{ l.icon }} fa-2x mb-3"></i>
+              <h3 class="h6 fw-bold">{{ l.titulo }}</h3>
+              <p class="small text-muted mb-0">{{ l.desc }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+
+  {# ===================== 3. ROTAS E CONFIGURAÇÃO ===================== #}
+  {% set S = S + STEP + STEP %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      3. Rotas e Configuração
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      As rotas definem o comportamento da aplicação para cada URL, isoladas entre público e admin.
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'config/routes_public.php',
+        "<?php
+use App\\Core\\Router;
+
+Router::get('/', 'Public/HomeController@index');
+Router::get('/sobre', 'Public/SobreController@index');
+Router::get('/contato', 'Public/ContatoController@index');
+Router::get('/pdf/descricao', 'Public/PdfController@gerar');
+?>",
+        'php',
+        'dark'
+      ) }}
+    </div>
+
+    <p class="small text-muted mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + STEP + FAST }}"{% endif %}>
+      Para o painel administrativo, utilize um arquivo dedicado <code>routes_admin.php</code>.
+    </p>
+  </section>
+
+  {# ===================== 4. FRONT CONTROLLER ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      4. Front Controller (index.php)
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      <code>public/index.php</code> é o ponto de entrada: inicializa autoload, configurações e delega ao <code>Router</code>.
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'public/index.php',
+        "<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+use App\\Core\\App;
+
+$app = new App();
+$app->init();
+?>",
+        'php',
+        'dark'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 5. MVC EM AÇÃO ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      5. Exemplo: Fluxo de uma Requisição MVC
+    </h2>
+
+    <p class="small text-muted mb-3" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Fluxo básico entre camadas do MVC:
+    </p>
+
+    {% if export %}
+      {{ ui.filetree_pro('Fluxo MVC', "
+Requisição HTTP (usuário)
+│
+├── Router identifica a rota
+│
+├── Controller correspondente é instanciado
+│   └── Chama Services/Domain (regras de negócio)
+│
+├── Dados retornam ao Controller
+│
+└── View (Twig) é renderizada e enviada ao navegador
+", 'light') }}
+    {% else %}
+      {% set mvc_sequence %}
+        <div class="mermaid">
+          sequenceDiagram
+            participant U as Usuário
+            participant P as public/index.php
+            participant R as Router
+            participant C as Controller
+            participant S as Service/Domain
+            participant V as View (Twig)
+
+            U->>P: GET /documentacao/estrutura
+            P->>R: Encaminha requisição
+            R->>C: Resolve rota e instancia controller
+            C->>S: Solicita dados/regra de negócio
+            S-->>C: Retorna resultado
+            C->>V: Passa dados para renderização
+            V-->>U: HTML entregue
+        </div>
+      {% endset %}
+
+      {% include 'components/diagram.twig' with {
+        title: 'Sequência MVC em execução',
+        title_icon: 'fas fa-project-diagram',
+        content: mvc_sequence,
+        caption: 'Router resolve URLs, controllers orquestram serviços/domínio e Twig entrega a interface ao usuário.',
+        export: export,
+        aos_effect: 'zoom-in',
+        aos_delay: S + STEP
+      } %}
+    {% endif %}
+  </section>
+
+  {# ===================== 6. VANTAGENS ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section bg-light p-3 rounded">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      6. Vantagens da Estrutura Modular
+    </h2>
+
+    <ul class="small text-muted">
+      {% set vantagens = [
+        '<strong>Reuso de código:</strong> Componentes testáveis e reutilizáveis.',
+        '<strong>Escalabilidade:</strong> Módulos novos sem alterar a base.',
+        '<strong>Produtividade:</strong> Separação clara acelera entregas.',
+        '<strong>Compatibilidade:</strong> Padrões PSR e Composer.'
+      ] %}
+      {% for v in vantagens %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + loop.index * FAST }}"{% endif %}>{{ v|raw }}</li>
+      {% endfor %}
+    </ul>
+
+    {% include 'components/alert.twig' with {
+      variant: 'info',
+      size: 'sm',
+      icon: 'fas fa-lightbulb',
+      content: 'Estrutura ideal para aprendizado e produção, com versionamento e escalabilidade assegurados.',
+      extra_class: 'mt-3',
+      export: export,
+      aos_effect: 'fade-up',
+      aos_delay: S + STEP + FAST
+    } %}
+  </section>
+
+  {# ===================== 7. RECURSOS RELACIONADOS ===================== #}
+  {% set S = S + STEP*2 %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      7. Recursos relacionados
+    </h2>
+
+    <p class="small text-muted mb-3" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Explore capítulos complementares para se aprofundar.
+    </p>
+
+    {% set recursos = [
+      {'href':'/documentacao/conceito', 'icon':'fas fa-lightbulb', 'label':'Conceito do Projeto'},
+      {'href':'/documentacao/stack', 'icon':'fas fa-layer-group', 'label':'Stack de Tecnologias'},
+      {'href':'/documentacao/mvc', 'icon':'fas fa-project-diagram', 'label':'Arquitetura MVC'},
+      {'href':'/documentacao/whatsphp', 'icon':'fab fa-php', 'label':'O que é PHP?'},
+      {'href':'/documentacao/twig', 'icon':'fas fa-code', 'label':'Twig Templates'},
+      {'href':'/documentacao/ambiente', 'icon':'fas fa-laptop-code', 'label':'Ambiente & Ferramentas'}
+    ] %}
+
+    {% if export %}
+      <ul class="small text-muted mb-0">
+        {% for r in recursos %}
+          <li><strong>{{ r.label }}:</strong> {{ base_url|default('/') ~ r.href|trim('/') }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="d-flex flex-wrap gap-2">
+        {% for r in recursos %}
+          <span {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + loop.index * FAST }}"{% endif %}>
+            {% include 'components/button.twig' with {
+              href: r.href, text: r.label, icon: r.icon,
+              variant: 'outline-primary', size: 'sm'
+            } %}
+          </span>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 650,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,1658 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="container py-4">
+    {% if not export %}
+        <div class="text-end mb-3">
+            <a href="/pdf/configuracao" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+    {#{% if export %}
+        <!-- ======================== CAPA ======================== -->
+        <section class="cover-page">
+            <img src="/images/logo.png" alt="Logo MeuApp">
+            <h1>MeuApp MVC</h1>
+            <h2>Manual Técnico Completo</h2>
+            <p>PHP • Twig • Apache • MVC • Composer • WSL2 • Bootstrap</p>
+            <hr>
+            <p class="credits">
+                © 2025 - MeuApp MVC<br>
+                Documentação técnica gerada automaticamente com Dompdf
+            </p>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- ======================== SUMÁRIO ======================== -->
+        <section class="summary-page">
+            <h2><i class="fas fa-list-ul"></i> Sumário</h2>
+            <ul>
+                <li>1. Descrição do Projeto</li>
+                <li>2. Stack e Tecnologias</li>
+                <li>3. Estrutura do Projeto (Workflow)</li>
+                <li>4. Design Pattern MVC</li>
+                <li>5. O Twig Template Engine</li>
+                <li>6. Bootstrap no Projeto</li>
+                <li>7. O Arquivo .htaccess</li>
+                <li>8. O VirtualHost</li>
+                <li>9. Configuração do Ambiente</li>
+                <li>10. Estrutura e Conteúdo do Composer</li>
+                <li>11. Diagnóstico e Comandos</li>
+                <li>12. Status Final</li>
+                <li>13. Escalando o Projeto</li>
+                <li>14. Outros</li>
+            </ul>
+        </section>
+
+        <div class="page-break"></div>
+    {% endif %}#}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    <header class="mb-4 text-center">
+        <h1 class="display-5 mb-3 text-primary">
+            <i class="fas fa-cogs"></i> {{ title }}
+        </h1>
+        <p class="lead text-muted">
+            Guia completo sobre o desenvolvimento, configuração e arquitetura do <strong>MeuApp MVC</strong> — uma aplicação PHP modular e escalável com Twig, Composer e Bootstrap.
+        </p>
+    </header>
+
+    <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        1. Descrição do projeto MeuApp
+    </h2>
+
+    <p class="text-justify">
+        O <strong>MeuApp MVC</strong> é um <em>laboratório de desenvolvimento web</em> criado com o propósito de integrar 
+        <strong>estudo, prática e documentação técnica</strong> em um único ambiente de aprendizado e experimentação. 
+        Desenvolvido sobre o padrão arquitetural <strong>Model-View-Controller (MVC)</strong>, o projeto oferece uma visão 
+        clara e aplicada dos princípios que regem a estruturação de sistemas PHP modernos e escaláveis.
+    </p>
+
+    <p class="text-justify">
+        Todo o processo de desenvolvimento foi <strong>documentado de forma incremental</strong>, permitindo ao estudante 
+        acompanhar a evolução do projeto de maneira orientada.  
+        O item de menu <code>Documentação → Configuração do Ambiente</code> invoca a view 
+        <code>/app/Views/Public/artigo_configuracao.twig</code>, que contém seções detalhadas sobre componentes essenciais 
+        da aplicação — como o <strong>arquivo .htaccess</strong>, o <strong>composer.json</strong> e o <strong>VirtualHost</strong>.  
+        Cada tópico descreve a função, a estrutura e a importância de cada elemento dentro do ciclo de execução do sistema.
+    </p>
+
+    <p class="text-justify">
+        A arquitetura do <strong>MeuApp MVC</strong> foi concebida com ênfase em <strong>organização estrutural</strong>, 
+        <strong>modularidade</strong> e <strong>reuso de código</strong>.  
+        Ao aplicar o princípio da <em>separação de responsabilidades</em>, o projeto proporciona maior clareza no fluxo de dados, 
+        facilidade de manutenção e ampliação progressiva sem impacto sobre outras camadas do sistema.
+    </p>
+
+    <p class="text-justify">
+        Projetado tanto para o <strong>ambiente acadêmico</strong> quanto para o <strong>uso profissional</strong>, 
+        o MeuApp atua como um <strong>guia conceitual e funcional</strong>, servindo de referência para o estudo do MVC e suas aplicações práticas. 
+        Sua estrutura flexível permite que seja utilizado como base para protótipos, testes de integração e projetos de produção reais.
+    </p>
+
+    <p class="text-justify">
+        O ecossistema do MeuApp integra tecnologias modernas — 
+        <strong>PHP</strong>, <strong>Apache</strong>, <strong>MySQL</strong>, <strong>Twig</strong>, 
+        <strong>Bootstrap</strong>, <strong>Composer</strong> e <strong>Ubuntu WSL2</strong> — 
+        consolidando um ambiente robusto, padronizado e multiplataforma.  
+        O projeto é desenvolvido no <strong>Visual Studio Code</strong>, com terminal integrado ao 
+        <strong>Ubuntu 24 (WSL)</strong>, reproduzindo com fidelidade um ambiente de produção Linux.
+    </p>
+
+    <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+        <i class="fas fa-info-circle text-primary"></i>
+        <em>View principal:</em> <code>/app/Views/Public/artigo_configuracao.twig</code>
+    </div>
+    {#
+    <div class="alert alert-info small mt-3">
+        <i class="fas fa-lightbulb"></i>
+        O Twig é um dos pilares do padrão MVC — ele mantém a view limpa, desacoplada da lógica
+        e garante manutenibilidade em aplicações de médio e grande porte.
+    </div>
+    #}
+</section>
+
+
+
+    <!-- ===================== 2. STACK E TECNOLOGIAS ===================== -->
+    <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        2. Stack tecnológica
+    </h2>
+
+    <p class="text-justify">
+        O <strong>MeuApp MVC</strong> foi construído sobre uma stack tecnológica moderna, cuidadosamente selecionada para 
+        equilibrar <strong>desempenho, modularidade e escalabilidade</strong>.  
+        Cada tecnologia integra-se de forma harmônica ao ecossistema PHP, permitindo uma arquitetura consistente, 
+        segura e de fácil manutenção.
+    </p>
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><i class="fas fa-puzzle-piece text-primary"></i> PHP 8+ com padrão MVC</li>
+            <li class="list-group-item"><i class="fas fa-cube text-info"></i> Twig Template Engine</li>
+            <li class="list-group-item"><i class="fas fa-server text-danger"></i> Apache + VirtualHost</li>
+            <li class="list-group-item"><i class="fas fa-database text-success"></i> MySQL / MariaDB</li>            
+            <li class="list-group-item"><i class="fab fa-bootstrap text-purple"></i> Bootstrap 5</li>
+            <li class="list-group-item"><i class="fab fa-html5"></i> Composer</li>
+            <li class="list-group-item"><i class="fab fa-ubuntu"></i> Ubuntu</li>            
+            <li class="list-group-item"><i class="fas fa-laptop-code"></i> WSL2 (Linux Subsystem for Windows)</li>
+            <li class="list-group-item"><i class="fab fa-font-awesome-flag"></i> Font Awesome 5.15.4</li>
+        </ul>
+
+    <h3 class="h6 text-primary mt-4"><i class="fab fa-php"></i> PHP 8+</h3>
+    <p class="text-justify">
+        Linguagem central do projeto, o <strong>PHP</strong> oferece suporte completo ao paradigma orientado a objetos, 
+        tornando possível aplicar com clareza o padrão <em>Model-View-Controller (MVC)</em>.  
+        A versão 8+ foi escolhida por seu desempenho aprimorado, tipagem forte e suporte a recursos modernos como 
+        <code>attributes</code>, <code>match</code> e <code>constructor property promotion</code>.
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fas fa-code"></i> Twig Template Engine</h3>
+    <p class="text-justify">
+        O <strong>Twig</strong> é o motor de templates responsável pela renderização das views.  
+        Ele separa a lógica da camada de apresentação, garantindo um código mais limpo, seguro e reutilizável.  
+        Além disso, oferece recursos como herança de templates, filtros personalizados e cache de renderização.
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fas fa-server"></i> Apache 2 + VirtualHost</h3>
+    <p class="text-justify">
+        O servidor <strong>Apache</strong> é responsável pelo roteamento e entrega de conteúdo, configurado com suporte a 
+        <code>mod_rewrite</code> para URLs limpas e controle de acesso via <code>.htaccess</code>.  
+        O <strong>VirtualHost</strong> permite isolar o ambiente de desenvolvimento e simular domínios locais, 
+        tornando o fluxo de deploy previsível e seguro.
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fas fa-database"></i> MySQL / MariaDB</h3>
+    <p class="text-justify">
+        O <strong>MySQL</strong> (ou MariaDB) foi escolhido por sua robustez e compatibilidade com PHP.  
+        O projeto utiliza um modelo de acesso desacoplado, permitindo que futuras camadas ORM sejam integradas sem refatorações extensas.
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fab fa-bootstrap"></i> Bootstrap 5</h3>
+    <p class="text-justify">
+        O <strong>Bootstrap 5</strong> é responsável pela camada visual e responsividade da aplicação.  
+        Suas classes utilitárias permitem um layout limpo, acessível e adaptável a diferentes resoluções, 
+        mantendo uma identidade visual coerente entre as seções do sistema.
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fas fa-cubes"></i> Composer</h3>
+    <p class="text-justify">
+        O <strong>Composer</strong> gerencia dependências e o autoload das classes via padrão <code>PSR-4</code>.  
+        Ele garante padronização, simplifica o versionamento e facilita a integração de bibliotecas externas, 
+        como o próprio Dompdf e o Twig.
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fab fa-ubuntu"></i> Ubuntu</h3>
+    <p class="text-justify">
+        Ubuntu é um sistema operacional, ou sistema operativo composto de software livre e de código
+        aberto e de software proprietário na forma de blobs, construído a partir do núcleo Linux, baseado no Debian 
+        e utiliza GNOME como ambiente de desktop de sua mais recente versão com suporte de longo prazo (LTS).
+    </p>
+
+    <h3 class="h6 text-primary mt-4"><i class="fab fa-linux"></i> WSL2</h3>
+    <p class="text-justify">
+       O WSL (Subsistema do Windows para Linux) permite que os desenvolvedores executem um ambiente Linux 
+       diretamente no Windows sem a sobrecarga de uma máquina virtual ou configuração de inicialização dupla. WSL2, 
+       a versão mais recente, apresenta um kernel Linux completo para melhor desempenho e compatibilidade.
+    </p>
+
+    <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+        <i class="fas fa-info-circle text-primary"></i>
+        <em>Stack validada para ambiente de desenvolvimento Linux com suporte a PHP 8.3, Apache 2.4 e MySQL 8+</em>.
+    </div>
+</section>
+
+
+<!-- ===================== 3. ESTRUTURA DO PROJETO (WORKFLOW) ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        3. Estrutura do projeto (Workflow)
+    </h2>
+
+    <p class="text-justify">
+        A organização do <strong>MeuApp MVC</strong> segue uma estrutura modular e hierárquica que 
+        facilita o entendimento, a manutenção e a escalabilidade da aplicação.  
+        Cada diretório possui um propósito específico, alinhado ao princípio da <em>separação de responsabilidades</em> 
+        e ao padrão arquitetural <strong>MVC</strong>.  
+        Essa divisão garante um fluxo de trabalho previsível, coeso e sustentável — tanto para estudo quanto para uso profissional.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">
+        <i class="fas fa-layer-group"></i> Arquivos e diretórios do projeto
+    </h3>
+    <p class="text-justify">
+        Abaixo está o mapa geral de diretórios e arquivos do projeto, refletindo a arquitetura interna e o relacionamento 
+        entre as camadas de controle, modelo e visualização. Cada pasta foi pensada para <strong>isolar responsabilidades</strong>:
+    </p>
+<code>
+<pre style="font-family: monospace; white-space: pre-wrap; line-height: 1.3;">
+.
+├── app
+│   ├── Controllers
+│   │   ├── Admin
+│   │   │   ├── DashboardController.php
+│   │   │   ├── IndexController.php
+│   │   │   ├── SettingsController.php
+│   │   │   └── UsersController.php
+│   │   └── Public
+│   │       ├── ConfiguracaoController.php
+│   │       ├── ContatoController.php
+│   │       ├── DescricaoProjetoController.php
+│   │       ├── HomeController.php
+│   │       ├── MvcController.php
+│   │       ├── PdfController.php
+│   │       └── SobreController.php
+│   ├── Core
+│   │   ├── Controller.php
+│   │   ├── Database.php
+│   │   ├── Model.php
+│   │   ├── Router.php
+│   │   └── View.php
+│   ├── Models
+│   │   └── User.php
+│   └── Views
+│       ├── Admin
+│       │   ├── admin_base.twig
+│       │   ├── dashboard.twig
+│       │   └── partials
+│       │       └── admin_navbar.twig
+│       └── Public
+│           ├── artigo_configuracao.twig
+│           ├── artigo_mvc.twig
+│           ├── base.twig
+│           ├── contato.twig
+│           ├── descricao_projeto.twig
+│           ├── home.twig
+│           ├── sobre.twig
+│           ├── partials
+│           │   ├── footer.twig
+│           │   └── navbar.twig
+│           ├── images/
+│           ├── fonts/
+│           └── css/
+├── config/
+│   ├── config.php
+│   ├── routes.php
+│   ├── routes_public.php
+│   ├── routes_admin.php
+├── public/
+│   ├── index.php
+│   ├── css/
+│   ├── images/
+│   ├── fonts/
+│   └── info.php
+├── composer.json
+├── composer.lock
+├── storage/
+│   └── fonts/
+└── vendor/
+
+</pre>
+</code>
+    <h3 class="h6 text-primary mt-4">
+        <i class="fas fa-layer-group"></i> Organização e Responsabilidade por Camada
+    </h3>
+    <p class="text-justify">
+        Cada pasta foi pensada para <strong>isolar responsabilidades</strong>:
+    </p>
+    <ul class="list-group mb-3">
+        <li class="list-group-item">
+            <i class="fas fa-code text-primary"></i> <strong>Controllers:</strong> Controlam o fluxo de requisições HTTP, conectando a lógica de negócios (Models) às views Twig.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-database text-success"></i> <strong>Models:</strong> Centralizam as regras de negócio e o acesso a dados, promovendo reuso e testabilidade.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-eye text-info"></i> <strong>Views:</strong> São as camadas de apresentação, estruturadas em templates Twig modulares.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-cog text-warning"></i> <strong>Core:</strong> Núcleo da aplicação, contém classes fundamentais como <code>Router</code>, <code>Controller</code>, <code>Model</code> e <code>View</code>.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-cubes text-danger"></i> <strong>Config:</strong> Contém rotas e configurações globais de ambiente.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-folder-open text-secondary"></i> <strong>Public:</strong> Camada exposta ao servidor web (raiz pública), abrigando o <code>index.php</code>, CSS, imagens e fontes.
+        </li>
+    </ul>
+
+     <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+        <i class="fas fa-info-circle text-primary"></i>
+        Essa estrutura modular torna o <strong>MeuApp MVC</strong> ideal tanto para o aprendizado de arquitetura web 
+        quanto para a construção de sistemas reais, com versionamento e escalabilidade assegurados.
+    </div>
+</section>
+
+
+<!-- ===================== 4. DESIGN PATTERN MVC ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        4. O Design pattern MVC
+    </h2>
+
+    <p class="text-justify">
+        O <strong>Model-View-Controller (MVC)</strong> é um dos padrões de arquitetura mais consolidados 
+        no desenvolvimento de aplicações web.  
+        Sua principal virtude é a <strong>separação de responsabilidades</strong>, permitindo que a lógica de negócios, 
+        a interface do usuário e o controle de fluxo existam de forma independente, mas coordenada.
+    </p>
+
+    <p class="text-justify">
+        No <strong>MeuApp MVC</strong>, essa separação está diretamente refletida na estrutura de pastas:  
+        os <em>Controllers</em> gerenciam as requisições HTTP, os <em>Models</em> manipulam dados e lógica de negócio, 
+        e as <em>Views</em> (via <strong>Twig</strong>) cuidam da camada de apresentação.  
+        Esse design reduz acoplamentos, melhora a testabilidade e acelera a manutenção do código.
+    </p>
+
+    <ul class="list-group mb-4">
+        <li class="list-group-item">
+            <i class="fas fa-database text-success"></i>
+            <strong>Model:</strong> Responsável pela <strong>lógica de negócio</strong> e comunicação com o banco de dados.
+            Define entidades, valida dados e centraliza as regras do domínio da aplicação.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-eye text-info"></i>
+            <strong>View:</strong> Representa a <strong>camada de apresentação</strong>.  
+            Utiliza o <strong>Twig Template Engine</strong> para renderizar interfaces dinâmicas e seguras.
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-route text-primary"></i>
+            <strong>Controller:</strong> Atua como <strong>ponte entre o usuário e o sistema</strong>.  
+            Recebe requisições, processa dados com os <em>Models</em> e entrega respostas via <em>Views</em>.
+        </li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4"><i class="fas fa-project-diagram"></i> Benefícios do MVC</h3>
+    <ul class="small list-unstyled ms-3">
+        <li><i class="fas fa-check text-success"></i> Código mais limpo, legível e modular.</li>
+        <li><i class="fas fa-check text-success"></i> Facilita manutenção e testes unitários.</li>
+        <li><i class="fas fa-check text-success"></i> Reuso de componentes e templates.</li>
+        <li><i class="fas fa-check text-success"></i> Permite evolução contínua sem quebra estrutural.</li>
+        <li><i class="fas fa-check text-success"></i> Favorece o trabalho em equipe e versionamento (Git).</li>
+    </ul>
+
+    <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+        <i class="fas fa-info-circle text-primary"></i>
+        O padrão <strong>MVC</strong> é a espinha dorsal do <strong>MeuApp</strong>: cada requisição segue o fluxo 
+        <em>Router → Controller → Model → View</em>, garantindo previsibilidade e eficiência em toda a aplicação.
+    </div>
+</section>
+
+
+    <!-- ===================== 5. O TWIG TEMPLATE ENGINE ===================== -->
+   <section class="mb-5 pdf-section">
+        <h2 class="h4 text-secondary mb-3">
+        5. Twig template engine
+        </h2>
+
+        <p class="text-justify">
+        O <strong>Twig</strong> é o motor de templates adotado pelo <strong>MeuApp MVC</strong> para gerenciar a camada de apresentação.  
+        Ele tem como principal objetivo <strong>separar a lógica de negócio do layout visual</strong>, mantendo o código limpo, 
+        seguro e de fácil manutenção.  
+        Desenvolvido originalmente para o framework <em>Symfony</em>, o Twig é amplamente utilizado em aplicações modernas 
+        que seguem o padrão <strong>MVC</strong> (Model-View-Controller).
+    </p>
+
+    <p class="text-justify">
+        Sua sintaxe é simples e expressiva, permitindo a criação de templates dinâmicos com 
+        estruturas de controle, herança e componentes reutilizáveis.  
+        Além disso, o Twig possui um sistema interno de cache que melhora o desempenho 
+        e protege contra vulnerabilidades como <em>Cross-Site Scripting (XSS)</em> por meio do 
+        <strong>escape automático</strong> de variáveis.
+    </p>
+        
+<pre style="font-family: monospace; white-space: pre-wrap;">
+&#123;&#123; variable &#125;&#125;              → Exibe conteúdo escapado (seguro)
+&#123;&#37; if condition &#37;&#125; ... &#123;&#37; endif &#37;&#125;   → Estruturas condicionais
+&#123;&#37; for item in list &#37;&#125; ... &#123;&#37; endfor &#37;&#125; → Laços de repetição
+&#123;&#37; include 'partials/footer.twig' &#37;&#125; → Inclusão de templates
+</pre>    
+<h3 class="h6 text-primary mt-4">Herança de templates</h3>
+    <p class="text-justify">
+        O Twig utiliza um poderoso sistema de <strong>herança de templates</strong>, que permite definir uma estrutura base 
+        (geralmente chamada de <code>base.twig</code>) e estendê-la em todas as demais views.  
+        Isso assegura consistência visual e facilita a manutenção da aplicação, 
+        permitindo que cabeçalhos, rodapés e áreas de conteúdo sejam controlados centralmente.
+    </p>
+
+
+
+        <h3 class="h6 text-primary mt-4">Reutilização com includes e partials</h3>
+    <p>
+        Componentes como cabeçalhos, menus e rodapés são extraídos em <em>partials</em>, promovendo
+        reutilização e organização. O Twig permite incluir esses blocos dinamicamente.
+    </p>
+
+        <h3 class="h6 text-primary mt-4">Boas práticas e segurança</h3>
+   <ul class="small list-unstyled ms-3">
+        <li><i class="fas fa-check text-success"></i> O Twig escapa automaticamente o conteúdo para evitar <em>XSS</em> (Cross-Site Scripting).</li>
+        <li><i class="fas fa-check text-success"></i> Evite escrever lógica de negócio nas views — use controllers para isso.</li>
+        <li><i class="fas fa-check text-success"></i> Utilize filtros para manipular saídas com segurança e clareza.</li>
+        <li><i class="fas fa-check text-success"></i> O Twig <strong>escapa automaticamente</strong> todo conteúdo dinâmico para evitar ataques XSS.</li>
+        <li><i class="fas fa-check text-success"></i> Não insira lógica de negócio em templates — utilize controllers e models para isso.</li>
+        <li><i class="fas fa-check text-success"></i> Prefira <code>filtros</code> para manipular saídas (<code>|upper</code>, <code>|lower</code>, <code>|date</code> etc.).</li>
+        <li><i class="fas fa-check text-success"></i> Utilize <code>macros</code> e <code>blocks</code> para construir componentes reutilizáveis.</li>
+    </ul>
+    
+     <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+        <i class="fas fa-info-circle text-primary"></i>
+        O Twig é um dos pilares do padrão MVC — ele mantém a view limpa, desacoplada da lógica
+        e garante manutenibilidade em aplicações de médio e grande porte.
+    </div>
+
+    </section>
+
+<!-- ===================== 6. BOOTSTRAP ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+       6. Bootstrap framework no Projeto
+    </h2>
+
+    <p class="text-justify">
+        O <strong>Bootstrap 5</strong> é o framework CSS adotado no <strong>MeuApp MVC</strong> para construção da interface e layout responsivo.  
+        Ele fornece um conjunto abrangente de componentes, classes utilitárias e padrões visuais que aceleram o desenvolvimento 
+        e garantem uma experiência consistente entre páginas e dispositivos.
+    </p>
+
+    <p class="text-justify">
+        Por meio de sua filosofia <em>mobile-first</em>, o Bootstrap assegura que o <strong>MeuApp MVC</strong> seja totalmente adaptável 
+        a diferentes tamanhos de tela, sem exigir CSS adicional.  
+        A combinação entre o Bootstrap e o <strong>Twig</strong> permite construir interfaces limpas, dinâmicas e facilmente extensíveis.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">
+        <i class="fas fa-th-large"></i> Estruturação e Layout
+    </h3>
+    <p class="text-justify">
+        O Bootstrap utiliza um sistema de <strong>grid flexível</strong> baseado em 12 colunas.  
+        Isso possibilita alinhar, distribuir e redimensionar elementos com precisão, 
+        utilizando classes como <code>container</code>, <code>row</code> e <code>col</code>.
+    </p>
+<code>
+<pre style="font-family: monospace; white-space: pre-wrap;">
+&lt;div class="container"&gt;
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-6"&gt;Coluna 1&lt;/div&gt;
+        &lt;div class="col-md-6"&gt;Coluna 2&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+</code>
+    <h3 class="h6 text-primary mt-4">
+        <i class="fas fa-palette"></i> Componentes e Estilo
+    </h3>
+    <p class="text-justify">
+        O projeto utiliza componentes visuais nativos como <code>alert</code>, <code>card</code>, <code>navbar</code> e <code>table</code>, 
+        garantindo uma interface profissional e coesa.  
+        As classes utilitárias (<code>text-center</code>, <code>mb-3</code>, <code>py-2</code>, etc.) permitem ajustar espaçamento, cores e 
+        tipografia com simplicidade e consistência.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">
+        <i class="fas fa-adjust"></i> Integração com o Twig
+    </h3>
+    <p class="text-justify">
+        O Bootstrap integra-se naturalmente ao Twig, permitindo construir componentes dinâmicos e reutilizáveis.  
+        Cada elemento visual pode ser abstraído em um <em>partial</em> Twig, como uma barra de navegação ou rodapé, 
+        garantindo padronização em toda a aplicação.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">
+        <i class="fas fa-lightbulb"></i> Boas Práticas de Uso
+    </h3>
+   <ul class="small list-unstyled ms-3">
+        <li><i class="fas fa-check text-success"></i> Utilize classes utilitárias para espaçamento e alinhamento antes de criar CSS adicional.</li>
+        <li><i class="fas fa-check text-success"></i> Centralize componentes comuns (navbar, footer, alerts) em <em>partials</em> Twig.</li>
+        <li><i class="fas fa-check text-success"></i> Evite sobrescrever regras globais do Bootstrap — prefira customizações locais.</li>
+        <li><i class="fas fa-check text-success"></i> Combine Bootstrap com Font Awesome para ícones vetoriais leves e escaláveis.</li>
+    </ul>
+
+    <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+        <i class="fas fa-info-circle text-primary"></i>
+        O uso do <strong>Bootstrap</strong> garante ao <strong>MeuApp MVC</strong> uma interface moderna, acessível e coerente, 
+        simplificando a prototipagem e fortalecendo a identidade visual do sistema.
+    </div>
+</section>
+
+
+    <!-- ===================== 7. ARQUIVO .HTACCESS ===================== -->
+   <section class="mb-5 pdf-section">
+        <h2 class="h4 text-secondary mb-3">
+        7. Estrutura e Configuração do .htaccess
+        </h2>
+        <p class="text-justify">
+        O arquivo <strong>.htaccess</strong> é um componente fundamental do servidor <strong>Apache HTTP Server</strong>.  
+        Seu nome deriva de “<em>hypertext access</em>” e sua função principal é permitir a configuração de regras locais
+        de comportamento, reescrita de URLs, segurança, cache e controle de acesso, sem a necessidade de editar o arquivo
+        global de configuração do servidor (<code>httpd.conf</code>).
+    </p>
+
+    <p class="text-justify">
+        Dentro do contexto do <strong>MeuApp MVC</strong>, o <code>.htaccess</code> atua como um <strong>controlador intermediário</strong> 
+        entre o servidor e a aplicação, garantindo que todas as requisições sejam direcionadas corretamente para o arquivo 
+        <code>index.php</code> (o <em>front controller</em>).  
+        Isso possibilita o uso de <strong>URLs limpas</strong>, sem a necessidade de incluir <code>.php</code> nos endereços, 
+        além de reforçar a segurança da aplicação e controlar o acesso a arquivos sensíveis.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Funções principais do .htaccess</h3>
+     <ul class="small">
+        <li><strong> Reescrita de URLs (URL Rewriting):</strong> Permite que as requisições sejam redirecionadas para o front controller, viabilizando rotas amigáveis e dinâmicas.</li>
+        <li><strong> Controle de acesso:</strong> Restringe o acesso a arquivos sensíveis como <code>.env</code> e <code>composer.json</code>.</li>
+        <li><strong> Definição de comportamento padrão:</strong> Especifica o arquivo inicial (<code>index.php</code>) e impede listagem de diretórios.</li>
+        <li><strong> Otimização e cache:</strong> Configura políticas de cache para recursos estáticos (CSS, imagens, fontes, etc.), melhorando o desempenho.</li>
+        <li><strong> Segurança adicional:</strong> Define cabeçalhos HTTP para proteger contra ataques e vazamentos de informações.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Estrutura do arquivo .htaccess no MeuApp MVC</h3>
+    <p class="text-justify">
+        O arquivo a seguir foi configurado para o ambiente de desenvolvimento do <strong>MeuApp MVC</strong>.  
+        Ele centraliza as regras de reescrita, cache e segurança, servindo como base para ambientes locais ou produtivos.
+    </p>
+
+<code>
+    <pre style="font-family: monospace; white-space: pre-wrap;">
+# Segurança básica e comportamento
+Options -Indexes -MultiViews
+DirectoryIndex index.php index.html
+
+# Não permitir acesso a arquivos sensíveis caso alguém os jogue no public
+&lt;FilesMatch "(^\.|\.env|composer\.(json|lock)|.*\.(sql|bak|old|zip)$)"&gt;
+  Require all denied
+&lt;/FilesMatch&gt;
+
+# Reescrita para front-controller (URLs limpas)
+&lt;IfModule mod_rewrite.c&gt;
+  RewriteEngine On
+
+  # Ajuste se o projeto ficar num subdiretório (ex.: /site) -> RewriteBase /site/
+  RewriteBase
+
+  # Se arquivo ou diretório existir, entrega direto
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Caso contrário, joga tudo pro index.php preservando query string
+  RewriteRule ^ index.php [QSA,L]
+&lt;/IfModule&gt;
+
+# (Opcional) Cache simples para estáticos
+&lt;IfModule mod_expires.c&gt;
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/avif "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 30 days"
+&lt;/IfModule&gt;
+
+# (Opcional) headers úteis
+&lt;IfModule mod_headers.c&gt;
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+&lt;/IfModule&gt;
+</pre>
+</code>
+        <h3 class="h6 text-primary mt-4">Detalhamento das principais diretivas</h3>
+    <ul class="small list-unstyled ms-3">
+        <li><i class="fas fa-check text-success"></i><code> Options -Indexes</code> — Impede que usuários vejam o conteúdo de pastas sem um arquivo index, protegendo contra listagem de diretórios.</li>
+        <li><i class="fas fa-check text-success"></i><code> DirectoryIndex index.php</code> — Define qual arquivo será carregado por padrão quando uma pasta for acessada.</li>
+        <li><i class="fas fa-check text-success"></i><code> &lt;FilesMatch&gt;</code> — Bloqueia o acesso a arquivos confidenciais, como variáveis de ambiente, backups e pacotes comprimidos.</li>
+        <li><i class="fas fa-check text-success"></i><code> mod_rewrite</code> — Ativa o mecanismo de reescrita de URLs, essencial para o roteamento do MVC.</li>
+        <li><i class="fas fa-check text-success"></i><code> mod_expires</code> — Define períodos de cache para melhorar a performance de carregamento de recursos estáticos.</li>
+        <li><i class="fas fa-check text-success"></i><code> mod_headers</code> — Aplica cabeçalhos de segurança que reduzem riscos de ataque e vazamento de metadados.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Importância para o MeuApp MVC</h3>
+    <p class="text-justify">
+        O arquivo <code>.htaccess</code> é o ponto de integração entre o servidor Apache e o núcleo da aplicação.  
+        Ele é o responsável por garantir que todas as requisições — sejam páginas, rotas dinâmicas ou recursos estáticos — 
+        sejam encaminhadas de forma controlada e segura.  
+        Além disso, o uso correto desse arquivo assegura:
+    </p>
+
+   <ul class="small list-unstyled ms-3">
+        <li><i class="fas fa-check text-success"></i> Execução previsível do fluxo <strong>Request → Router → Controller</strong> no padrão MVC.</li>
+        <li><i class="fas fa-check text-success"></i> Isolamento da aplicação em relação ao servidor físico.</li>
+        <li><i class="fas fa-check text-success"></i> Proteção contra acessos indevidos a arquivos internos.</li>
+        <li><i class="fas fa-check text-success"></i> Otimização no carregamento de conteúdo estático.</li>
+    </ul>
+
+    <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        O <strong>.htaccess</strong> é uma camada de segurança e organização indispensável no ecossistema Apache.
+        No <strong>MeuApp MVC</strong>, ele atua silenciosamente como guardião do fluxo HTTP, garantindo integridade,
+        roteamento limpo e conformidade com as melhores práticas de segurança web.
+    </div>
+    </section>
+
+    <!-- ===================== 8. VIRTUALHOST ===================== -->
+    <section class="mb-5 pdf-section">
+        <h2 class="h4 text-secondary mb-3">
+        8. Estrutura e Configuração do VirtualHost</h2>
+        <p class="text-justify">
+        O <strong>VirtualHost</strong> é um recurso essencial do servidor <strong>Apache HTTP Server</strong> que permite 
+        hospedar múltiplas aplicações em um mesmo servidor, cada uma com seu próprio domínio, diretório e configurações 
+        específicas.  
+        Essa técnica é amplamente utilizada tanto em ambientes de desenvolvimento quanto em produção, pois facilita a 
+        organização e o isolamento de projetos dentro do mesmo host.
+    </p>
+
+    <p class="text-justify">
+        No contexto do <strong>MeuApp MVC</strong>, o VirtualHost foi configurado para criar um domínio local exclusivo, 
+        como <code>meuapp.local</code>, apontando diretamente para o diretório público da aplicação.  
+        Essa configuração simula o comportamento de um servidor real, garantindo que as rotas e o arquivo 
+        <code>.htaccess</code> funcionem corretamente, sem necessidade de subdiretórios no endereço.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">O que é um VirtualHost</h3>
+    <p class="text-justify">
+        Um <strong>VirtualHost</strong> define o contexto de execução de um site dentro do Apache, especificando:
+    </p>
+
+    <ul class="small">
+        <li><strong>O domínio</strong> (exemplo: <code>meuapp.local</code>).</li>
+        <li><strong>O diretório raiz</strong> do projeto (<code>/var/www/meuapp/public</code>).</li>
+        <li><strong>Permissões de acesso</strong> e diretivas específicas para a aplicação.</li>
+        <li><strong>Arquivos de log</strong> personalizados para cada site (erros e acessos).</li>
+    </ul>
+
+    <p class="text-justify">
+        Essa estrutura permite que o Apache diferencie e sirva corretamente cada aplicação hospedada, 
+        mesmo que todas utilizem a mesma porta (geralmente <code>:80</code> para HTTP).
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Exemplo de configuração</h3>
+    <p class="text-justify">
+        O exemplo abaixo representa o arquivo <code>/etc/apache2/sites-available/meuapp.conf</code>, 
+        utilizado para registrar o VirtualHost do <strong>MeuApp MVC</strong> no ambiente local.
+    </p>
+ <code>       
+<pre style="font-family: monospace; white-space: pre-wrap;">
+&lt;VirtualHost *:80&gt;
+    ServerAdmin admin@meuapp.local
+    ServerName meuapp.local
+    DocumentRoot /var/www/meuapp/public
+
+    &lt;Directory /var/www/meuapp/public&gt;
+        AllowOverride All
+        Options Indexes FollowSymLinks
+        Require all granted
+    &lt;/Directory&gt;
+
+    ErrorLog ${APACHE_LOG_DIR}/meuapp-error.log
+    CustomLog ${APACHE_LOG_DIR}/meuapp-access.log combined
+&lt;/VirtualHost&gt;
+</pre>
+</code>
+    <h3 class="h6 text-primary mt-4">Etapas de configuração</h3>
+    <ol class="small">
+        <li><strong>Crie o arquivo de configuração:</strong>  
+            Salve o conteúdo acima em <code>/etc/apache2/sites-available/meuapp.conf</code>.
+        </li>
+        <li><strong>Registre o domínio local:</strong>  
+            Edite o arquivo <code>/etc/hosts</code> e adicione a linha:  
+            <code>127.0.0.1 meuapp.local</code>
+        </li>
+        <li><strong>Habilite o VirtualHost no Apache:</strong>  
+            Execute no terminal:  
+            <code>sudo a2ensite meuapp.conf</code>
+        </li>
+        <li><strong>Verifique a configuração:</strong>  
+            <code>sudo apache2ctl configtest</code>
+        </li>
+        <li><strong>Reinicie o servidor:</strong>  
+            <code>sudo systemctl restart apache2</code>
+        </li>
+    </ol>
+
+    <h3 class="h6 text-primary mt-4">Função do VirtualHost no MeuApp MVC</h3>
+    <p class="text-justify">
+        No <strong>MeuApp MVC</strong>, o VirtualHost cumpre o papel de <strong>interface entre o domínio e o ambiente de execução PHP</strong>.  
+        Ele garante que as requisições HTTP sejam direcionadas diretamente ao diretório <code>/public</code>, 
+        onde o <strong>index.php</strong> atua como o <em>front controller</em> da aplicação.  
+        Essa abordagem reforça a segurança (ocultando a estrutura interna do projeto) e melhora a clareza da arquitetura MVC.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Boas práticas</h3>
+    <ul class="small">
+        <li>Utilize nomes de domínio locais coerentes (ex.: <code>meuapp.local</code>, <code>painel.meuapp.local</code>).</li>
+        <li>Evite apontar o VirtualHost diretamente para a raiz do projeto — sempre use o diretório <code>public/</code>.</li>
+        <li>Configure logs de erro e acesso separados para facilitar a depuração.</li>
+        <li>Ative o módulo <code>mod_rewrite</code> para garantir o funcionamento das rotas amigáveis do MVC.</li>
+        <li>Utilize <code>AllowOverride All</code> apenas quando o <code>.htaccess</code> for necessário.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Diferença entre VirtualHost e .htaccess</h3>
+    <p class="text-justify">
+        Embora ambos os arquivos possam definir comportamentos do Apache, eles atuam em níveis diferentes:
+    </p>
+
+    <ul class="small">
+        <li><strong>VirtualHost:</strong> Atua em nível de servidor ou domínio, definindo o ambiente de execução, logs, domínios e diretórios raiz.</li>
+        <li><strong>.htaccess:</strong> Atua em nível de diretório, aplicando regras dinâmicas e específicas de comportamento, segurança e reescrita.</li>
+    </ul>
+
+    <p class="text-justify">
+        Em conjunto, ambos permitem uma configuração flexível, modular e escalável — ideal para o ambiente de aprendizado e desenvolvimento do 
+        <strong>MeuApp MVC</strong>.
+    </p>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        O <strong>VirtualHost</strong> representa o “domínio” lógico do projeto dentro do Apache.
+        Sua correta configuração é fundamental para o funcionamento do <strong>roteamento MVC</strong>, 
+        para a segurança da estrutura de diretórios e para a fidelidade do ambiente local ao ambiente de produção.
+    </div>
+    </section>
+
+<!-- ===================== 9. CONFIGURAÇÃO DO AMBIENTE ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        9. Configuração do Ambiente
+    </h2>
+
+    <p class="text-justify">
+        A configuração adequada do ambiente é fundamental para o funcionamento estável e seguro do 
+        <strong>MeuApp MVC</strong>.  
+        Esse processo envolve a instalação e ajuste de componentes essenciais — <strong>Apache</strong>, 
+        <strong>PHP</strong> e <strong>MySQL</strong> — além da preparação do sistema operacional 
+        para hospedar a aplicação dentro do padrão <strong>Model-View-Controller</strong>.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Estrutura geral do ambiente</h3>
+    <p class="text-justify">
+        O ambiente foi projetado para funcionar de forma integrada no <strong>Ubuntu 24 (WSL2)</strong>, 
+        utilizando o <strong>Visual Studio Code</strong> como editor de código e terminal principal.  
+        Essa combinação oferece total compatibilidade com o ecossistema Linux, 
+        além de permitir controle preciso de permissões e integração nativa com o Apache e o PHP CLI.
+    </p>
+
+    <ul class="small">
+        <li>Servidor web: <strong>Apache 2.4+</strong></li>
+        <li>Interpretação de scripts: <strong>PHP 8.3+</strong></li>
+        <li>Banco de dados: <strong>MySQL 8+</strong> ou <strong>MariaDB</strong></li>
+        <li>Gerenciador de dependências: <strong>Composer</strong></li>
+        <li>Camada de template: <strong>Twig</strong></li>
+        <li>Sistema operacional: <strong>Ubuntu WSL2</strong> no <strong>Windows 11</strong></li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Passos de configuração do Apache</h3>
+    <ol class="small">
+        <li><strong>Instalação:</strong>  
+            <code>sudo apt install apache2</code>
+        </li>
+        <li><strong>Ativar o módulo de reescrita:</strong>  
+            <code>sudo a2enmod rewrite</code>
+        </li>
+        <li><strong>Permitir substituições locais:</strong>  
+            No arquivo <code>/etc/apache2/apache2.conf</code>, garanta que a diretiva <code>AllowOverride All</code> esteja ativa 
+            para o diretório <code>/var/www</code>.
+        </li>
+        <li><strong>Reiniciar o serviço:</strong>  
+            <code>sudo systemctl restart apache2</code>
+        </li>
+    </ol>
+
+    <h3 class="h6 text-primary mt-4">Configuração do PHP</h3>
+    <p class="text-justify">
+        O PHP é o núcleo de execução do <strong>MeuApp MVC</strong>.  
+        Além do módulo do Apache (<code>libapache2-mod-php</code>), recomenda-se instalar também a versão CLI (Command Line Interface)
+        para testes e execução de scripts manuais.
+    </p>
+
+    <ol class="small">
+        <li><strong>Instalar o PHP e extensões:</strong>  
+            <code>sudo apt install php php-cli php-mbstring php-xml php-curl php-mysql</code>
+        </li>
+        <li><strong>Verificar a versão:</strong>  
+            <code>php -v</code>
+        </li>
+        <li><strong>Testar a integração com Apache:</strong>  
+            Crie um arquivo <code>/var/www/meuapp/public/info.php</code> contendo:  
+            <code>&lt;?php phpinfo(); ?&gt;</code>
+        </li>
+        <li>Acesse <code>http://meuapp.local/info.php</code> e confirme o carregamento do módulo <strong>mod_php</strong>.</li>
+    </ol>
+
+    <h3 class="h6 text-primary mt-4">Configuração do banco de dados</h3>
+    <p class="text-justify">
+        O <strong>MySQL</strong> é responsável pela camada de persistência de dados.  
+        Embora o <strong>MeuApp MVC</strong> utilize uma camada de abstração simples, o projeto foi estruturado para
+        aceitar facilmente a integração de ORMs como <em>Doctrine</em> ou <em>Eloquent</em>.
+    </p>
+
+    <ol class="small">
+        <li><strong>Instalação:</strong>  
+            <code>sudo apt install mysql-server</code>
+        </li>
+        <li><strong>Acesso ao console:</strong>  
+            <code>sudo mysql -u root -p</code>
+        </li>
+        <li><strong>Criação do banco e usuário:</strong> 
+        <code> 
+<pre style="font-family: monospace; white-space: pre-wrap;">
+CREATE DATABASE meuapp_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'meuapp_user'@'localhost' IDENTIFIED BY 'senha_segura';
+GRANT ALL PRIVILEGES ON meuapp_db.* TO 'meuapp_user'@'localhost';
+FLUSH PRIVILEGES;
+</pre>
+</code>
+        </li>
+        <li><strong>Testar a conexão:</strong>  
+            Utilize o arquivo <code>config/config.php</code> do projeto para ajustar credenciais.
+        </li>
+    </ol>
+
+    <h3 class="h6 text-primary mt-4">Configuração de permissões</h3>
+    <p class="text-justify">
+        Para que o Apache consiga ler e executar os arquivos da aplicação, o diretório do projeto deve ter
+        permissões adequadas. Em ambientes Linux, o grupo <code>www-data</code> representa o usuário do servidor.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+sudo chown -R www-data:www-data /var/www/meuapp
+sudo chmod -R 755 /var/www/meuapp
+</pre>
+
+    <p class="text-justify small">
+        Recomenda-se evitar o uso de permissões 777, pois elas abrem acesso total ao sistema de arquivos, 
+        comprometendo a segurança.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Verificação do ambiente</h3>
+    <p class="text-justify">
+        Após concluir a instalação e configuração dos componentes, verifique:
+    </p>
+
+    <ul class="small">
+        <li>O Apache está em execução (<code>sudo systemctl status apache2</code>).</li>
+        <li>O domínio local <code>meuapp.local</code> está acessível.</li>
+        <li>O PHP processa corretamente as páginas do projeto.</li>
+        <li>O banco de dados responde a consultas (<code>mysql -u meuapp_user -p</code>).</li>
+        <li>Os arquivos de log não contêm erros críticos.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Integração com WSL2 e Visual Studio Code</h3>
+    <p class="text-justify">
+        A integração com o <strong>Windows Subsystem for Linux (WSL2)</strong> oferece um ambiente de desenvolvimento 
+        realista, reproduzindo o comportamento de servidores Linux em produção.  
+        O <strong>Visual Studio Code</strong> com o plugin <em>Remote - WSL</em> permite edição direta dos arquivos 
+        do Ubuntu, execução de comandos no terminal Linux e pré-visualização via navegador.
+    </p>
+
+    <p class="text-justify">
+        Essa abordagem garante consistência entre o ambiente local e o ambiente de deploy, reduzindo 
+        discrepâncias de comportamento entre desenvolvimento e produção.
+    </p>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        O ambiente do <strong>MeuApp MVC</strong> foi projetado para simular fielmente um servidor Linux,
+        garantindo previsibilidade, segurança e compatibilidade total com os padrões modernos de desenvolvimento PHP.
+    </div>
+</section>
+
+
+<!-- ===================== 10. ESTRUTURA E CONTEÚDO DO COMPOSER ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        10. Estrutura e Conteúdo do Composer
+    </h2>
+
+    <p class="text-justify">
+        O <strong>Composer</strong> é o gerenciador de dependências oficial do ecossistema PHP.  
+        Ele automatiza a instalação, atualização e carregamento de bibliotecas, além de padronizar a forma como
+        as classes são organizadas e acessadas dentro do projeto.  
+        No <strong>MeuApp MVC</strong>, o Composer é responsável por integrar componentes externos, 
+        como o <strong>Twig</strong> e o <strong>Dompdf</strong>, e também por registrar o carregamento automático das classes 
+        da aplicação segundo o padrão <strong>PSR-4</strong>.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Funções principais do Composer</h3>
+    <ul class="small">
+        <li><strong>Gerenciamento de dependências:</strong> instala e atualiza bibliotecas externas.</li>
+        <li><strong>Autoload automático:</strong> registra as classes do projeto para carregamento dinâmico.</li>
+        <li><strong>Padronização:</strong> implementa o padrão <code>PSR-4</code> para estrutura de namespaces.</li>
+        <li><strong>Reprodutibilidade:</strong> mantém versões fixas das dependências via <code>composer.lock</code>.</li>
+        <li><strong>Integração contínua:</strong> facilita o deploy e a manutenção em múltiplos ambientes.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Estrutura do arquivo composer.json</h3>
+    <p class="text-justify">
+        O arquivo <code>composer.json</code> é o coração da configuração do Composer.  
+        Nele estão descritos o nome do pacote, as dependências do projeto e a forma de carregamento das classes.  
+        Abaixo está a estrutura utilizada pelo <strong>MeuApp MVC</strong>:
+    </p>
+<code>
+<pre style="font-family: monospace; white-space: pre-wrap;">
+{
+    "name": "luciolemos/meuapp",
+    "description": "Aplicação PHP MVC com Twig e Bootstrap",
+    "autoload": {
+        "psr-4": { "App\\": "app/" }
+    },
+    "require": {
+        "twig/twig": "^3.0",
+        "dompdf/dompdf": "^2.0"
+    }
+}
+</pre>
+</code>
+
+    <h3 class="h6 text-primary mt-4">Explicação dos principais elementos</h3>
+    <ul class="small">
+        <li><code>name</code> — Identifica o projeto e segue o formato <em>vendor/package</em>.  
+            No caso, o autor é <em>luciolemos</em> e o pacote é <em>meuapp</em>.
+        </li>
+        <li><code>description</code> — Breve resumo da finalidade do projeto.</li>
+        <li><code>autoload</code> — Define a estrutura de namespaces conforme o padrão <strong>PSR-4</strong>, 
+            mapeando o namespace <code>App\</code> para o diretório <code>app/</code>.
+        </li>
+        <li><code>require</code> — Lista as dependências externas obrigatórias para execução da aplicação, 
+            neste caso o <strong>Twig</strong> e o <strong>Dompdf</strong>.
+        </li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Instalação e atualização de dependências</h3>
+    <p class="text-justify">
+        O Composer utiliza comandos simples para instalar ou atualizar bibliotecas.  
+        Todos os pacotes são armazenados na pasta <code>/vendor</code> e registrados no autoload.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Instala todas as dependências listadas no composer.json
+composer install
+
+# Atualiza dependências para as versões mais recentes compatíveis
+composer update
+
+# Regera o autoload em caso de novas classes ou namespaces
+composer dump-autoload
+</pre>
+
+    <p class="text-justify small">
+        É recomendável executar <code>composer dump-autoload</code> sempre que novas classes forem criadas no diretório <code>/app</code>, 
+        garantindo que o autoload reconheça automaticamente a nova estrutura.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Padrão PSR-4 e autoload automático</h3>
+    <p class="text-justify">
+        O <strong>PSR-4</strong> (PHP Standards Recommendation nº 4) define a convenção de nomes e caminhos para o carregamento automático de classes.  
+        Ele elimina a necessidade de múltiplos <code>require</code> ou <code>include</code> manuais, tornando o código mais limpo e modular.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Exemplo prático:
+# Namespace declarado em app/Controllers/Public/HomeController.php
+
+namespace App\Controllers\Public;
+
+class HomeController {
+    public function index() {
+        echo "Página inicial carregada!";
+    }
+}
+
+# O Composer localizará automaticamente essa classe com base na estrutura PSR-4
+</pre>
+
+    <p class="text-justify">
+        Dessa forma, qualquer classe declarada dentro do namespace <code>App\</code> será carregada automaticamente 
+        sem necessidade de inclusão manual, desde que esteja corretamente posicionada na árvore de diretórios.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Arquivo composer.lock</h3>
+    <p class="text-justify">
+        O arquivo <code>composer.lock</code> registra as versões exatas das dependências instaladas.  
+        Ele garante que o ambiente de produção utilize as mesmas versões de bibliotecas testadas em desenvolvimento, 
+        evitando incompatibilidades e erros de versão.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Melhores práticas de uso do Composer</h3>
+    <ul class="small">
+        <li>Evite editar manualmente o <code>composer.lock</code>.</li>
+        <li>Não inclua a pasta <code>/vendor</code> no repositório — ela deve ser gerada pelo Composer.</li>
+        <li>Execute <code>composer install</code> em servidores de produção ao invés de <code>update</code>, 
+            para garantir estabilidade de versões.</li>
+        <li>Utilize o comando <code>composer outdated</code> para verificar dependências antigas.</li>
+        <li>Documente dependências críticas diretamente na documentação técnica.</li>
+    </ul>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        O <strong>Composer</strong> é o alicerce do ecossistema PHP moderno.  
+        No <strong>MeuApp MVC</strong>, ele garante modularidade, padronização e integração automatizada
+        entre o código da aplicação e bibliotecas externas.
+    </div>
+</section>
+
+
+<!-- ===================== 11. DIAGNÓSTICO E COMANDOS ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        11. Diagnóstico e Comandos
+    </h2>
+
+    <p class="text-justify">
+        O diagnóstico de ambiente é uma etapa essencial na manutenção do <strong>MeuApp MVC</strong>.  
+        Ele garante que todos os serviços estejam operando corretamente — desde o servidor Apache até o PHP, 
+        banco de dados e permissões de sistema.  
+        Abaixo estão listados os principais comandos e verificações utilizados no ciclo de desenvolvimento e deploy.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">1. Diagnóstico do Apache</h3>
+    <p class="text-justify">
+        O Apache é o ponto de entrada da aplicação.  
+        Antes de qualquer teste funcional, é importante verificar se o serviço está ativo, carregando os módulos necessários
+        e sem erros de configuração.
+    </p>
+
+    <table class="table table-bordered small">
+        <thead class="table-light">
+            <tr><th>Comando</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>sudo systemctl status apache2</code></td>
+                <td>Verifica se o serviço Apache está ativo e em execução.</td>
+            </tr>
+            <tr>
+                <td><code>sudo systemctl restart apache2</code></td>
+                <td>Reinicia o servidor após alterações em configurações ou VirtualHosts.</td>
+            </tr>
+            <tr>
+                <td><code>sudo apache2ctl configtest</code></td>
+                <td>Valida a sintaxe de todos os arquivos de configuração do Apache.</td>
+            </tr>
+            <tr>
+                <td><code>sudo journalctl -xeu apache2</code></td>
+                <td>Exibe logs detalhados de eventos e erros do Apache em tempo real.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="small text-muted">
+        Após qualquer alteração nos arquivos <code>.conf</code> ou <code>.htaccess</code>, recomenda-se rodar o 
+        <code>configtest</code> antes do <code>restart</code> — evitando que erros sintáticos interrompam o serviço.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">2. Diagnóstico do PHP</h3>
+    <p class="text-justify">
+        O PHP é responsável pela execução da aplicação.  
+        Testes simples ajudam a confirmar se o módulo está ativo e se a versão correta está sendo utilizada.
+    </p>
+
+    <table class="table table-bordered small">
+        <thead class="table-light">
+            <tr><th>Comando</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>php -v</code></td>
+                <td>Exibe a versão instalada do PHP e módulos ativos.</td>
+            </tr>
+            <tr>
+                <td><code>php -m</code></td>
+                <td>Lista todas as extensões habilitadas (útil para verificar mbstring, dom, xml, etc).</td>
+            </tr>
+            <tr>
+                <td><code>php -i | grep memory_limit</code></td>
+                <td>Exibe o limite de memória configurado no PHP (deve ser compatível com Dompdf e Twig).</td>
+            </tr>
+            <tr>
+                <td><code>sudo systemctl reload apache2</code></td>
+                <td>Recarrega o Apache sem derrubar conexões, útil após ajustes no php.ini.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="small text-muted">
+        Caso o comando <code>php -v</code> mostre uma versão diferente da usada no Apache, verifique se o módulo 
+        <code>libapache2-mod-php</code> está vinculado corretamente.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">3. Diagnóstico do Banco de Dados</h3>
+    <p class="text-justify">
+        O MySQL (ou MariaDB) deve estar ativo e acessível pelo usuário configurado em 
+        <code>config/config.php</code>.  
+        Verificações periódicas ajudam a identificar falhas de autenticação, permissões e integridade da base.
+    </p>
+
+    <table class="table table-bordered small">
+        <thead class="table-light">
+            <tr><th>Comando</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>sudo systemctl status mysql</code></td>
+                <td>Verifica se o serviço MySQL está ativo e respondendo.</td>
+            </tr>
+            <tr>
+                <td><code>mysql -u meuapp_user -p</code></td>
+                <td>Conecta-se manualmente ao banco para testar credenciais.</td>
+            </tr>
+            <tr>
+                <td><code>SHOW DATABASES;</code></td>
+                <td>Lista bancos disponíveis (verifique se <code>meuapp_db</code> está presente).</td>
+            </tr>
+            <tr>
+                <td><code>SHOW GRANTS FOR 'meuapp_user'@'localhost';</code></td>
+                <td>Verifica permissões atribuídas ao usuário da aplicação.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="small text-muted">
+        Se o MySQL não inicializar corretamente, revise o arquivo <code>/etc/mysql/mysql.conf.d/mysqld.cnf</code> e 
+        os logs em <code>/var/log/mysql/error.log</code>.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">4. Verificação de Logs</h3>
+    <p class="text-justify">
+        A análise de logs é a forma mais precisa de diagnosticar falhas.  
+        O <strong>MeuApp MVC</strong> utiliza logs específicos do Apache e do sistema Linux.  
+        Esses registros ajudam a identificar erros de roteamento, permissões e execução de scripts PHP.
+    </p>
+
+    <table class="table table-bordered small">
+        <thead class="table-light">
+            <tr><th>Arquivo / Comando</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>/var/log/apache2/meuapp-error.log</code></td>
+                <td>Erros específicos do VirtualHost do projeto.</td>
+            </tr>
+            <tr>
+                <td><code>/var/log/apache2/error.log</code></td>
+                <td>Erros gerais do Apache.</td>
+            </tr>
+            <tr>
+                <td><code>/var/log/mysql/error.log</code></td>
+                <td>Erros e falhas no serviço de banco de dados.</td>
+            </tr>
+            <tr>
+                <td><code>tail -f /var/log/apache2/meuapp-error.log</code></td>
+                <td>Monitora em tempo real os erros ocorridos durante o acesso ao sistema.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="h6 text-primary mt-4">5. Diagnóstico do Sistema e Rede</h3>
+    <p class="text-justify">
+        Além do servidor web e banco de dados, é importante garantir que a rede local e o sistema Linux estejam operando
+        dentro de parâmetros normais.
+    </p>
+
+    <table class="table table-bordered small">
+        <thead class="table-light">
+            <tr><th>Comando</th><th>Descrição</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>df -h</code></td>
+                <td>Exibe o uso do sistema de arquivos (útil para evitar falhas de espaço em disco).</td>
+            </tr>
+            <tr>
+                <td><code>free -h</code></td>
+                <td>Mostra o uso de memória física e swap.</td>
+            </tr>
+            <tr>
+                <td><code>ping meuapp.local</code></td>
+                <td>Testa a resolução do domínio local configurado no VirtualHost.</td>
+            </tr>
+            <tr>
+                <td><code>sudo lsof -i :80</code></td>
+                <td>Lista processos ocupando a porta 80 (útil para detectar conflitos de servidor).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 class="h6 text-primary mt-4">6. Boas práticas de manutenção</h3>
+    <ul class="small">
+        <li>Verifique logs diariamente em ambiente de desenvolvimento ativo.</li>
+        <li>Mantenha os serviços atualizados via <code>sudo apt update && sudo apt upgrade</code>.</li>
+        <li>Evite permissões amplas (como 777) em diretórios acessados pelo Apache.</li>
+        <li>Faça backups regulares do banco de dados com <code>mysqldump</code>.</li>
+        <li>Documente erros e soluções recorrentes na documentação técnica do projeto.</li>
+    </ul>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        O diagnóstico periódico é parte fundamental da maturidade técnica de um sistema.  
+        No <strong>MeuApp MVC</strong>, a verificação integrada de Apache, PHP e MySQL assegura 
+        estabilidade, desempenho e rastreabilidade de erros durante todo o ciclo de desenvolvimento.
+    </div>
+</section>
+
+
+<!-- ===================== 12. STATUS FINAL ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        12. Status Final do Ambiente e da Aplicação
+    </h2>
+
+    <p class="text-justify">
+        A fase de validação final do <strong>MeuApp MVC</strong> tem como objetivo confirmar que todos os 
+        componentes da aplicação — do servidor web até o mecanismo de templates — estão operando de forma estável, 
+        segura e conforme o planejado.  
+        Este processo assegura que o sistema está pronto para uso em produção ou para servir como base de estudos avançados 
+        de arquitetura PHP moderna.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">Checklist de verificação técnica</h3>
+    <p class="text-justify">
+        O checklist abaixo reúne os pontos críticos de verificação que atestam a integridade e a completude do ambiente:
+    </p>
+
+    <ul class="list-unstyled ms-3 small">
+        <li><i class="fas fa-check text-success"></i> <strong>Servidor Apache:</strong> configurado e ativo, com módulo <code>mod_rewrite</code> habilitado.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Arquivo .htaccess:</strong> operando corretamente, com reescrita de URL e bloqueio de arquivos sensíveis.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>VirtualHost:</strong> configurado em <code>/etc/apache2/sites-available/meuapp.conf</code>, mapeando o domínio local <code>meuapp.local</code>.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>PHP 8.3:</strong> instalado e integrado ao Apache, com módulos essenciais (mbstring, xml, dom, curl, mysqli).</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Banco de dados MySQL:</strong> ativo, com base <code>meuapp_db</code> acessível pelo usuário <code>meuapp_user</code>.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Composer:</strong> instalado e configurado com autoload PSR-4, gerenciando corretamente Twig e Dompdf.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Twig Template Engine:</strong> renderizando corretamente as views e heranças de layout.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Bootstrap:</strong> aplicado com responsividade e consistência visual.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Permissões:</strong> corretas para o grupo <code>www-data</code> no diretório <code>/var/www/meuapp</code>.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Logs:</strong> sem erros críticos em <code>/var/log/apache2/meuapp-error.log</code>.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Resultados esperados</h3>
+    <p class="text-justify">
+        Após todas as verificações, o <strong>MeuApp MVC</strong> deve apresentar comportamento previsível e estável:  
+    </p>
+
+    <ul class="small">
+        <li>O acesso ao domínio <code>http://meuapp.local</code> deve carregar a página inicial sem erros.</li>
+        <li>As rotas principais (<code>/</code>, <code>/sobre</code>, <code>/configuracao</code>, <code>/mvc</code>) devem responder corretamente.</li>
+        <li>As views devem ser renderizadas pelo Twig sem mensagens de exceção.</li>
+        <li>O comando <code>composer dump-autoload</code> deve executar sem falhas.</li>
+        <li>Os PDFs gerados pelo Dompdf devem incluir logotipo, cabeçalho institucional e marca d’água.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Considerações de segurança e desempenho</h3>
+    <p class="text-justify">
+        Além da funcionalidade, a estabilidade de um ambiente PHP depende de políticas de segurança e desempenho.  
+        No <strong>MeuApp MVC</strong>, recomenda-se:
+    </p>
+
+    <ul class="small">
+        <li>Manter o diretório <code>/public</code> como ponto de entrada único da aplicação.</li>
+        <li>Evitar permissões globais (como <code>chmod 777</code>) e revisar permissões de gravação em pastas de cache e logs.</li>
+        <li>Habilitar o módulo <code>mod_expires</code> do Apache para otimizar o cache de arquivos estáticos.</li>
+        <li>Ativar o buffer de saída do Twig e o cache do Dompdf para renderização eficiente.</li>
+        <li>Executar periodicamente <code>composer outdated</code> para verificar versões mais recentes das dependências.</li>
+        <li>Habilitar logs de erro detalhados em ambiente de desenvolvimento e restringi-los em produção.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">Validação funcional</h3>
+    <p class="text-justify">
+        A validação funcional consiste em testes simples que confirmam o fluxo completo da aplicação — 
+        desde o acesso à rota inicial até a geração do PDF técnico.  
+        Isso garante que o pipeline de renderização (Controller → Twig → Dompdf) está funcional.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Testar renderização básica da aplicação
+curl -I http://meuapp.local
+
+# Testar rota de exportação PDF
+curl -I http://meuapp.local/pdf/configuracao
+
+# Validar erros de Apache
+sudo tail -n 10 /var/log/apache2/meuapp-error.log
+</pre>
+
+    <h3 class="h6 text-primary mt-4">Ambiente pronto para produção</h3>
+    <p class="text-justify">
+        Com todas as camadas integradas e o checklist atendido, o <strong>MeuApp MVC</strong> encontra-se 
+        pronto para operação em ambiente real ou utilização acadêmica.  
+        Sua arquitetura modular, documentação técnica automatizada e padronização PSR-4 garantem longevidade, 
+        escalabilidade e facilidade de manutenção.
+    </p>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        <strong>Ambiente validado:</strong>  
+        todas as dependências configuradas, rotas operacionais e documentação técnica gerada com sucesso.
+    </div>
+</section>
+
+
+    <!-- ===================== 13. ESCALANDO O PROJETO ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        13. Escalando o Projeto
+    </h2>
+
+    <p class="text-justify">
+        O <strong>MeuApp MVC</strong> foi projetado para crescer de forma modular e organizada.  
+        Sua arquitetura baseada em <strong>MVC</strong> e o uso de padrões como <strong>PSR-4</strong> e <strong>Composer</strong>
+        permitem que o projeto evolua facilmente, seja para o ambiente corporativo, para microsserviços em nuvem
+        ou para integração com APIs externas.
+    </p>
+
+    <p class="text-justify">
+        Escalar um projeto PHP não significa apenas adicionar mais código, mas <strong>estruturar a aplicação 
+        para suportar novas funcionalidades, integrações e cargas de trabalho maiores</strong>.  
+        A seguir estão as principais estratégias para tornar o <strong>MeuApp MVC</strong> um sistema moderno, seguro e expansível.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">1. Containerização com Docker</h3>
+    <p class="text-justify">
+        O uso de <strong>Docker</strong> permite empacotar toda a aplicação (PHP, Apache, MySQL, dependências e configurações)
+        em contêineres isolados e replicáveis.  
+        Isso garante que o ambiente de desenvolvimento seja idêntico ao de produção, reduzindo erros de configuração e dependência.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Exemplo de docker-compose.yml
+version: '3.8'
+services:
+  web:
+    image: php:8.3-apache
+    container_name: meuapp_web
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: meuapp_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meuapp
+      MYSQL_USER: meuapp_user
+      MYSQL_PASSWORD: senha123
+    volumes:
+      - ./storage/mysql:/var/lib/mysql
+</pre>
+
+    <p class="text-justify small">
+        Com o Docker, o projeto pode ser iniciado com um único comando <code>docker-compose up -d</code>,
+        tornando a configuração totalmente automatizada e portátil entre máquinas e servidores.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">2. Deploy em servidores Nginx e ambientes em nuvem</h3>
+    <p class="text-justify">
+        Embora o <strong>MeuApp MVC</strong> tenha sido desenvolvido com Apache, ele pode ser facilmente adaptado 
+        para o <strong>Nginx</strong>, conhecido por sua eficiência e baixo consumo de recursos.  
+        Essa migração é recomendada quando se deseja alto desempenho ou integração com plataformas em nuvem como 
+        <strong>AWS</strong>, <strong>Azure</strong> ou <strong>Google Cloud Platform</strong>.
+    </p>
+
+    <ul class="small">
+        <li>Substitua o <code>.htaccess</code> por regras equivalentes no bloco <code>location</code> do Nginx.</li>
+        <li>Utilize variáveis de ambiente em vez de arquivos PHP de configuração sensível.</li>
+        <li>Configure balanceadores de carga para suportar múltiplas instâncias do container web.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">3. Integração com APIs REST e microsserviços</h3>
+    <p class="text-justify">
+        O padrão <strong>MVC</strong> do projeto facilita a criação de controladores RESTful.  
+        Ao seguir convenções simples de rotas e retorno em <code>JSON</code>, o <strong>MeuApp MVC</strong> pode atuar 
+        como backend para aplicações SPA (Single Page Applications) ou clientes móveis.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Exemplo simplificado de Controller REST
+namespace App\Controllers\Api;
+
+use App\Core\Controller;
+
+class UsersController extends Controller {
+    public function index() {
+        $users = ['id' => 1, 'name' => 'Lucio Lemos'];
+        echo json_encode($users);
+    }
+}
+</pre>
+
+    <p class="text-justify small">
+        A implementação de APIs permite desacoplar o front-end e facilita integrações com sistemas externos ou
+        serviços de terceiros, como gateways de pagamento, CRMs e plataformas de analytics.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">4. Implementação de autenticação JWT</h3>
+    <p class="text-justify">
+        Para autenticação moderna e segura, o <strong>JWT (JSON Web Token)</strong> é a abordagem recomendada.  
+        Ele elimina sessões baseadas em cookies, substituindo-as por tokens criptografados que permitem autenticação
+        distribuída em múltiplas instâncias da aplicação.
+    </p>
+
+    <ul class="small">
+        <li>Permite autenticação stateless (sem sessão armazenada no servidor).</li>
+        <li>Integra facilmente com frameworks front-end (React, Vue, Angular).</li>
+        <li>Compatível com APIs REST e microsserviços distribuídos.</li>
+        <li>Implementável com bibliotecas PHP como <code>firebase/php-jwt</code>.</li>
+    </ul>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Exemplo básico de geração de token JWT
+use Firebase\JWT\JWT;
+
+$key = "chave_secreta_meuapp";
+$payload = [
+    "iss" => "meuapp.local",
+    "user" => "lucio",
+    "exp" => time() + 3600
+];
+
+$token = JWT::encode($payload, $key, 'HS256');
+echo $token;
+</pre>
+
+    <h3 class="h6 text-primary mt-4">5. Variáveis de ambiente e configuração segura</h3>
+    <p class="text-justify">
+        A escalabilidade também requer **segurança de configuração**.  
+        É fundamental manter senhas, chaves e parâmetros de conexão fora do código-fonte.  
+        O <strong>MeuApp MVC</strong> pode adotar o uso de um arquivo <code>.env</code> combinado com a biblioteca 
+        <code>vlucas/phpdotenv</code> para gerenciar variáveis sensíveis.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Exemplo de .env
+APP_ENV=production
+DB_HOST=localhost
+DB_NAME=meuapp
+DB_USER=meuapp_user
+DB_PASS=senha123
+</pre>
+
+    <p class="text-justify small">
+        Essa prática permite alternar entre ambientes (desenvolvimento, testes e produção) 
+        sem necessidade de modificar o código-fonte.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">6. Monitoramento e observabilidade</h3>
+    <p class="text-justify">
+        Em ambientes produtivos, o monitoramento contínuo é essencial.  
+        Ferramentas como <strong>Prometheus</strong>, <strong>Grafana</strong> e <strong>ELK Stack</strong> 
+        podem ser integradas ao servidor para acompanhar logs, métricas e consumo de recursos.
+    </p>
+
+    <ul class="small">
+        <li>Configure alertas para uso excessivo de CPU, memória e falhas HTTP 5xx.</li>
+        <li>Centralize logs de Apache, PHP e MySQL em um servidor ELK (Elasticsearch + Logstash + Kibana).</li>
+        <li>Implemente verificações de integridade automatizadas com cron jobs ou serviços externos.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">7. Padrões de código e testes automatizados</h3>
+    <p class="text-justify">
+        Para sustentar o crescimento do projeto, adote práticas de qualidade de código.  
+        Ferramentas como <strong>PHPUnit</strong> e <strong>PHPStan</strong> ajudam a garantir estabilidade e segurança
+        a cada nova versão.
+    </p>
+
+    <ul class="small">
+        <li>Crie testes unitários para Controllers e Models críticos.</li>
+        <li>Execute <code>composer test</code> antes de cada deploy.</li>
+        <li>Mantenha o código compatível com padrões <strong>PSR-12</strong> (formatos e espaçamento).</li>
+    </ul>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        O processo de escalabilidade do <strong>MeuApp MVC</strong> reflete a maturidade técnica do projeto.  
+        Com containerização, autenticação moderna e automação de deploy, o sistema evolui de um ambiente local 
+        de estudos para uma base profissional e expansível — pronta para nuvem, APIs e microsserviços.
+    </div>
+</section>
+
+<!-- ===================== 14. OUTROS ===================== -->
+<section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">
+        14. Boas Práticas, Versionamento e Considerações Finais
+    </h2>
+
+    <p class="text-justify">
+        O desenvolvimento de um projeto moderno em PHP exige mais do que apenas código funcional.  
+        É necessário adotar práticas de versionamento, documentação contínua e padronização técnica 
+        que garantam a qualidade, a rastreabilidade e a evolução segura do sistema.  
+        Esta seção consolida recomendações gerais que sustentam o ciclo de vida do <strong>MeuApp MVC</strong>.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">1. Controle de versão com Git</h3>
+    <p class="text-justify">
+        O <strong>Git</strong> é o principal sistema de versionamento distribuído utilizado no desenvolvimento do 
+        <strong>MeuApp MVC</strong>.  
+        Ele permite rastrear alterações, trabalhar em múltiplas branches e colaborar de forma segura entre desenvolvedores.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Inicializar o repositório
+git init
+
+# Adicionar arquivos e criar primeiro commit
+git add .
+git commit -m "Versão inicial do MeuApp MVC"
+
+# Conectar a um repositório remoto (ex: GitHub)
+git remote add origin https://github.com/usuario/meuapp-mvc.git
+git push -u origin main
+</pre>
+
+    <p class="text-justify small">
+        O versionamento é o elo entre o código e a documentação.  
+        Cada commit deve refletir uma mudança clara, com mensagens descritivas e objetivas.  
+        Em equipes, é recomendável adotar convenções de commits e controle de merge requests.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">2. Documentação contínua</h3>
+    <p class="text-justify">
+        O processo de documentação deve acompanhar o ciclo de desenvolvimento.  
+        A utilização do <strong>Dompdf</strong> para gerar relatórios e manuais técnicos automatizados 
+        é uma prática consolidada neste projeto.  
+        Contudo, recomenda-se manter também um repositório de documentação viva, hospedada em Markdown 
+        (ex: <code>/docs/</code>) ou publicada via <strong>Wiki GitHub</strong>.
+    </p>
+
+    <ul class="small">
+        <li>Documente sempre novas dependências no <code>composer.json</code>.</li>
+        <li>Registre alterações de estrutura no arquivo <code>CHANGELOG.md</code>.</li>
+        <li>Mantenha um guia rápido de instalação (<code>README.md</code>) atualizado.</li>
+        <li>Inclua diagramas ou fluxos de dados em formato SVG ou PlantUML, quando aplicável.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">3. Padronização de código</h3>
+    <p class="text-justify">
+        A consistência de código é essencial para manutenibilidade e legibilidade.  
+        O <strong>MeuApp MVC</strong> segue convenções de codificação <strong>PSR-1</strong>, <strong>PSR-4</strong> e 
+        <strong>PSR-12</strong>, o que garante compatibilidade com frameworks e ferramentas PHP modernas.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+# Verificação automática de padronização
+composer require --dev squizlabs/php_codesniffer
+vendor/bin/phpcs --standard=PSR12 app/
+</pre>
+
+    <p class="text-justify small">
+        Padronizar código é uma prática que reduz divergências e facilita revisões.  
+        Ferramentas como <code>phpcs</code> e <code>phpcbf</code> podem ser automatizadas via 
+        pipeline de integração contínua.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">4. Manutenção preventiva e atualizações</h3>
+    <p class="text-justify">
+        A longevidade de uma aplicação depende de uma rotina de manutenção técnica.  
+        No caso do <strong>MeuApp MVC</strong>, recomenda-se:
+    </p>
+
+    <ul class="small">
+        <li>Atualizar dependências mensalmente com <code>composer update</code>.</li>
+        <li>Verificar extensões PHP instaladas e compatibilidade com novas versões.</li>
+        <li>Limpar caches do Twig e do Dompdf periodicamente para evitar inconsistências de renderização.</li>
+        <li>Efetuar testes de integração após cada atualização.</li>
+        <li>Realizar backups regulares da base de dados e da pasta <code>/storage</code>.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4">5. Boas práticas de implantação</h3>
+    <p class="text-justify">
+        Ao publicar o projeto em ambiente produtivo, siga uma sequência lógica de deploy.  
+        Essa abordagem reduz riscos e mantém a rastreabilidade das alterações.
+    </p>
+
+<pre style="font-family: monospace; white-space: pre-wrap;">
+1. Gerar build local e validar dependências:
+   composer install --no-dev --optimize-autoloader
+
+2. Testar ambiente em staging:
+   php -S localhost:8080 -t public/
+
+3. Publicar arquivos em servidor remoto:
+   rsync -avz --delete ./ user@server:/var/www/meuapp/
+
+4. Verificar logs de inicialização:
+   tail -n 20 /var/log/apache2/meuapp-error.log
+</pre>
+
+    <p class="text-justify small">
+        Sempre execute o deploy a partir de uma branch estável.  
+        Utilize versionamento semântico (<code>v1.0.0</code>, <code>v1.1.0</code>, etc.) 
+        para rastrear evoluções e correções.
+    </p>
+
+    <h3 class="h6 text-primary mt-4">6. Considerações finais</h3>
+    <p class="text-justify">
+        O <strong>MeuApp MVC</strong> consolida uma arquitetura moderna, padronizada e extensível, 
+        servindo como base para estudos, prototipagem ou implantação de sistemas reais.  
+        Sua documentação técnica automatizada é um diferencial pedagógico e profissional, 
+        demonstrando o equilíbrio entre **organização estrutural, clareza conceitual e boas práticas de engenharia de software**.
+    </p>
+
+    <p class="text-justify">
+        O sucesso de uma aplicação não depende apenas de sua execução, mas também da **qualidade do código, 
+        da documentação e da gestão do conhecimento** envolvido no processo.  
+        O MeuApp MVC representa esse compromisso entre técnica e aprendizado contínuo.
+    </p>
+
+        <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+    <i class="fas fa-info-circle text-primary"></i>
+        <strong>Documento concluído.</strong><br>
+        Manual técnico do MeuApp MVC — versão consolidada e validada.<br>
+        Gerado automaticamente via Twig e Dompdf.
+    </div>
+</section>
+
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="mt-5">
+        <div class="alert alert-success text-center">
+            <i class="fas fa-check-circle"></i> Manual técnico consolidado — ambiente validado e pronto para produção.
+        </div>
+    </footer>
+
+</div>
+{% endblock %}

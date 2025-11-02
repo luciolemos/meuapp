@@ -1,0 +1,522 @@
+{# =============================================================
+   Arquivo: documentacao/escalabilidade.twig
+   Seção: Escalabilidade do Projeto
+   Descrição: Estratégias para expandir e modernizar o MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Escalabilidade{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+{# ===================== BASE DE DELAYS ===================== #}
+{% set D0 = 60 %}   {# delay inicial #}
+{% set STEP = 70 %} {# passo padrão #}
+{% set FAST = 45 %} {# passo curto p/ listas/itens #}
+{% set S = 0 %}     {# acumulador de seção #}
+
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="{{ D0 }}">
+      <a href="/pdf/escalabilidade" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+  {# Cabeçalho padrão #}
+  {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  {# ===================== SEÇÃO: OVERVIEW ===================== #}
+  {% set S = D0 + STEP %}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      Escalando o Projeto
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      O <strong>MeuApp MVC</strong> foi projetado para crescer de forma modular e organizada. Sua arquitetura baseada
+      em <strong>MVC</strong> e o uso de padrões como <strong>PSR-4</strong> e <strong>Composer</strong> permitem evolução
+      contínua — seja para o ambiente corporativo, microsserviços em nuvem ou integração com APIs externas.
+    </p>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST*2 }}"{% endif %}>
+      Escalar um projeto PHP não significa apenas adicionar mais código, mas
+      <strong>estruturar a aplicação para suportar novas funcionalidades, integrações e cargas de trabalho maiores</strong>.
+      A seguir estão as principais estratégias para tornar o <strong>MeuApp MVC</strong> moderno, seguro e expansível.
+    </p>
+  </section>
+
+  {# ===================== 1. DOCKER ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary mt-0" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fab fa-docker"></i> 1. Containerização com Docker
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Com <strong>Docker</strong> você empacota PHP, Apache, MySQL e dependências em contêineres isolados e replicáveis.
+      O ambiente de desenvolvimento fica idêntico ao de produção, reduzindo erros de configuração e dependência.
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'docker-compose.yml',
+        'version: "3.8"
+services:
+  web:
+    image: php:8.3-apache
+    container_name: meuapp_web
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: meuapp_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meuapp
+      MYSQL_USER: meuapp_user
+      MYSQL_PASSWORD: senha123
+    volumes:
+      - ./storage/mysql:/var/lib/mysql',
+        'yaml', 'light'
+      ) }}
+    </div>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP + FAST }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'terminal',
+        'luciolemos@dev:~/meuapp$ docker-compose up -d
+[+] Running 2/2
+ ⠿ Container meuapp_db  Started
+ ⠿ Container meuapp_web Started',
+        'bash', 'light'
+      ) }}
+    </div>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP + FAST*2 }}"{% endif %}>
+      {{ ui.terminal_pro(
+        'luciolemos@dev:~/meuapp',
+        [
+          'docker-compose up -d',
+          '[+] Running 2/2',
+          ' ⠿ Container meuapp_db  Started',
+          ' ⠿ Container meuapp_web Started'
+        ],
+        'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 1.1 Operações no Apache (host) ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-terminal"></i> 1.1 Operações úteis no Apache (host)
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Comandos típicos de manutenção durante ajustes de VirtualHost e módulos:
+    </p>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.terminal_pro(
+        'luciolemos@dev:~$',
+        [
+          'cd /etc/apache2',
+          'ls -l',
+          'cd sites-available',
+          'sudo apache2ctl configtest',
+          'sudo systemctl restart apache2'
+        ],
+        'dark'
+      ) }}
+    </div>
+
+    <h4 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S + STEP + FAST }}"{% endif %}>
+      <i class="fas fa-folder-open"></i> Listando conteúdo de <code>/etc/apache2</code> e <code>sites-available</code>
+    </h4>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP + FAST*2 }}"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/etc/apache2$', ['ls -l'], 'dark') }}
+    </div>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP + FAST*3 }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/etc/apache2/sites-available',
+        'luciolemos@dev:/etc/apache2/sites-available$ ls -l
+total 36
+-rw-r--r-- 1 root root 1286 Apr 13  2023 000-default.conf
+-rw-r--r-- 1 root root  382 Apr 13  2025 crud.conf
+-rw-r--r-- 1 root root 6195 Jan 21  2024 default-ssl.conf
+-rw-r--r-- 1 root root  242 Jan 21  2024 fsphp.conf
+-rw-r--r-- 1 root root  395 Oct  7 23:45 meuapp.conf
+-rw-r--r-- 1 root root  291 Apr  7  2025 site2.conf
+-rw-r--r-- 1 root root  291 Apr  7  2025 site3.conf
+-rw-r--r-- 1 root root  291 Apr  7  2025 site5.conf',
+        'bash', 'light'
+      ) }}
+    </div>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP + FAST*4 }}"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/etc/apache2$', ['cd sites-available'], 'dark') }}
+    </div>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP + FAST*5 }}"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/etc/apache2/sites-available$', ['ls -l'], 'dark') }}
+    </div>
+
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="{{ S + STEP + FAST*6 }}"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/etc/apache2/sites-available$', ['sudo nano meuapp.conf'], 'dark') }}
+    </div>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP + FAST*7 }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'meuapp.conf',
+        '<VirtualHost *:80>
+    ServerAdmin admin@meuapp.local
+    ServerName meuapp.local
+    DocumentRoot /var/www/meuapp/public
+
+    <Directory /var/www/meuapp/public>
+        AllowOverride All
+        Options Indexes FollowSymLinks
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/meuapp-error.log
+    CustomLog ${APACHE_LOG_DIR}/meuapp-access.log combined
+</VirtualHost>',
+        'apache', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 2. NGINX/NUVEM ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-cloud-upload-alt"></i> 2. Deploy com Nginx e em Nuvem
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + FAST }}"{% endif %}>
+      Embora o <strong>MeuApp MVC</strong> use Apache, é simples adaptar ao <strong>Nginx</strong>, comum em cenários
+      escaláveis na nuvem (AWS, Azure, GCP).
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'nginx.conf',
+        'server {
+    listen 80;
+    server_name meuapp.local;
+    root /var/www/meuapp/public;
+
+    index index.php;
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+    }
+
+    error_log /var/log/nginx/meuapp_error.log;
+    access_log /var/log/nginx/meuapp_access.log;
+}',
+        'nginx', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 3. API REST ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-network-wired"></i> 3. Integração com APIs REST
+    </h3>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'UsersController.php',
+        'namespace App\\Controllers\\Api;
+
+use App\\Core\\Controller;
+
+class UsersController extends Controller {
+    public function index() {
+        $users = ["id" => 1, "name" => "Lucio Lemos"];
+        echo json_encode($users);
+    }
+}',
+        'php', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 4. JWT ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-key"></i> 4. Autenticação JWT
+    </h3>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'jwt.php',
+        'use Firebase\\JWT\\JWT;
+
+$key = "chave_secreta_meuapp";
+$payload = [
+    "iss" => "meuapp.local",
+    "user" => "lucio",
+    "exp" => time() + 3600
+];
+
+$token = JWT::encode($payload, $key, "HS256");
+echo $token;',
+        'php', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 5. ENV ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-lock"></i> 5. Variáveis de Ambiente
+    </h3>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        '.env',
+        'APP_ENV=production
+DB_HOST=localhost
+DB_NAME=meuapp
+DB_USER=meuapp_user
+DB_PASS=senha123',
+        'ini', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 6. MONITORAMENTO ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-eye"></i> 6. Monitoramento e Observabilidade
+    </h3>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'monitoramento.sh',
+        '# Exemplo de coleta de métricas
+curl -X GET http://localhost:9090/api/v1/query?query=up
+# Retorno JSON indicando status das instâncias',
+        'bash', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 7. TESTES ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-vials"></i> 7. Padrões de Código e Testes Automatizados
+    </h3>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
+      {{ ui.codeblock_pro(
+        'composer test',
+        'luciolemos@dev:~/meuapp$ composer test
+> vendor/bin/phpunit --testdox
+PHPUnit 10.5.3 by Sebastian Bergmann and contributors.
+
+UserController
+ ✔ Deve retornar lista de usuários
+ ✔ Deve retornar erro 404 para ID inválido',
+        'bash', 'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 8. DIAGRAMA DE ESCALABILIDADE ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-project-diagram"></i> 8. Arquitetura Escalável do MeuApp MVC
+    </h3>
+
+    {% set arquitetura_ascii %}
+Usuário HTTP -> Load Balancer (HAProxy/Nginx)
+Load Balancer -> Web 1 (Apache + PHP)
+Load Balancer -> Web 2 (Nginx + PHP-FPM)
+Web Nodes -> Camada API (Controllers REST)
+Camada API -> Banco Primário (MySQL)
+Camada API -> Observabilidade (Prometheus / Grafana / ELK)
+Banco Primário -> Réplica MySQL
+    {% endset %}
+
+    {% if export %}
+      {{ ui.codeblock_pro('Arquitetura Escalável', arquitetura_ascii|trim, 'txt', 'light') }}
+    {% else %}
+      {% set arquitetura_mermaid %}
+        <div class="mermaid">
+          %%{init: {"flowchart": {"useMaxWidth": false, "htmlLabels": false}}}%%
+          flowchart LR
+            U([Usuário HTTP]) -->|HTTP| LB([Load Balancer\nHAProxy/Nginx])
+
+            subgraph Web_Tier ["Web Tier"]
+              direction TB
+              C1([Web 1\nApache + PHP])
+              C2([Web 2\nNginx + PHP-FPM])
+            end
+
+            subgraph API_Tier ["Camada de API"]
+              direction TB
+              A1([Controllers REST\nMeuApp MVC])
+            end
+
+            subgraph Data_Tier ["Dados e Observabilidade"]
+              direction TB
+              DB([MySQL Primário])
+              DB2([MySQL Réplica])
+              LOG([Prometheus / Grafana / ELK])
+            end
+
+            LB --> C1
+            LB --> C2
+            C1 --> A1
+            C2 --> A1
+            A1 --> DB
+            A1 --> LOG
+            DB --> DB2
+        </div>
+      {% endset %}
+
+      {% include 'components/diagram.twig' with {
+        title: 'Topologia de alta disponibilidade',
+        title_icon: 'fas fa-sitemap',
+        content: arquitetura_mermaid,
+        caption: '<i class="fas fa-info-circle"></i> Balanceamento distribui tráfego entre web nodes; a camada de API concentra regras de negócio; bancos com réplica e observabilidade garantem resiliência.',
+        extra_class: 'mt-3',
+        export: export,
+        aos_effect: 'zoom-in',
+        aos_delay: S + STEP
+      } %}
+    {% endif %}
+  </section>
+
+
+  {# ===================== 9. CICLO DEVOPS ===================== #}
+  {% set S = S + STEP %}
+  <section class="mb-5 pdf-section">
+    <h3 class="h6 text-primary" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S }}"{% endif %}>
+      <i class="fas fa-people-carry"></i> 9. Ciclo DevOps: Integração e Entrega Contínua
+    </h3>
+
+    {% set devops_ascii %}
+Desenvolvedor -> Git (commit/push)
+Git -> CI/CD (executa pipeline)
+CI/CD -> Docker (build imagem)
+Docker -> Servidor/Nuvem (deploy)
+Servidor -> Monitoramento (logs/métricas)
+Monitoramento -> Desenvolvedor (feedback)
+    {% endset %}
+
+    {% if export %}
+      {{ ui.codeblock_pro('Pipeline DevOps', devops_ascii|trim, 'txt', 'light') }}
+    {% else %}
+      {% set devops_mermaid %}
+        <div class="mermaid">
+          sequenceDiagram
+            participant DEV as Desenvolvedor
+            participant GIT as Repositório Git
+            participant CI as Pipeline CI/CD
+            participant DOCKER as Docker Engine
+            participant SRV as Servidor / Nuvem
+            participant MON as Observabilidade
+
+            DEV->>GIT: Commit & Push (feature)
+            GIT->>CI: Dispara pipeline automatizado
+            CI->>DOCKER: Constrói imagem containerizada
+            DOCKER->>SRV: Deploy da nova versão
+            SRV-->>MON: Envia logs e métricas
+            MON-->>DEV: Alertas e feedback contínuo
+            SRV-->>DEV: Versão publicada
+        </div>
+      {% endset %}
+
+      {% include 'components/diagram.twig' with {
+        title: 'Pipeline integrado CI/CD',
+        title_icon: 'fas fa-sync-alt',
+        content: devops_mermaid,
+        caption: '<i class="fas fa-info-circle"></i> Fluxo padronizado reduz lead time, mantém rastreabilidade e permite rollback ágil.',
+        extra_class: 'mt-3',
+        export: export,
+        aos_effect: 'zoom-in',
+        aos_delay: S + STEP
+      } %}
+    {% endif %}
+
+    <h4 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-right" data-aos-delay="{{ S + STEP + FAST }}"{% endif %}>
+      <i class="fas fa-balance-scale"></i> Resumo dos Benefícios
+    </h4>
+    <ul class="small list-unstyled ms-3">
+      {% for item in [
+        'DEV — commit/push rápido e rastreável;',
+        'GIT — gatilho do pipeline CI/CD (GitHub Actions, GitLab CI);',
+        'CI — testes, builds e lints automatizados garantem qualidade;',
+        'DOCKER — empacota o MeuApp em imagem imutável;',
+        'SRV — deploy consistente (Nginx, Apache, Kubernetes);',
+        'MON — métricas e logs em Prometheus, Grafana e ELK.'
+      ] %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ S + STEP + FAST * loop.index }}"{% endif %}>
+          <i class="fas fa-check text-success"></i> {{ item }}
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% include 'components/alert.twig' with {
+      variant: 'info',
+      size: 'sm',
+      icon: 'fas fa-info-circle',
+      content: 'O <strong>MeuApp MVC</strong> evolui de laboratório local para base profissional escalável: containerização, ambientes configuráveis, automação de deploy e monitoramento contínuo preparam o projeto para nuvem, APIs e microsserviços.',
+      extra_class: 'mt-3',
+      export: export,
+      aos_effect: 'fade-up',
+      aos_delay: S + STEP + FAST * 8
+    } %}
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({ duration: 650, easing: 'ease-out', once: true, offset: 12 });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,117 @@
+{# =============================================================
+   Arquivo: documentacao/stack.twig
+   Seção: Stack Tecnológica do Ambiente de Desenvolvimento
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — STACK{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {# AOS CSS só no modo não-export #}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left">
+      <a href="/pdf/stack" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3"{% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+    Stack de Desenvolvimento Utilizada
+    </h2>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="60">
+      O <strong>MeuApp MVC</strong> foi construído sobre uma stack tecnológica moderna, cuidadosamente
+      selecionada para equilibrar <strong>desempenho, modularidade e escalabilidade</strong>.
+      Cada tecnologia integra-se de forma harmônica ao ecossistema PHP, permitindo uma arquitetura
+      consistente, segura e de fácil manutenção.
+    </p>
+
+    <ul class="list-group mb-3" data-aos="flip-up" data-aos-delay="100">
+      <li class="list-group-item"><i class="fab fa-php text-primary"></i> PHP 8+ com padrão MVC</li>
+      <li class="list-group-item"><i class="fas fa-cube text-info"></i> Twig Template Engine</li>
+      <li class="list-group-item"><i class="fas fa-server text-danger"></i> Apache + VirtualHost</li>
+      <li class="list-group-item"><i class="fas fa-database text-success"></i> MySQL / MariaDB</li>
+      <li class="list-group-item"><i class="fab fa-bootstrap text-purple"></i> Bootstrap 5</li>
+      <li class="list-group-item"><i class="fas fa-cubes text-primary"></i> Composer</li>
+      <li class="list-group-item"><i class="fab fa-ubuntu text-danger"></i> Ubuntu</li>
+      <li class="list-group-item"><i class="fab fa-linux"></i> WSL2 (Linux Subsystem for Windows)</li>
+      <li class="list-group-item"><i class="fab fa-font-awesome-flag text-info"></i> Font Awesome 5.15.4</li>
+      <li class="list-group-item"><i class="fas fa-cube text-info"></i> VSCode</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="120"><i class="fab fa-php"></i> PHP 8+</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="140">
+      Linguagem central do projeto, o <strong>PHP</strong> oferece suporte completo ao paradigma orientado a objetos,
+      tornando possível aplicar com clareza o padrão <em>Model-View-Controller (MVC)</em>.
+      A versão 8+ foi escolhida por seu desempenho aprimorado e suporte a recursos modernos.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="160"><i class="fas fa-cube"></i> Twig Template Engine</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="180">
+      O <strong>Twig</strong> é o motor de templates responsável pela renderização das views.
+      Ele separa a lógica da camada de apresentação, garantindo um código mais limpo e reutilizável.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-server"></i> Apache 2 + VirtualHost</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="220">
+      O servidor <strong>Apache</strong> é responsável pelo roteamento e entrega de conteúdo, configurado com suporte
+      a <code>mod_rewrite</code> para URLs limpas e controle via <code>.htaccess</code>.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="240"><i class="fas fa-database"></i> MySQL / MariaDB</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="260">
+      O <strong>MySQL</strong> (ou MariaDB) foi escolhido por sua robustez e compatibilidade com PHP.
+      O projeto utiliza um modelo desacoplado, permitindo integração futura com ORM sem refatorações extensas.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="280"><i class="fab fa-bootstrap"></i> Bootstrap 5</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="300">
+      O <strong>Bootstrap 5</strong> é responsável pela camada visual e responsividade.
+      Suas classes utilitárias permitem um layout limpo e adaptável, mantendo identidade visual coerente.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="320"><i class="fas fa-cubes"></i> Composer</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="340">
+      O <strong>Composer</strong> gerencia dependências e o autoload via padrão <code>PSR-4</code>.
+      Ele garante padronização e integração de bibliotecas externas, como Dompdf e Twig.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="360"><i class="fab fa-ubuntu"></i> Ubuntu</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="380">
+      O <strong>Ubuntu</strong> é um sistema operacional baseado em Linux, amplamente usado em servidores web.
+      No projeto, garante estabilidade e compatibilidade com o ambiente de produção.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="400"><i class="fab fa-linux"></i> WSL2</h3>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="420">
+      O WSL2 permite executar um ambiente Linux completo dentro do Windows,
+      com kernel nativo e desempenho superior, ideal para desenvolvedores PHP.
+    </p>
+
+    <div class="alert alert-info small mt-3" data-aos="fade-up" data-aos-delay="460">
+      <i class="fas fa-lightbulb"></i>
+      <em>Stack validada para ambiente de desenvolvimento Linux com suporte a PHP 8.3, Apache 2.4 e MySQL 8+</em>.
+    </div>
+  </section>
+</div>
+{% endblock %}

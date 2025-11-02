@@ -1,0 +1,275 @@
+{# =============================================================
+   Arquivo: documentacao/whatsphp.twig
+   Seção: O que é PHP?
+   Descrição: Introdução à linguagem PHP, sua evolução e papel no MeuApp MVC.
+   Autor: Lucio Lemos (Equipe MeuApp)
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — O que é PHP?{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .tech-card { transition: transform .2s ease; }
+    .tech-card:hover { transform: translateY(-4px); }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="60">
+      <a href="/pdf/whatsphp" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+  {# ===================== CABEÇALHO PADRÃO (macro) ===================== #}
+  {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  {# ===================== 1. O QUE É PHP? ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+      1. O que é PHP?
+    </h2>
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="90"{% endif %}>
+      <strong>PHP (Hypertext Preprocessor)</strong> é uma linguagem de script do lado do servidor, criada em 1995 por Rasmus Lerdorf e
+      continuamente evoluída pela comunidade. Na versão 8+, combina sintaxe acessível com recursos modernos — como tipagem forte,
+      atributos, <em>match</em>, <em>nullsafe operator</em>, <em>fibers</em>, <em>enums</em> e <em>OPcache</em> — mantendo-se referência para aplicações web robustas.
+    </p>
+  </section>
+
+  {# ===================== 2. LINHA DO TEMPO (TABELA) ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">2. Linha do tempo essencial</h2>
+
+    {% set timeline = [
+      {'ano': '1995', 'evento': 'PHP/FI surge como conjunto de CGI para páginas pessoais.'},
+      {'ano': '2004', 'evento': 'PHP 5, Zend Engine II, orientação a objetos e SimpleXML.'},
+      {'ano': '2015', 'evento': 'PHP 7 dá salto de performance e otimização de memória.'},
+      {'ano': '2020+', 'evento': 'PHP 8 introduz union types, attributes, nullsafe e match.'},
+      {'ano': 'Hoje', 'evento': 'Comunidade ativa, PSRs, frameworks e ecossistema maduro.'}
+    ] %}
+
+    <div class="table-responsive" {% if not export %}data-aos="zoom-in" data-aos-delay="90"{% endif %}>
+      <table class="table table-bordered small mb-0">
+        <thead class="table-light">
+          <tr>
+            <th style="width: 120px;">Ano</th>
+            <th>Marco</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in timeline %}
+            <tr {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 60 }}"{% endif %}>
+              <td><strong>{{ t.ano }}</strong></td>
+              <td>{{ t.evento }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {# ===================== 3. POR QUE PHP CONTINUA RELEVANTE? (LISTA) ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">3. Por que PHP continua relevante?</h2>
+    {% set motivos = [
+      'Ecossistema gigante: WordPress, Laravel, Symfony, Drupal.',
+      'Hospedagem acessível em praticamente qualquer provedor.',
+      'Ferramentas de qualidade: Composer, PHPUnit, Psalm, PHPStan.',
+      'Comunidade ativa com RFCs, pacotes e conteúdo educativo.',
+      'Curva de aprendizado amigável para quem vem de HTML/CSS/JS.'
+    ] %}
+    <ul class="small text-muted mb-0">
+      {% for m in motivos %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 60 }}"{% endif %}>
+          {{ m }}
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {# ===================== 4. PHP NO MEUAPP MVC (TARJETAS) ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-4">4. PHP no MeuApp MVC</h2>
+
+    {% set cards = [
+      {'icon':'fas fa-project-diagram','titulo':'Arquitetura em camadas','desc':'Separação entre controllers, models/services e views simplifica manutenção e testes.'},
+      {'icon':'fas fa-plug','titulo':'Integração total','desc':'Composer gerencia dependências/autoload; DOMPDF exporta relatórios; Twig cuida das views.'},
+      {'icon':'fas fa-tachometer-alt','titulo':'Performance e diagnóstico','desc':'Rotas de status, logs centralizados e cache Twig mantêm o projeto saudável.'}
+    ] %}
+
+    <div class="row gy-4">
+      {% for c in cards %}
+        <div class="col-md-4">
+          <div class="tech-card border rounded shadow-sm h-100 p-4 text-center"
+               {% if not export %}data-aos="zoom-in" data-aos-delay="{{ loop.index * 90 }}"{% endif %}>
+            <i class="{{ c.icon }} fa-2x text-primary mb-3"></i>
+            <h3 class="h6 fw-bold mb-2">{{ c.titulo }}</h3>
+            <p class="small text-muted mb-0">{{ c.desc }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# ===================== 5–7. EXEMPLOS (TERMINAL + CODEBLOCK_PRO) ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">5. Verificando as versões do PHP e do Apache instaladas</h2>
+    <p class="small text-muted mb-3" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+      Supondo um ambiente LAMP já configurado, confira as versões e navegue até o diretório do projeto:
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:~$', [
+        'php -v',
+        'apache2 -v',
+        'cd /var/www/meuapp'
+      ], 'light') }}
+    </div>
+
+    <h2 class="h4 text-secondary my-3">6. Criando o arquivo hello.php em <code>/var/www/meuapp/public</code></h2>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="180"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', [
+        'sudo touch public/hello.php',
+        'nano public/hello.php'
+      ], 'light') }}
+    </div>
+
+    <h2 class="h4 text-secondary mb-3 mt-4">7. Criando e executando um “Hello World” em PHP</h2>
+    <p class="small text-muted mb-3" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+      Com um arquivo <code>.php</code> e um servidor compatível, você já consegue gerar saída dinâmica.
+    </p>
+
+    {# Código do hello.php usando a macro codeblock_pro #}
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+      {{ ui.codeblock_pro(
+        'public/hello.php',
+        '<?php
+// Exibe mensagem no navegador
+echo "Hello World do MeuApp!";
+
+// Também é possível usar tags curtas do PHP
+?>',
+        'php',
+        'dark'
+      ) }}
+    </div>
+
+    <p class="small text-muted mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+      Para rodar localmente, acesse <code>http://localhost/hello.php</code> ou use o servidor embutido:
+    </p>
+
+    {# Comando do servidor embutido também em codeblock_pro para manter o padrão visual #}
+    <div {% if not export %}data-aos="zoom-in" data-aos-delay="210"{% endif %}>
+      {{ ui.codeblock_pro(
+        'bash',
+        'php -S localhost:8000 -t public/',
+        'bash',
+        'light'
+      ) }}
+    </div>
+  </section>
+
+  {# ===================== 8. CONCEITOS-CHAVE (DUAS COLUNAS / LOOP DELAY) ===================== #}
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3">8. Conceitos-chave para dominar PHP 8+</h2>
+
+    {% set conceitos_esq = [
+      '<strong>Atributos:</strong> Metadados nativos (ORM, validações).',
+      '<strong>Type System:</strong> Union types, mixed, never e propriedades tipadas.',
+      '<strong>Match expression:</strong> Alternativa concisa ao switch.',
+      '<strong>Nullsafe operator:</strong> Encadeia chamadas sem verificar null.'
+    ] %}
+    {% set conceitos_dir = [
+      '<strong>Fibers:</strong> Concorrência cooperativa.',
+      '<strong>Enums:</strong> Estados com segurança de tipo.',
+      '<strong>Named Arguments:</strong> Chamadas mais legíveis.',
+      '<strong>Readonly properties:</strong> Imutabilidade em entidades.'
+    ] %}
+
+    <div class="row gy-4">
+      <div class="col-lg-6">
+        <ul class="small text-muted mb-0">
+          {% for c in conceitos_esq %}
+            <li {% if not export %}data-aos="fade-right" data-aos-delay="{{ loop.index * 60 }}"{% endif %}>{{ c|raw }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <ul class="small text-muted mb-0">
+          {% for c in conceitos_dir %}
+            <li {% if not export %}data-aos="fade-left" data-aos-delay="{{ loop.index * 60 }}"{% endif %}>{{ c|raw }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {% include 'components/alert.twig' with {
+      variant: 'light',
+      size: 'sm',
+      icon: 'fas fa-info-circle text-primary',
+      content: '<strong>OPcache/JIT:</strong> Benefícios práticos variam conforme o perfil da carga; aplique <em>profiling</em> antes de ativar ajustes agressivos.',
+      extra_class: 'border-start border-primary mt-4 p-3',
+      export: export,
+      aos_effect: 'fade-up',
+      aos_delay: 360
+    } %}
+  </section>
+
+  {# ===================== 9. PRÓXIMOS PASSOS (CTA LIST) ===================== #}
+  <section class="mb-4 pdf-section bg-light p-3 rounded">
+    <h2 class="h4 text-secondary mb-3">9. Próximos passos</h2>
+    <p class="small text-muted"
+       {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+      Para aprofundar sua jornada com PHP no MeuApp MVC, explore os artigos complementares e pratique integrando serviços,
+      middlewares e camadas de domínio. A documentação oficial (<code>php.net</code>) e o RFC Explorer ajudam a acompanhar a evolução da linguagem.
+    </p>
+
+    {% set ctas = [
+      {'href':'/documentacao/twig','icon':'fas fa-code','label':'Entender Twig'},
+      {'href':'/documentacao/composer','icon':'fas fa-tools','label':'Aprender Composer'},
+      {'href':'/documentacao/whatsapache','icon':'fab fa-php','label':'Apache Server'},
+      {'href':'/documentacao/stack','icon':'fas fa-layer-group','label':'Ver Stack Completa'}
+    ] %}
+
+    <div class="d-flex flex-wrap gap-2">
+      {% for c in ctas %}
+        <span {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 70 }}"{% endif %}>
+          {% include 'components/button.twig' with {
+            href: c.href,
+            text: c.label,
+            icon: c.icon,
+            variant: 'outline-primary',
+            size: 'sm'
+          } %}
+        </span>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({ duration: 600, easing: 'ease-out', once: true, offset: 12 });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

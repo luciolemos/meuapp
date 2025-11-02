@@ -1,0 +1,72 @@
+{# =============================================================
+   Arquivo: contato.twig
+   Seção: Página de Contato
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Contato{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+        <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+        <link rel="stylesheet" href="/css/style.css">
+        <style>
+
+        /* ======== CARDS ======== */
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+        }
+
+        /* ======== SEÇÕES ======== */
+        section {
+            scroll-margin-top: 80px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<section class="container text-center py-5" data-aos="fade-up">
+    <header class="mb-4 text-center">
+         <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
+            <i class="fas fa-envelope me-2 text-warning"></i> {{ title }}
+        </h1>
+         <h2 class="text-success" data-aos="zoom-in" data-aos-delay="150">
+            {{ subtitle }}
+        </h2>
+        <p class="lead" data-aos="zoom-in"  data-aos-delay="300">{{ description }}</p>
+    </header>
+
+{#     <div  data-aos="fade-up">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-envelope me-2 text-warning"></i> Entre em <span class="text-warning">contato</span>
+        </h1>
+        <p class="lead">Fale conosco! Envie um e-mail para <strong>admin@meuapp.local</strong> ou visite nossas redes sociais.</p>
+    </div> #}
+
+    <div data-aos="zoom-in" data-aos-delay="150">
+    <form class="mx-auto mt-5" style="max-width: 400px;">
+        <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Seu nome" required>
+        </div>
+        <div class="mb-3">
+            <input type="email" class="form-control" placeholder="Seu e-mail" required>
+        </div>
+        <div class="mb-3">
+            <textarea class="form-control" rows="4" placeholder="Mensagem"></textarea>
+        </div>
+        <button class="btn btn-primary w-100">Enviar</button>
+    </form>
+    </div>    
+
+</section>
+{% endblock %}

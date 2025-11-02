@@ -1,0 +1,70 @@
+{# =============================================================
+   Componente: components/alert.twig
+   Propósito : Renderizar alertas padronizados (Bootstrap) com suporte
+               a ícone, título, animação AOS e classes extras.
+   Uso básico:
+       {% include 'components/alert.twig' with {
+            variant: 'info',
+            size: 'sm',
+            icon: 'fas fa-info-circle text-primary',
+            heading: 'Importante:',
+            content: 'Mensagem do alerta em <strong>HTML</strong>.',
+            extra_class: 'mt-3 border-start border-primary p-3',
+            export: export,
+            aos_effect: 'fade-up',
+            aos_delay: 160
+       } %}
+
+   Parâmetros aceitos:
+     - variant       : cor do alerta (info, light, danger, ...). Aceita
+                       tanto "info" quanto "alert-info".
+     - size          : "sm" ou "md" (default). Adiciona classe "small".
+     - icon          : classe do ícone (FontAwesome/Bootstrap Icons).
+     - heading       : texto em negrito exibido antes do conteúdo.
+     - content/text  : conteúdo do alerta (HTML permitido).
+     - extra_class   : classes adicionais (string separada por espaço).
+     - export        : booleano — evita atributos AOS no PDF.
+     - aos_effect    : animação AOS (ex.: "fade-up").
+     - aos_delay     : atraso (ms) da animação AOS.
+   ============================================================= #}
+
+{% set variantClass = variant|default('info') %}
+{% if variantClass starts with('alert-') == false %}
+  {% set variantClass = 'alert-' ~ variantClass %}
+{% endif %}
+
+{% set classes = ['alert', variantClass] %}
+{% if size|default('md') == 'sm' %}
+  {% set classes = classes|merge(['small']) %}
+{% endif %}
+
+{% set extraClasses = extra_class|default('')|trim %}
+{% if extraClasses %}
+  {% set classes = classes|merge(extraClasses|split(' ')|filter(v => v)) %}
+{% endif %}
+
+{% set wrapperAttrs = {
+  'class': classes|join(' ')|trim
+} %}
+
+{% if aos_effect|default(false) and not export|default(false) %}
+  {% set wrapperAttrs = wrapperAttrs|merge({
+    'data-aos': aos_effect,
+    'data-aos-delay': aos_delay|default(0) ? aos_delay
+  }) %}
+{% endif %}
+
+<div{% for attr,val in wrapperAttrs %} {{ attr }}{% if val is not same as(true) %}="{{ val }}"{% endif %}{% endfor %}>
+  {% if icon|default(false) %}
+    {% set iconGap = icon_gap_class|default('me-2') %}
+    <i class="{{ icon }}{% if iconGap %} {{ iconGap }}{% endif %}"></i>
+  {% endif %}
+
+  {% set body = content|default(text|default('')) %}
+
+  {% if heading|default(false) %}
+    <strong>{{ heading }}</strong>{% if body %} {% endif %}
+  {% endif %}
+
+  {{ body|raw }}
+</div>

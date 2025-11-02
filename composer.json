@@ -1,0 +1,28 @@
+{
+    "name": "meuapp/mvc",
+    "description": "Aplicação PHP MVC com Twig e Bootstrap",
+    "type": "project",
+    "license": "MIT",
+    "version": "1.0.0",
+    "homepage": "https://github.com/luciolemos/mvc",
+    "minimum-stability": "stable",
+    "authors": [
+    {
+      "name": "Lucio Flavio Lemos",
+      "email": "luciolemos.j5@gmail.com",
+      "role": "developer",
+      "homepage": "https://luciolemos.com"
+    }
+  ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "App\\Http\\": "app/Http/"
+        }
+    },
+    "require": {
+        "twig/twig": "^3.21",
+        "dompdf/dompdf": "^3.1",
+        "tecnickcom/tcpdf": "^6.10"
+    }
+}

@@ -1,0 +1,117 @@
+# ============================================================
+# 🧹 .gitignore — MeuApp MVC
+# Autor: Lucio Lemos
+# ============================================================
+
+# =============================
+# 📦 DEPENDÊNCIAS (Composer)
+# =============================
+/vendor/
+/composer.lock
+
+# =============================
+# ⚙️ AMBIENTE E CONFIGURAÇÕES LOCAIS
+# =============================
+.env
+.env.local
+.env.*.php
+/.idea/
+/.vscode/
+/nbproject/
+/*.local.php
+
+# =============================
+# 🧠 CACHE E TEMPORÁRIOS
+# =============================
+/storage/cache/
+/storage/cache/twig/
+/storage/cache/twig-runtime/
+/storage/framework/
+/app/storage/tmp/
+/app/storage/tmp/pdf/
+/app/public/tmp/
+/app/public/tmp/pdf/
+/tmp/
+/tmp/pdf/
+/storage/tmp/
+/storage/tmp/pdf/
+/snapshots/
+/storage/sessions/
+/storage/framework/cache/
+/*.cache
+*.tmp
+
+# Manter estrutura de diretórios com .gitkeep
+!/storage/.gitkeep
+!/storage/cache/.gitkeep
+!/storage/cache/twig/.gitkeep
+!/storage/cache/twig-runtime/.gitkeep
+!/storage/tmp/.gitkeep
+!/storage/tmp/pdf/.gitkeep
+!/storage/logs/.gitkeep
+!/app/public/tmp/.gitkeep
+!/app/public/tmp/pdf/.gitkeep
+!/tmp/.gitkeep
+!/tmp/pdf/.gitkeep
+
+# =============================
+# 🪵 LOGS
+# =============================
+/storage/logs/*
+!/storage/logs/.gitkeep
+*.log
+
+# =============================
+# 📄 ARQUIVOS GERADOS (PDF, UPLOADS, FONTES)
+# =============================
+/storage/pdf/
+/storage/uploads/
+/storage/fonts/
+/public/pdf/
+/public/tmp/
+/app/public/tmp/
+/app/public/tmp/pdf/
+/app/public/pdf/
+/app/public/uploads/
+/storage/fonts/*.json
+/storage/fonts/*.ttf
+
+# =============================
+# 🧪 TESTES E RELATÓRIOS
+# =============================
+/coverage/
+/reports/
+/tests/tmp/
+/tests/cache/
+/phpunit.result.cache
+
+# =============================
+# 💻 SISTEMAS E ARQUIVOS DE EDITOR
+# =============================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*.bak
+*.old
+*.orig
+
+# =============================
+# 📁 DOCUMENTAÇÃO GERADA
+# =============================
+/docs/build/
+/docs/generated/
+/estrutura.txt
+
+# =============================
+# 🔧 ARQUIVOS INTERNOS DO GIT
+# =============================
+!.gitignore
+!.gitattributes
+# =============================
+# 📦 DEPENDÊNCIAS FRONT-END
+# =============================
+/node_modules/
+/package-lock.json
+/npm-debug.log*

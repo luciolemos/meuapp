@@ -1,0 +1,58 @@
+# ==========================================
+# 🌐 MeuApp MVC - Configuração principal
+# ==========================================
+
+# Segurança básica e comportamento
+Options -Indexes -MultiViews
+DirectoryIndex index.php index.html
+
+# Impede acesso a arquivos sensíveis
+<FilesMatch "(^\.|\.env|composer\.(json|lock)|.*\.(sql|bak|old|zip)$)">
+  Require all denied
+</FilesMatch>
+
+# ==========================================
+# 🔹 Reescrita para front-controller (URLs limpas)
+# ==========================================
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 🔧 Ajuste o caminho base (muito importante!)
+  # Se o projeto estiver em um subdiretório, ex: http://localhost/meuapp
+  # use: RewriteBase /meuapp/
+  # Se estiver na raiz do domínio (http://meuapp.local), use:
+  RewriteBase /
+
+  # Se arquivo ou diretório existir, entrega diretamente
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Caso contrário, envia tudo para o front controller
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# ==========================================
+# 🔸 Cache simples para arquivos estáticos
+# ==========================================
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/avif "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 30 days"
+</IfModule>
+
+# ==========================================
+# 🔹 Headers de segurança úteis
+# ==========================================
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-XSS-Protection "1; mode=block"
+</IfModule>

@@ -1,0 +1,239 @@
+{# =============================================================
+   Arquivo: documentacao/virtualhost.twig
+   Seção: Estrutura e Configuração do VirtualHost
+   Descrição: Explica a configuração e o papel do VirtualHost no MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Virtualhost{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left">
+      <a href="/pdf/virtualhost" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+      Estrutura e Configuração do VirtualHost
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+      O <strong>VirtualHost</strong> é um recurso essencial do <strong>Apache HTTP Server</strong> que permite
+      hospedar múltiplas aplicações no mesmo host, cada uma com seu próprio domínio e diretório.
+      Em desenvolvimento e produção, ele organiza e isola projetos, mantendo previsibilidade no roteamento.
+    </p>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+      No <strong>MeuApp MVC</strong>, configuramos um domínio local (ex.: <code>meuapp.local</code>)
+      apontando para <code>/var/www/meuapp/public</code>. Isso simula um servidor real, garante que o
+      <code>.htaccess</code> funcione e dispensa subdiretórios na URL.
+    </p>
+
+    <!-- 1 -->
+    <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+      {% if export %}1. O que é um VirtualHost{% else %}
+        <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-globe"></i> 1. O que é um VirtualHost</span>
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+      Um VirtualHost define o contexto de execução de um site no Apache:
+    </p>
+    <ul class="small list-unstyled ms-3" {% if not export %}data-aos="fade-up" data-aos-delay="220"{% endif %}>
+      <li><i class="fas fa-check text-success"></i> <strong>Domínio:</strong> ex.: <code>meuapp.local</code>.</li>
+      <li><i class="fas fa-check text-success"></i> <strong>DocumentRoot:</strong> <code>/var/www/meuapp/public</code>.</li>
+      <li><i class="fas fa-check text-success"></i> <strong>Permissões:</strong> diretivas de acesso por diretório.</li>
+      <li><i class="fas fa-check text-success"></i> <strong>Logs:</strong> arquivos de erro e acesso por site.</li>
+    </ul>
+
+    <!-- 2 -->
+    <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="260"{% endif %}>
+      {% if export %}2. Exemplo de configuração{% else %}
+        <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-file-alt"></i> 2. Exemplo de configuração</span>
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="300"{% endif %}>
+      Sites disponíveis no Apache (lista de <code>/etc/apache2/sites-available</code>):
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="320"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/etc/apache2/sites-available',
+        'luciolemos@dev:/etc/apache2/sites-available$ ls -l
+total 36
+-rw-r--r-- 1 root root 1286 Apr 13  2023 000-default.conf
+-rw-r--r-- 1 root root  382 Apr 13  2025 crud.conf
+-rw-r--r-- 1 root root 6195 Jan 21  2024 default-ssl.conf
+-rw-r--r-- 1 root root  242 Jan 21  2024 fsphp.conf
+-rw-r--r-- 1 root root  395 Oct  7 23:45 meuapp.conf
+-rw-r--r-- 1 root root  291 Apr  7  2025 site2.conf
+-rw-r--r-- 1 root root  291 Apr  7  2025 site3.conf
+-rw-r--r-- 1 root root  291 Apr  7  2025 site5.conf',
+        'bash',
+        'light'
+      ) }}
+    </div>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
+      Conteúdo do <strong>meuapp.conf</strong>:
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="380"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/etc/apache2/sites-available/meuapp.conf',
+        '<VirtualHost *:80>
+    ServerAdmin admin@meuapp.local
+    ServerName meuapp.local
+    DocumentRoot /var/www/meuapp/public
+
+    <Directory /var/www/meuapp/public>
+        AllowOverride All
+        Options -Indexes FollowSymLinks
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/meuapp-error.log
+    CustomLog ${APACHE_LOG_DIR}/meuapp-access.log combined
+</VirtualHost>',
+        'apache',
+        'light'
+      ) }}
+    </div>
+
+    <!-- 3 -->
+    <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="420"{% endif %}>
+      {% if export %}3. Etapas de configuração{% else %}
+        <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-list-ol"></i> 3. Etapas de configuração</span>
+      {% endif %}
+    </h3>
+
+    <ol class="small">
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="440"{% endif %}>
+        <strong>Crie o arquivo de configuração:</strong>
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="460"{% endif %}>
+          {{ ui.terminal_pro('luciolemos@dev:/etc/apache2/sites-available$', ['sudo nano meuapp.conf'], 'light') }}
+        </div>
+      </li>
+
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="480"{% endif %}>
+        <strong>Registre o domínio local:</strong> adicione no <code>/etc/hosts</code>:
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="500"{% endif %}>
+          {{ ui.codeblock_pro('/etc/hosts', '127.0.0.1   meuapp.local', 'ini', 'light') }}
+        </div>
+      </li>
+
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="520"{% endif %}>
+        <strong>Habilite o VirtualHost:</strong>
+        <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="540"{% endif %}>
+          <code>a2ensite</code> cria o link simbólico em <code>sites-enabled</code>.
+        </p>
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="560"{% endif %}>
+          {{ ui.terminal_pro('luciolemos@dev:/etc/apache2/sites-available$', ['sudo a2ensite meuapp.conf'], 'light') }}
+        </div>
+      </li>
+
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="580"{% endif %}>
+        <strong>Valide a configuração:</strong>
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="600"{% endif %}>
+          {{ ui.terminal_pro('luciolemos@dev:/etc/apache2/sites-available$', ['sudo apache2ctl configtest'], 'light') }}
+        </div>
+      </li>
+
+      <li {% if not export %}data-aos="fade-up" data-aos-delay="620"{% endif %}>
+        <strong>Recarregue o Apache:</strong>
+        <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="640"{% endif %}>
+          <code>reload</code> aplica sem derrubar conexões; use <code>restart</code> se necessário.
+        </p>
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="660"{% endif %}>
+          {{ ui.terminal_pro('luciolemos@dev:/etc/apache2/sites-available$', ['sudo systemctl reload apache2'], 'light') }}
+        </div>
+      </li>
+    </ol>
+
+    <!-- 4 -->
+    <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="700"{% endif %}>
+      {% if export %}4. Verificação rápida{% else %}
+        <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-list-ul"></i> 4. Verificação rápida</span>
+      {% endif %}
+    </h3>
+
+    <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="720"{% endif %}>
+      Teste se o VirtualHost responde no domínio configurado.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="740"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:~$', ['curl -I http://meuapp.local'], 'light') }}
+    </div>
+
+    <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="760"{% endif %}>
+      Verifique se a raiz pública está correta.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="780"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['ls -l public'], 'light') }}
+    </div>
+
+    <!-- 5 -->
+    <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="820"{% endif %}>
+      {% if export %}5. Diferença entre VirtualHost e .htaccess{% else %}
+        <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-exchange-alt"></i> 5. Diferença entre VirtualHost e .htaccess</span>
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="840"{% endif %}>
+      Ambos influenciam o Apache, mas em níveis distintos:
+    </p>
+    <ul class="small" {% if not export %}data-aos="fade-up" data-aos-delay="860"{% endif %}>
+      <li><strong>VirtualHost:</strong> nível de site/domínio (DocumentRoot, logs, portas, SSL).</li>
+      <li><strong>.htaccess:</strong> nível de diretório (reescrita, restrições, headers, cache).</li>
+    </ul>
+
+    <!-- 6 -->
+    <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="900"{% endif %}>
+      {% if export %}6. Boas práticas{% else %}
+        <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-lightbulb"></i> 6. Boas práticas</span>
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3" {% if not export %}data-aos="fade-up" data-aos-delay="920"{% endif %}>
+      <li><i class="fas fa-check text-success"></i> Use domínios locais coerentes (<code>meuapp.local</code>).</li>
+      <li><i class="fas fa-check text-success"></i> Exponha apenas <code>/public</code> como <code>DocumentRoot</code>.</li>
+      <li><i class="fas fa-check text-success"></i> Ative <code>mod_rewrite</code> e mantenha <code>.htaccess</code> mínimo.</li>
+      <li><i class="fas fa-check text-success"></i> Separe logs por site e monitore <code>error/access</code>.</li>
+      <li><i class="fas fa-check text-success"></i> Em produção, prefira regras no vhost em vez de <code>.htaccess</code>.</li>
+    </ul>
+
+    <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="960"{% endif %}>
+      <i class="fas fa-info-circle"></i>
+      Com VirtualHost + <code>.htaccess</code> + raiz pública correta, o <strong>MeuApp MVC</strong> entrega
+      URLs limpas, segurança por padrão e caminho aberto para staging/produção.
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, offset: 60, duration: 550 });</script>
+  {% endif %}
+{% endblock %}

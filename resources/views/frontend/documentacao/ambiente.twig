@@ -1,0 +1,417 @@
+{# =============================================================
+   Arquivo: documentacao/ambiente.twig
+   Seção: Configuração do Ambiente de desenvolvimento
+   Descrição: Guia completo de instalação e configuração do ambiente de desenvolvimento do MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Ambiente{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {# AOS CSS só no modo não-export #}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+        <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="150">
+            <a href="/pdf/ambiente" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+
+ <section class="mb-5 pdf-section">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+            Configuração do Ambiente
+        </h2>
+
+        <p class="text-justify"
+           {% if not export %}data-aos="fade-up"{% endif %}>
+            A configuração adequada do ambiente é fundamental para o funcionamento estável e seguro do 
+            <strong>MeuApp MVC</strong>. Esse processo envolve a instalação e ajuste de componentes essenciais —
+            <strong>Apache</strong>, <strong>PHP</strong> e <strong>MySQL</strong> — além da preparação do sistema
+            operacional para hospedar a aplicação dentro do padrão <strong>Model-View-Controller</strong>.
+        </p>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              1. Estrutura geral do ambiente
+            {% else %}
+              <span data-aos="zoom-in"><i class="fas fa-server"></i> Estrutura geral do ambiente</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify"
+           {% if not export %}data-aos="fade-up"{% endif %}>
+            O ambiente foi projetado para funcionar de forma integrada no <strong>Ubuntu 24 (WSL2)</strong>, 
+            utilizando o <strong>Visual Studio Code</strong> como editor de código e terminal principal.  
+            Essa combinação oferece total compatibilidade com o ecossistema Linux, 
+            além de permitir controle preciso de permissões e integração nativa com o Apache e o PHP CLI.
+        </p>
+
+        <ul class="small list-unstyled ms-3">
+            {% set itens = [
+              'Servidor web: <strong>Apache 2.4+</strong>',
+              'Interpretação de scripts: <strong>PHP 8.3+</strong>',
+              'Banco de dados: <strong>MySQL 8+</strong> ou <strong>MariaDB</strong>',
+              'Gerenciador de dependências: <strong>Composer</strong>',
+              'Camada de template: <strong>Twig</strong>',
+              'Sistema operacional: <strong>Ubuntu WSL2</strong> no <strong>Windows 11</strong>'
+            ] %}
+            {% for item in itens %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 80*loop.index }}"{% endif %}>
+                <i class="fas fa-check text-success"></i> {{ item|raw }}
+              </li>
+            {% endfor %}
+        </ul>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              2. Passos de configuração do Apache
+            {% else %}
+              <span data-aos="zoom-in"><i class="fas fa-feather"></i> Passos de configuração do Apache</span>
+            {% endif %}
+        </h3>
+
+        <ol class="small">
+            {% set passos_apache = [
+              '<strong>Instalação:</strong> a linha de comando <code>sudo apt install apache2</code> ... acessível via <a href="http://localhost" target="_blank">http://localhost</a>.',
+              '<strong>Ativar módulo de reescrita:</strong> <code>sudo a2enmod rewrite</code>',
+              '<strong>Permitir substituições locais:</strong> Edite <code>/etc/apache2/apache2.conf</code> e ative <code>AllowOverride All</code> para <code>/var/www</code>.',
+              '<strong>Reiniciar o serviço:</strong> <code>sudo systemctl restart apache2</code>'
+            ] %}
+            {% for texto in passos_apache %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 90*loop.index }}"{% endif %}>
+                {{ texto|raw }}
+              </li>
+              {% if loop.index == 1 %}
+                <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ 90*loop.index + 60 }}"{% endif %}>
+                  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo apt install apache2'], 'light') }}
+                </div>
+              {% elseif loop.index == 2 %}
+                <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ 90*loop.index + 60 }}"{% endif %}>
+                  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo a2enmod rewrite'], 'light') }}
+                </div>
+              {% elseif loop.index == 3 %}
+                <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ 90*loop.index + 60 }}"{% endif %}>
+                  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo nano /etc/apache2/apache2.conf'], 'light') }}
+                </div>
+              {% elseif loop.index == 4 %}
+                <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ 90*loop.index + 60 }}"{% endif %}>
+                  {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo systemctl restart apache2'], 'light') }}
+                </div>
+              {% endif %}
+            {% endfor %}
+        </ol>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              3. Configuração do PHP
+            {% else %}
+              <span data-aos="zoom-in"><i class="fab fa-php"></i> Configuração do PHP</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O PHP é o núcleo de execução do <strong>MeuApp MVC</strong>. ...
+        </p>
+
+        <ol class="small">
+            {% set passos_php = [
+              '<strong>Instalar o PHP e extensões:</strong> <code>sudo apt install php php-cli php-mbstring php-xml php-curl php-mysql</code>',
+              '<strong>Verificar a versão:</strong> <code>php -v</code>',
+              '<strong>Testar integração com Apache:</strong> criar <code>/var/www/meuapp/public/info.php</code> com <code>&lt;?php phpinfo(); ?&gt;</code>',
+              'Acesse <code>http://meuapp.local/info.php</code> e confirme o <strong>mod_php</strong>.'
+            ] %}
+            {% for passo in passos_php %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 80*loop.index }}"{% endif %}>
+                {{ passo|raw }}
+              </li>
+            {% endfor %}
+        </ol>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              4. Configuração do Banco de Dados
+            {% else %}
+              <span data-aos="zoom-in"><i class="fas fa-database"></i> Configuração do Banco de Dados</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O <strong>MySQL</strong> é responsável pela camada de persistência de dados. ...
+        </p>
+
+        <ol class="small">
+  {# 1) Instala e ativa o serviço do MySQL #}
+  <li {% if not export %}data-aos="fade-up"{% endif %}>
+    <strong>Instalação e inicialização do servidor:</strong>
+    <span class="d-block text-justify">
+      <code>sudo apt install mysql-server</code> instala os binários e scripts do MySQL;
+      <code>sudo systemctl start mysql</code> inicia o serviço imediatamente;
+      <code>sudo systemctl enable mysql</code> configura para iniciar automaticamente a cada boot.
+    </span>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="100"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', [
+        'sudo apt install mysql-server',
+        'sudo systemctl start mysql',
+        'sudo systemctl enable mysql'
+      ], 'light') }}
+    </div>
+  </li>
+
+  {# 2) Acesso ao console administrativo #}
+  <li {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+    <strong>Acesso ao console do MySQL (root):</strong>
+    <span class="d-block text-justify">
+      <code>sudo mysql -u root -p</code> abre o cliente interativo autenticando como <em>root</em>.
+      Em algumas instalações (Ubuntu), o root pode usar <em>auth_socket</em>; se a senha não estiver definida,
+      use apenas <code>sudo mysql</code> (sem <code>-p</code>) para entrar.
+    </span>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="220"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo mysql -u root -p'], 'light') }}
+    </div>
+  </li>
+
+  {# 3) Criação do banco com charset/collation corretos #}
+  <li {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>
+    <strong>Criação do banco de dados (UTF-8 completo):</strong>
+    <span class="d-block text-justify">
+      <code>CREATE DATABASE ... CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</code>
+      garante suporte total a Unicode (inclui emojis e símbolos) e ordenação compatível.
+    </span>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="300"{% endif %}>
+      {{ ui.terminal_pro('mysql>', ['CREATE DATABASE meuapp_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'], 'light') }}
+    </div>
+  </li>
+
+  {# 4) Criação de um usuário dedicado à aplicação #}
+  <li {% if not export %}data-aos="fade-up" data-aos-delay="320"{% endif %}>
+    <strong>Usuário de aplicação (escopo local e senha forte):</strong>
+    <span class="d-block text-justify">
+      <code>CREATE USER 'meuapp_user'@'localhost' IDENTIFIED BY 'senha_segura';</code>
+      cria um usuário restrito ao host local. Troque <code>senha_segura</code> por uma senha forte.
+      Evite usar <em>root</em> na aplicação.
+    </span>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="380"{% endif %}>
+      {{ ui.terminal_pro('mysql>', ["CREATE USER 'meuapp_user'@'localhost' IDENTIFIED BY 'senha_segura';"], 'light') }}
+    </div>
+  </li>
+
+  {# 5) Concessão de privilégios para o schema do app #}
+  <li {% if not export %}data-aos="fade-up" data-aos-delay="400"{% endif %}>
+    <strong>Permissões no schema da aplicação:</strong>
+    <span class="d-block text-justify">
+      <code>GRANT ALL PRIVILEGES ON meuapp_db.* TO 'meuapp_user'@'localhost';</code>
+      libera acesso total apenas ao banco <code>meuapp_db</code>.
+      Se quiser endurecer, troque por um conjunto mínimo (ex.: <code>SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX</code>).
+    </span>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="460"{% endif %}>
+      {{ ui.terminal_pro('mysql>', ["GRANT ALL PRIVILEGES ON meuapp_db.* TO 'meuapp_user'@'localhost';"], 'light') }}
+    </div>
+  </li>
+
+  {# 6) Recarrega as tabelas de privilégios #}
+  <li {% if not export %}data-aos="fade-up" data-aos-delay="480"{% endif %}>
+    <strong>Aplicação imediata das permissões:</strong>
+    <span class="d-block text-justify">
+      <code>FLUSH PRIVILEGES;</code> recarrega as tabelas de privilégio, tornando efetivas as alterações
+      (especialmente útil após <code>CREATE USER</code>/<code>GRANT</code>).
+    </span>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="540"{% endif %}>
+      {{ ui.terminal_pro('mysql>', ["FLUSH PRIVILEGES;"], 'light') }}
+    </div>
+  </li>
+ </ol>
+
+
+        <p class="text-justify small" {% if not export %}data-aos="fade-up"{% endif %}>
+            Teste a conexão configurando corretamente as credenciais em <code>config/config.php</code>.
+        </p>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              5. Configuração de Permissões
+            {% else %}
+              <span data-aos="zoom-in"><i class="fas fa-user-shield"></i> Configuração de Permissões</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            Para que o Apache consiga ler e executar os arquivos da aplicação, ...
+        </p>
+
+        <ol class="small">
+            <li {% if not export %}data-aos="fade-up"{% endif %}>
+                <strong>Alterando o proprietário (owner) e o grupo (group) dos arquivos e pastas:</strong>
+                ...
+                <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+                    {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo chown -R www-data:www-data /var/www/meuapp'], 'light') }}
+                </div>
+            </li>
+
+            <li {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+                <strong>Alterando as permissões de todos os arquivos e pastas:</strong>
+                ...
+                <div {% if not export %}data-aos="flip-up" data-aos-delay="220"{% endif %}>
+                    {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['sudo chmod -R 755 /var/www/meuapp'], 'light') }}
+                </div>
+            </li>
+        </ol>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              6. Verificação do Ambiente
+            {% else %}
+              <span data-aos="zoom-in"><i class="fas fa-search"></i> Verificação do Ambiente</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            Após concluir a instalação e configuração dos componentes, verifique:
+        </p>
+
+        <ul class="small list-unstyled ms-3">
+            {% set checks = [
+              'Apache em execução: <code>sudo systemctl status apache2</code>',
+              'Domínio local <code>meuapp.local</code> acessível',
+              'PHP processando corretamente as páginas',
+              'Banco de dados respondendo (<code>mysql -u meuapp_user -p</code>)',
+              'Logs sem erros críticos'
+            ] %}
+            {% for c in checks %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 70*loop.index }}"{% endif %}>
+                <i class="fas fa-check text-success"></i> {{ c|raw }}
+              </li>
+            {% endfor %}
+        </ul>
+
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+              7. Integração com WSL2 e Visual Studio Code
+            {% else %}
+              <span data-aos="zoom-in"><i class="fab fa-windows"></i> Integração com WSL2 e Visual Studio Code</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            A integração com o <strong>Windows Subsystem for Linux (WSL2)</strong> ...
+        </p>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+            Essa abordagem garante consistência entre o ambiente local e o ambiente de deploy...
+        </p>
+
+        <div class="alert alert-info small mt-3"
+             {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+            <i class="fas fa-info-circle"></i>
+            O ambiente do <strong>MeuApp MVC</strong> foi projetado para simular fielmente um servidor Linux, 
+            garantindo previsibilidade, segurança e compatibilidade total com os padrões modernos de desenvolvimento PHP.
+        </div>
+</section>
+
+    <!-- ===================== VERIFICAÇÃO RÁPIDA DO AMBIENTE (com ui.note) ===================== -->
+<section class="mb-5 pdf-section">
+  <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-up"{% endif %}>
+    <i class="fas fa-clipboard-check"></i> Verificação rápida do ambiente
+  </h2>
+
+  {# PHP #}
+  <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+    <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fab fa-php"></i> PHP</span>
+  </h3>
+  {{ ui.note('Mostra versão do PHP e lista os primeiros módulos (cheque mbstring, intl, curl, xml).', export, 'fade-up', 80) }}
+  <div {% if not export %}data-aos="flip-up" data-aos-delay="100"{% endif %}>
+    {{ ui.terminal_pro('luciolemos@dev:~$', [
+      'php -v',
+      'php -m | head -n 20'
+    ], 'light') }}
+  </div>
+
+  {# Composer #}
+  <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="140"{% endif %}>
+    <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-cubes"></i> Composer</span>
+  </h3>
+  {{ ui.note('Confirma se o Composer está acessível e qual versão está ativa.', export, 'fade-up', 160) }}
+  <div {% if not export %}data-aos="flip-up" data-aos-delay="180"{% endif %}>
+    {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', [
+      'composer -V'
+    ], 'light') }}
+  </div>
+
+  {# Apache #}
+  <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="220"{% endif %}>
+    <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-server"></i> Apache</span>
+  </h3>
+  {{ ui.note('Checa versão do Apache, presença do mod_rewrite e status do serviço.', export, 'fade-up', 240) }}
+  <div {% if not export %}data-aos="flip-up" data-aos-delay="260"{% endif %}>
+    {{ ui.terminal_pro('luciolemos@dev:~$', [
+      'apache2ctl -v',
+      'apache2ctl -M | grep rewrite || echo "mod_rewrite desabilitado"',
+      'systemctl status apache2 --no-pager -l | sed -n "1,15p"'
+    ], 'light') }}
+  </div>
+
+  {# MySQL #}
+  <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="300"{% endif %}>
+    <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-database"></i> MySQL</span>
+  </h3>
+  {{ ui.note('Verifica a versão do cliente e testa conexão/listagem (pode solicitar senha).', export, 'fade-up', 320) }}
+  <div {% if not export %}data-aos="flip-up" data-aos-delay="340"{% endif %}>
+    {{ ui.terminal_pro('luciolemos@dev:~$', [
+      'mysql --version',
+      'mysql -u root -p -e "SHOW DATABASES;"',
+      'mysql -u root -p -e "USE exemplos; SHOW TABLES;"'
+    ], 'light') }}
+  </div>
+
+  {# Sistema/WSL #}
+  <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="380"{% endif %}>
+    <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fab fa-linux"></i> Sistema</span>
+  </h3>
+  {{ ui.note('Exibe kernel e distribuição (útil para WSL2, checar compatibilidade e logs).', export, 'fade-up', 400) }}
+  <div {% if not export %}data-aos="flip-up" data-aos-delay="420"{% endif %}>
+    {{ ui.terminal_pro('luciolemos@dev:~$', [
+      'uname -a',
+      'sed -n "1,6p" /etc/os-release'
+    ], 'light') }}
+  </div>
+
+  {# Dica final #}
+  {{ ui.note('Dica: salve saídas relevantes (versões, módulos, erros) como evidência técnica: docs/ambiente/diagnostic-' ~ ("now"|date("Ymd-His")) ~ '.txt', export, 'fade-up', 460) }}
+</section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,       // velocidade das animações
+          easing: 'ease-out',  // suavização padrão
+          once: true,          // anima apenas na primeira entrada
+          offset: 12           // pequeno deslocamento para disparo
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

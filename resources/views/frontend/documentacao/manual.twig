@@ -1,0 +1,85 @@
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Manual do Projeto{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+  <div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+      {% include "frontend/documentacao/partials/cover.twig" %}
+    {% endif %}
+
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        Como navegar pelo manual
+      </h2>
+      <p class="small text-muted" {% if not export %}data-aos="fade-up"{% endif %}>
+        Este manual reúne os principais artigos técnicos do MeuApp MVC. Use a lista abaixo para abrir a documentação completa de cada tópico.
+      </p>
+    </section>
+
+    {% set artigos = [
+      { 'href': '/documentacao/conceito',      'icon': 'fas fa-lightbulb',      'titulo': 'Conceito do Projeto',        'descricao': 'Visão geral, objetivos e fundamentos do MeuApp MVC.' },
+      { 'href': '/documentacao/stack',         'icon': 'fas fa-layer-group',    'titulo': 'Stack de Tecnologias',       'descricao': 'Tecnologias empregadas do backend ao frontend.' },
+      { 'href': '/documentacao/estrutura',     'icon': 'fas fa-sitemap',        'titulo': 'Estrutura de Pastas',        'descricao': 'Organização do código, loaders e convenções.' },
+      { 'href': '/documentacao/mvc',           'icon': 'fas fa-project-diagram','titulo': 'Arquitetura MVC',            'descricao': 'Fluxo de requisições e separação de responsabilidades.' },
+      { 'href': '/documentacao/twig',          'icon': 'fas fa-code',           'titulo': 'Twig',                       'descricao': 'Templates, macros, componentes e modos de exportação.' },
+      { 'href': '/documentacao/bootstrap',     'icon': 'fab fa-bootstrap',      'titulo': 'Bootstrap 5',                'descricao': 'Utilitários de layout, componentes e modo escuro.' },
+      { 'href': '/documentacao/htaccess',      'icon': 'fas fa-file-code',      'titulo': '.htaccess',                  'descricao': 'Regras de rewrite e proteção de diretórios.' },
+      { 'href': '/documentacao/virtualhost',   'icon': 'fas fa-network-wired',  'titulo': 'VirtualHost',                'descricao': 'Configuração do Apache para hospedar o MeuApp.' },
+      { 'href': '/documentacao/ambiente',      'icon': 'fas fa-laptop-code',    'titulo': 'Ambiente & Ferramentas',     'descricao': 'Ubuntu WSL, VS Code, Git e boas práticas de setup.' },
+      { 'href': '/documentacao/composer',      'icon': 'fas fa-tools',          'titulo': 'Composer',                   'descricao': 'Autoload PSR-4, scripts de build e dependências.' },
+      { 'href': '/documentacao/gitgithub',     'icon': 'fab fa-github',         'titulo': 'Git & GitHub',               'descricao': 'Fluxo de versionamento, PRs e integrações com Actions.' },
+      { 'href': '/documentacao/diagnostico',   'icon': 'fas fa-stethoscope',    'titulo': 'Diagnóstico',                'descricao': 'Rotas de status, links úteis e checagens rápidas.' },
+      { 'href': '/documentacao/status',        'icon': 'fas fa-clipboard-check','titulo': 'Status & Testes',            'descricao': 'Checklist das rotas, PDFs e outputs de auditoria.' },
+      { 'href': '/documentacao/escalabilidade','icon': 'fas fa-chart-line',     'titulo': 'Escalabilidade',             'descricao': 'Estratégias de cache, logs e deploy contínuo.' },
+      { 'href': '/documentacao/boaspraticas',  'icon': 'fas fa-shield-alt',     'titulo': 'Boas Práticas',              'descricao': 'Segurança, versionamento e governança do código.' }
+    ] %}
+
+    <section class="pdf-section">
+      {% if export %}
+        <ol class="small text-muted mb-0">
+          {% for artigo in artigos %}
+            <li><strong>{{ artigo.titulo }}:</strong> consulte {{ artigo.href }}.</li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <div class="row g-4">
+          {% for artigo in artigos %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 60 }}">
+              <div class="tech-card border rounded shadow-sm h-100 p-4 text-start">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <i class="{{ artigo.icon }} fa-2x text-primary"></i>
+                  <h3 class="h6 fw-bold mb-0">{{ artigo.titulo }}</h3>
+                </div>
+                <p class="small text-muted mb-3">{{ artigo.descricao }}</p>
+                {% include 'components/button.twig' with {
+                  href: artigo.href,
+                  text: 'Abrir documentação',
+                  icon: 'fas fa-arrow-right',
+                  variant: 'outline-primary',
+                  size: 'sm'
+                } %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+
+    {% if not export %}
+      {% include "frontend/documentacao/partials/footer.twig" %}
+    {% endif %}
+  </div>
+{% endblock %}

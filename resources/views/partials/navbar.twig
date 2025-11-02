@@ -1,0 +1,216 @@
+{% import "partials/macros_nav.twig" as nav %}
+
+{# Helper para montar URLs respeitando base_url #}
+{% macro build_url(base, path) %}
+  {%- set cleaned = path|trim('/') -%}
+  {%- set base = base is defined and base is not null ? base : '/' -%}
+  {%- if base == '' or base == '/' -%}
+    /{{ cleaned }}
+  {%- elseif base matches '/^https?:\\/\\//' -%}
+    {{ base|trim('/') ~ '/' ~ cleaned }}
+  {%- else -%}
+    /{{ base|trim('/') ~ '/' ~ cleaned }}
+  {%- endif -%}
+{% endmacro %}
+
+{% from _self import build_url %}
+
+{# Garante que current_path tenha formato previsível #}
+{% set current = current_path ?? '/' %}
+{% if current is empty %}
+  {% set current = '/' %}
+{% endif %}
+{% if current|first != '/' %}
+  {% set current = '/' ~ current %}
+{% endif %}
+
+{% set base = base_url ?? '/' %}
+{% if base not in ['', '/'] and current starts with '/' ~ base|trim('/') %}
+  {% set current = current|slice((1 + base|trim('/')|length)) %}
+  {% if current is empty %}
+    {% set current = '/' %}
+  {% elseif current|first != '/' %}
+    {% set current = '/' ~ current %}
+  {% endif %}
+{% endif %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3 transition-all" id="mainNavbar">
+  <div class="container">
+
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{{ build_url(base, 'home') }}">
+      <i class="fas fa-cubes text-primary"></i>
+      <span>MeuApp MVC</span>
+    </a>
+
+    <button
+      class="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+
+        <li class="nav-item">
+          <a class="nav-link {% if current starts with '/home' or current == '/' %}active{% endif %}"
+             href="{{ build_url(base, 'home') }}">
+            <i class="fas fa-home me-1"></i> HOME
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current starts with '/sobre' %}active{% endif %}"
+             href="{{ build_url(base, 'sobre') }}">
+            <i class="fas fa-info-circle me-1"></i> SOBRE
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current starts with '/contato' %}active{% endif %}"
+             href="{{ build_url(base, 'contato') }}">
+            <i class="fas fa-envelope me-1"></i> CONTATO
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if current starts with '/recursos' %}active{% endif %}"
+             href="{{ build_url(base, 'recursos') }}">
+            <i class="fas fa-toolbox me-1"></i> RECURSOS
+          </a>
+        </li>
+
+        <li class="nav-item dropdown position-static">
+          <a
+            class="nav-link dropdown-toggle d-flex align-items-center
+            {% if current starts with '/documentacao' or current matches '/^(\\/)?(erro|erros|403|404|500)(\\/.*)?$/' %}
+              active
+            {% endif %}"
+            href="#"
+            id="navbarDocs"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-book me-1"></i> DOCUMENTAÇÃO
+          </a>
+
+          <div class="dropdown-menu mega-menu shadow-lg border-0 mt-2 py-4">
+            <div class="container mega-container">
+              <div class="row g-4">
+
+                <div class="col-12 col-md-6 col-lg-3">
+                  <h6 class="text-uppercase text-secondary fw-semibold mb-2">Guia do Projeto</h6>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/conceito', current) }}"
+                     href="{{ build_url(base, 'documentacao/conceito') }}"><i class="fas fa-lightbulb me-2"></i> Conceito</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/manual', current) }}"
+                     href="{{ build_url(base, 'documentacao/manual') }}"><i class="fas fa-book-open me-2"></i> Manual do Usuário</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/descricao', current) }}"
+                     href="{{ build_url(base, 'documentacao/descricao') }}"><i class="fas fa-project-diagram me-2"></i> Descrição</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/configuracao', current) }}"
+                     href="{{ build_url(base, 'documentacao/configuracao') }}"><i class="fas fa-cogs me-2"></i> Configuração</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/links', current) }}"
+                     href="{{ build_url(base, 'documentacao/links') }}"><i class="fas fa-stethoscope me-2"></i> Links úteis</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/testpage', current) }}"
+                     href="{{ build_url(base, 'documentacao/testpage') }}"><i class="fas fa-vial me-1"></i> Página de testes do projeto</a>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                  <h6 class="text-uppercase text-secondary fw-semibold mb-2">Documentos Técnicos</h6>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/mvc', current) }}"
+                     href="{{ build_url(base, 'documentacao/mvc') }}"><i class="fas fa-layer-group me-2"></i> MVC</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/estrutura', current) }}"
+                     href="{{ build_url(base, 'documentacao/estrutura') }}"><i class="fas fa-sitemap me-2"></i> Estrutura</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/stack', current) }}"
+                     href="{{ build_url(base, 'documentacao/stack') }}"><i class="fas fa-server me-2"></i> Stack</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/boaspraticas', current) }}"
+                     href="{{ build_url(base, 'documentacao/boaspraticas') }}"><i class="fas fa-check-circle me-2"></i> Boas Práticas</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/escalabilidade', current) }}"
+                     href="{{ build_url(base, 'documentacao/escalabilidade') }}"><i class="fas fa-chart-line me-2"></i> Escalabilidade</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/ambiente', current) }}"
+                     href="{{ build_url(base, 'documentacao/ambiente') }}"><i class="fas fa-laptop-code me-2"></i> Ambiente</a>   
+
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                  <h6 class="text-uppercase text-secondary fw-semibold mb-2">Ferramentas</h6>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/whatsphp', current) }}"
+                     href="{{ build_url(base, 'documentacao/whatsphp') }}"><i class="fab fa-php me-2"></i> O que é PHP?</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/whatsapache', current) }}"
+                     href="{{ build_url(base, 'documentacao/whatsapache') }}"><i class="fab fa-php me-2"></i> O que é o Apache?</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/bootstrap', current) }}"
+                     href="{{ build_url(base, 'documentacao/bootstrap') }}"><i class="fab fa-bootstrap me-2"></i> Bootstrap</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/twig', current) }}"
+                     href="{{ build_url(base, 'documentacao/twig') }}"><i class="fas fa-code me-2"></i> Twig</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/fontawesome', current) }}"
+                     href="{{ build_url(base, 'documentacao/fontawesome') }}"><i class="fab fa-font-awesome me-2"></i> Font awesome 5</a>      
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/dompdf', current) }}"
+                     href="{{ build_url(base, 'documentacao/dompdf') }}"><i class="fas fa-file-pdf me-2"></i> DOMPDF</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/gitgithub', current) }}"
+                     href="{{ build_url(base, 'documentacao/gitgithub') }}"><i class="fab fa-github me-2"></i> Git &amp; GitHub</a>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3">
+                  <h6 class="text-uppercase text-secondary fw-semibold mb-2">Infraestrutura &amp; Erros</h6>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/composer', current) }}"
+                     href="{{ build_url(base, 'documentacao/composer') }}"><i class="fas fa-box me-2"></i> Composer</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/virtualhost', current) }}"
+                     href="{{ build_url(base, 'documentacao/virtualhost') }}"><i class="fas fa-network-wired me-2"></i> VirtualHost</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/documentacao/htaccess', current) }}"
+                     href="{{ build_url(base, 'documentacao/htaccess') }}"><i class="fas fa-file-code me-2"></i> .htaccess</a>
+
+                  <hr class="dropdown-divider">
+
+                  <h6 class="text-uppercase text-secondary fw-semibold mb-2">Erros &amp; Diagnóstico</h6>
+                  <a class="dropdown-item {{ nav.dropdown_active('/erro/403', current) }}"
+                     href="{{ build_url(base, 'erro/403') }}"><i class="fas fa-lock text-danger me-2"></i> Erro 403 — Acesso Negado</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/erro/404', current) }}"
+                     href="{{ build_url(base, 'erro/404') }}"><i class="fas fa-compass text-primary me-2"></i> Erro 404 — Não Encontrado</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/erro/500', current) }}"
+                     href="{{ build_url(base, 'erro/500') }}"><i class="fas fa-exclamation-triangle text-warning me-2"></i> Erro 500 — Servidor</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/erros', current) }}"
+                     href="{{ build_url(base, 'erros') }}"><i class="fas fa-list me-2"></i> Ver Demonstração</a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown ms-lg-3">
+          <a
+            class="nav-link dropdown-toggle d-flex align-items-center
+            {% if current matches '/^(\\/)?(admin|dashboard|settings|users)(\\/.*)?$/' %}
+              active
+            {% endif %}"
+            href="#"
+            id="adminDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-user-shield me-1"></i> ADMIN
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+            <li><a class="dropdown-item {{ nav.dropdown_active('/admin/dashboard', current) }}"
+                   href="{{ build_url(base, 'admin/dashboard') }}"><i class="fas fa-chart-pie me-2"></i> Dashboard</a></li>
+            <li><a class="dropdown-item {{ nav.dropdown_active('/admin/settings', current) }}"
+                   href="{{ build_url(base, 'admin/settings') }}"><i class="fas fa-cog me-2"></i> Configurações</a></li>
+            <li><a class="dropdown-item {{ nav.dropdown_active('/admin/users', current) }}"
+                   href="{{ build_url(base, 'admin/users') }}"><i class="fas fa-users me-2"></i> Usuários</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item ms-lg-3">
+          <button id="themeToggle" class="theme-toggle" title="Alternar tema">
+            <i class="fas fa-moon fa-lg"></i>
+          </button>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>

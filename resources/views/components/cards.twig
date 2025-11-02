@@ -1,0 +1,170 @@
+{# =============================================================
+   Componente: components/cards.twig
+   Objetivo: renderizar conjuntos de cartões reutilizáveis (conceitos, técnicos, boas práticas, stack).
+
+   Uso típico:
+       {% include "components/cards.twig" with {
+            section: 'conceitos',
+            title: 'Construa, Aprenda, Escale.',
+            subtitle: 'Resumo das frentes principais do MeuApp MVC',
+            icon: 'fas fa-rocket'
+       } %}
+
+   Parâmetros aceitos:
+     - section   (string, obrigatório): identifica o conjunto de dados a ser exibido
+       * valores suportados: 'conceitos', 'tecnicos', 'boaspraticas', 'stack'
+     - title     (string, opcional)   : título mostrado acima dos cards
+     - subtitle  (string, opcional)   : subtítulo exibido abaixo do título
+     - icon      (string, opcional)   : classe Font Awesome/Bootstrap Icons para o título
+
+   Cada card é representado por um dicionário com:
+     - icon  : classe de ícone
+     - title : título do card
+     - text  : descrição/explicação (aceita HTML simples via |raw)
+     - href  : link do card (quando definido, o card vira um <a>)
+
+   Observação: Ajuste os caminhos em href conforme novos artigos/documentações forem criados.
+   ============================================================= #}
+
+<section class="section-block" data-aos="fade-up">
+  <div class="container text-center">
+
+    {# ----- Cabeçalho (opcional) ----- #}
+    {% if title is defined %}
+      <h2 class="fw-bold text-primary mb-3">
+        {% if icon is defined %}<i class="{{ icon }} me-2"></i>{% endif %}
+        {{ title }}
+      </h2>
+    {% endif %}
+
+    {% if subtitle is defined %}
+      <p class="text-muted mb-5">{{ subtitle }}</p>
+    {% endif %}
+
+    {# ----- Mapeamento dos conjuntos conforme a seção solicitada ----- #}
+    {% if section == 'conceitos' %}
+      {% set cards = [
+        {
+          icon: 'fas fa-project-diagram',
+          title: 'Arquitetura MVC',
+          text: 'Model, View e Controller separados garantem organização, reuso e escalabilidade.',
+          href: '/documentacao/mvc'
+        },
+        {
+          icon: 'fab fa-bootstrap',
+          title: 'Design Responsivo',
+          text: 'Bootstrap 5 e Font Awesome cuidam da interface limpa, moderna e acessível.',
+          href: '/documentacao/bootstrap'
+        },
+        {
+          icon: 'fas fa-cogs',
+          title: 'Base Escalável',
+          text: 'Projetado para crescer com Docker, APIs REST e integrações externas.',
+          href: '/documentacao/descricao'
+        }
+      ] %}
+
+    {% elseif section == 'tecnicos' %}
+      {% set cards = [
+        {
+          icon: 'fas fa-cubes',
+          title: 'Autoload & Composer',
+          text: 'PSR-4, scripts e gerenciamento de dependências automatizam o fluxo de builds.',
+          href: '/documentacao/composer'
+        },
+        {
+          icon: 'fas fa-code',
+          title: 'Twig Template Engine',
+          text: 'Herança de layouts, macros reutilizáveis e proteção nativa contra XSS.',
+          href: '/documentacao/twig'
+        },
+        {
+          icon: 'fas fa-network-wired',
+          title: 'Integração e Escalabilidade',
+          text: 'Estrutura pronta para microsserviços, queues e ambientes distribuídos.',
+          href: '/documentacao/descricao'
+        }
+      ] %}
+
+    {% elseif section == 'boaspraticas' %}
+      {% set cards = [
+        {
+          icon: 'fas fa-check-circle',
+          title: 'Padrões de Código',
+          text: 'PSR, linting e arquitetura consistente para colaboração em equipe.',
+          href: '/documentacao/descricao'
+        },
+        {
+          icon: 'fas fa-shield-alt',
+          title: 'Segurança',
+          text: 'Validação, sanitização e logs centralizados reduzem superfícies de ataque.',
+          href: '/documentacao/descricao'
+        },
+        {
+          icon: 'fas fa-book-open',
+          title: 'Documentação Viva',
+          text: 'Artigos, PDFs exportáveis e rotas de diagnóstico facilitam manutenção.',
+          href: '/documentacao/descricao'
+        },
+        {
+          icon: 'fas fa-code-branch',
+          title: 'Versionamento',
+          text: 'Git, pipelines e versionamento semântico garantem releases estáveis.',
+          href: '/documentacao/descricao'
+        }
+      ] %}
+
+    {% elseif section == 'stack' %}
+      {% set cards = [
+        { icon: 'fab fa-php', title: 'PHP 8+', text: 'Runtime moderno com tipagem forte, atributos e desempenho otimizado.', href: '/documentacao/whatsphp' },
+        { icon: 'fas fa-code', title: 'Twig', text: 'Views desacopladas, macros reutilizáveis e controles de segurança.', href: '/documentacao/twig' },
+        { icon: 'fab fa-bootstrap', title: 'Bootstrap 5', text: 'Grid responsivo, utilitários e componentes acessíveis.', href: '/documentacao/bootstrap' },
+        { icon: 'fab fa-html5', title: 'HTML5', text: 'Markup semântico para SEO, acessibilidade e integração nativa.', href: '/documentacao/descricao' },
+        { icon: 'fab fa-css3', title: 'CSS / SASS', text: 'Camada de estilo modular com variáveis, mixins e dark mode.', href: '/documentacao/descricao' },
+        { icon: 'fab fa-js', title: 'JavaScript ES Modules', text: 'Interações com AOS, Mermaid e scripts modulares.', href: '/documentacao/descricao' },
+        { icon: 'fab fa-font-awesome', title: 'Font Awesome', text: 'Biblioteca ampla de ícones e pictogramas de marcas.', href: '/documentacao/fontawesome' },
+        { icon: 'fas fa-layer-group', title: 'Bootstrap Icons', text: 'Ícones leves alinhados ao ecossistema Bootstrap.', href: '/documentacao/descricao' },
+        { icon: 'fab fa-linux', title: 'Ubuntu WSL', text: 'Ambiente Linux local espelhando a infraestrutura de produção.', href: '/documentacao/descricao' },
+        { icon: 'fab fa-docker', title: 'Docker', text: 'Containers para serviços, banco e ambientes isolados.', href: '/documentacao/descricao' },
+        { icon: 'fas fa-terminal', title: 'VS Code', text: 'Editor com terminal integrado, intellisense e Git.', href: '/documentacao/descricao' },
+        { icon: 'fas fa-database', title: 'MySQL / MariaDB', text: 'Banco relacional com índices, replicação e tuning.', href: '/documentacao/descricao' },
+        { icon: 'fas fa-server', title: 'Apache 2', text: 'Servidor HTTP com virtual hosts, rewrite e .htaccess enxuto.', href: '/documentacao/whatsapache' },
+        { icon: 'fas fa-tools', title: 'Composer', text: 'Dependências PSR-4, autoload automático e scripts utilitários.', href: '/documentacao/composer' },
+        { icon: 'fas fa-file-pdf', title: 'Dompdf', text: 'Exporta artigos e relatórios com sumário e bookmarks.', href: '/documentacao/dompdf' },
+        { icon: 'fab fa-git-alt', title: 'Git / GitHub', text: 'Versionamento semântico, PRs e CI/CD contínuo.', href: '/documentacao/descricao' }
+      ] %}
+
+    {% else %}
+      {% set cards = [] %}
+    {% endif %}
+
+    {# ----- Ajuste do grid (3 ou 4 colunas) conforme a seção ----- #}
+    {% set fourColumnSections = ['boaspraticas', 'stack'] %}
+    <div class="row g-4 {% if section in fourColumnSections %}row-cols-1 row-cols-md-2 row-cols-lg-4{% else %}row-cols-1 row-cols-md-3{% endif %}">
+
+      {# Loop principal dos cards #}
+      {% for card in cards %}
+        <div class="col" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+
+          {# Conteúdo do card centralizado aqui para reutilizar em <a> ou <div> #}
+          {% set cardContent %}
+            <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+              <i class="{{ card.icon }} fa-2x text-primary mb-3"></i>
+              <h6 class="fw-bold">{{ card.title }}</h6>
+              <p class="text-muted small text-justify">{{ card.text|raw }}</p>
+            </div>
+          {% endset %}
+
+          {# Se o card tiver href, vira link; caso contrário, mantém bloco estático #}
+          {% if card.href is defined %}
+            <a href="{{ card.href }}" class="text-decoration-none">
+              {{ cardContent }}
+            </a>
+          {% else %}
+            {{ cardContent }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

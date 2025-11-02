@@ -1,0 +1,11 @@
+<!-- ===================== RODAPÉ ===================== -->
+<footer class="mt-5 text-center">
+  {% include 'components/alert.twig' with {
+    variant: 'light',
+    size: 'sm',
+    icon: 'fas fa-info-circle text-primary',
+    content: 'Manual técnico consolidado — ambiente validado e pronto para produção.',
+    extra_class: 'border-start border-primary mt-3 p-3',
+    export: export|default(false)
+  } %}
+</footer>

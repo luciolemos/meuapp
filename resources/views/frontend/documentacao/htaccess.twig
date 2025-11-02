@@ -1,0 +1,195 @@
+{# =============================================================
+   Arquivo: documentacao/htaccess.twig
+   Seção: Estrutura e Configuração do .htaccess
+   Descrição: Detalha o papel do .htaccess no funcionamento do MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — .htaccess{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {# AOS CSS só no modo não-export #}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left">
+      <a href="/pdf/htaccess" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  <section class="mb-5 pdf-section">
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+    Estrutura e Configuração do .htaccess
+    </h2>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="60">
+      O arquivo <strong>.htaccess</strong> é um componente fundamental do servidor <strong>Apache HTTP Server</strong>.
+      Seu nome deriva de “<em>hypertext access</em>” e sua função principal é permitir a configuração de regras locais
+      de comportamento, reescrita de URLs, segurança, cache e controle de acesso, sem editar o <code>httpd.conf</code>.
+    </p>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="120">
+      No <strong>MeuApp MVC</strong>, o <code>.htaccess</code> atua como <strong>controlador intermediário</strong>,
+      garantindo que requisições sejam encaminhadas ao <code>index.php</code> (front controller), habilitando
+      <strong>URLs limpas</strong> e reforçando segurança e controle de acesso a arquivos sensíveis.
+    </p>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="160">
+      {% if export %}1. Funções principais do .htaccess{% else %}
+        <i class="fas fa-list-ul"></i> Funções principais do .htaccess
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3" data-aos="fade-up" data-aos-delay="200">
+      <li><i class="fas fa-check text-success"></i> <strong>Reescrita de URLs:</strong> Rotas amigáveis e dinâmicas.</li>
+      <li><i class="fas fa-check text-success"></i> <strong>Controle de acesso:</strong> Bloqueio a arquivos sensíveis (<code>.env</code>, <code>composer.json</code>).</li>
+      <li><i class="fas fa-check text-success"></i> <strong>Comportamento padrão:</strong> <code>DirectoryIndex</code> e sem listagem de diretórios.</li>
+      <li><i class="fas fa-check text-success"></i> <strong>Otimização e cache:</strong> Políticas de cache para estáticos.</li>
+      <li><i class="fas fa-check text-success"></i> <strong>Segurança:</strong> Cabeçalhos HTTP protetivos.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="240">
+      {% if export %}2. Estrutura do arquivo .htaccess no MeuApp MVC{% else %}
+        <i class="fas fa-file-alt"></i> Estrutura do arquivo .htaccess no MeuApp MVC
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="280">
+      Abaixo, o <code>.htaccess</code> utilizado no <strong>MeuApp MVC</strong>, com reescrita, cache e segurança.
+    </p>
+
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="320"{% endif %}>
+      {{ ui.codeblock_pro(
+        '/var/www/meuapp/public/.htaccess',
+        '
+# Segurança básica e comportamento
+Options -Indexes -MultiViews
+DirectoryIndex index.php index.html
+
+# Bloqueia acesso a arquivos sensíveis
+<FilesMatch "(^\.|\.env|composer\.(json|lock)|.*\.(sql|bak|old|zip)$)">
+  Require all denied
+</FilesMatch>
+
+# Reescrita para front-controller (URLs limpas)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Ajuste se o projeto estiver num subdiretório (ex.: /site) -> RewriteBase /site/
+  RewriteBase
+
+  # Se o arquivo ou diretório existir, entrega direto
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Caso contrário, envia tudo ao index.php preservando query string
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# (Opcional) Cache simples para arquivos estáticos
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/avif "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 30 days"
+</IfModule>
+
+# (Opcional) Cabeçalhos de segurança
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+        ',
+        'apache',
+        'light'
+      ) }}
+    </div>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="360">
+      {% if export %}3. Como o Apache serve arquivos estáticos{% else %}
+        <i class="fas fa-cog"></i> Como o Apache serve arquivos estáticos
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="400">
+      O <code>.htaccess</code> e o <code>index.php</code> residem em <code>/var/www/meuapp/public/</code>, a raiz pública do servidor.
+      Tudo que o navegador acessa deve estar em <code>/public</code>. Quando o Apache recebe a requisição:
+    </p>
+    <ul data-aos="fade-up" data-aos-delay="440" class="ms-3">
+      <li>Se o arquivo solicitado existir (ex.: <code>/assets/style.css</code>), ele é servido diretamente.</li>
+      <li>Se não existir, a requisição é redirecionada para <code>index.php</code> para roteamento MVC.</li>
+    </ul>
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="480">
+      Isso garante desempenho ideal para estáticos e URLs limpas/seguras para o restante da aplicação.
+    </p>
+
+    {# Terminal demonstrativo #}
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="520"{% endif %}>
+      {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['ls -l'], 'light') }}
+    </div>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="560">
+      {% if export %}3. Detalhamento das principais diretivas{% else %}
+        <i class="fas fa-cog"></i> Detalhamento das principais diretivas
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3" data-aos="fade-up" data-aos-delay="600">
+      <li><i class="fas fa-check text-success"></i> <code>Options -Indexes</code> — impede listagem de diretórios.</li>
+      <li><i class="fas fa-check text-success"></i> <code>DirectoryIndex index.php</code> — arquivo padrão.</li>
+      <li><i class="fas fa-check text-success"></i> <code>&lt;FilesMatch&gt;</code> — bloqueia acesso a arquivos confidenciais.</li>
+      <li><i class="fas fa-check text-success"></i> <code>mod_rewrite</code> — reescrita de URLs para o MVC.</li>
+      <li><i class="fas fa-check text-success"></i> <code>mod_expires</code> — cache de estáticos.</li>
+      <li><i class="fas fa-check text-success"></i> <code>mod_headers</code> — cabeçalhos de segurança.</li>
+    </ul>
+
+    <h3 class="h6 text-primary mt-4" data-aos="fade-up" data-aos-delay="640">
+      {% if export %}4. Importância para o MeuApp MVC{% else %}
+        <i class="fas fa-shield-alt"></i> Importância para o MeuApp MVC
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" data-aos="fade-up" data-aos-delay="680">
+      O <code>.htaccess</code> integra Apache e núcleo da aplicação, encaminhando páginas, rotas dinâmicas e estáticos
+      de forma controlada e segura. Além disso, assegura:
+    </p>
+
+    <ul class="small list-unstyled ms-3" data-aos="fade-up" data-aos-delay="720">
+      <li><i class="fas fa-check text-success"></i> Fluxo <strong>Request → Router → Controller</strong> previsível (MVC).</li>
+      <li><i class="fas fa-check text-success"></i> Isolamento da aplicação em relação ao servidor físico.</li>
+      <li><i class="fas fa-check text-success"></i> Proteção contra acessos indevidos a arquivos internos.</li>
+      <li><i class="fas fa-check text-success"></i> Otimização no carregamento de conteúdo estático.</li>
+    </ul>
+
+    <div class="alert alert-info small mt-3" data-aos="fade-up" data-aos-delay="760">
+      <i class="fas fa-info-circle"></i>
+      O <strong>.htaccess</strong> atua como guardião do fluxo HTTP no <strong>MeuApp MVC</strong>, garantindo integridade,
+      roteamento limpo e conformidade com boas práticas de segurança web.
+    </div>
+  </section>
+</div>
+{% endblock %}

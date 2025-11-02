@@ -1,0 +1,428 @@
+{# =============================================================
+   Arquivo: documentacao/composer.twig
+   Seção: Estrutura e Conteúdo do Composer
+   Descrição: Detalha o uso, estrutura e boas práticas do Composer no MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Composer{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+        <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="120">
+            <a href="/pdf/composer" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+    <section class="mb-5 pdf-section">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+            Estrutura e Conteúdo do Composer
+        </h2>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O <strong>Composer</strong> é o gerenciador de dependências oficial do ecossistema PHP.  
+            Ele automatiza a instalação, atualização e carregamento de bibliotecas, além de padronizar a forma como
+            as classes são organizadas e acessadas dentro do projeto.  
+            No <strong>MeuApp MVC</strong>, o Composer é responsável por integrar componentes externos, 
+            como o <strong>Twig</strong> e o <strong>Dompdf</strong>, e também por registrar o carregamento automático das classes 
+            da aplicação segundo o padrão <strong>PSR-4</strong>.
+        </p>
+
+        <!-- ===================== 1. Funções principais ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                1. Funções principais do Composer
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-tasks"></i> Funções principais do Composer</span>
+            {% endif %}
+        </h3>
+
+        <ul class="small list-unstyled ms-3">
+            {% set funcoes = [
+              '<strong>Gerenciamento de dependências:</strong> instala e atualiza bibliotecas externas.',
+              '<strong>Autoload automático:</strong> registra as classes do projeto para carregamento dinâmico.',
+              '<strong>Padronização:</strong> implementa o padrão <code>PSR-4</code> para estrutura de namespaces.',
+              '<strong>Reprodutibilidade:</strong> mantém versões fixas das dependências via <code>composer.lock</code>.',
+              '<strong>Integração contínua:</strong> facilita o deploy e a manutenção em múltiplos ambientes.'
+            ] %}
+            {% for f in funcoes %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 80*loop.index }}"{% endif %}>
+                <i class="fas fa-check text-success"></i> {{ f|raw }}
+              </li>
+            {% endfor %}
+        </ul>
+
+        <!-- ===================== 2. Estrutura do arquivo ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                2. Estrutura do arquivo composer.json
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-file-code"></i> Estrutura do arquivo composer.json</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O arquivo <code>composer.json</code> é o coração da configuração do Composer.  
+            Nele estão descritos o nome do pacote, as dependências do projeto e a forma de carregamento das classes.  
+            Abaixo está a estrutura utilizada pelo <strong>MeuApp MVC</strong>:
+        </p>
+
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+          {{ ui.codeblock_pro(
+              '/var/www/meuapp/composer.json',
+              '{
+    "name": "meuapp/mvc",
+    "description": "Aplicação PHP MVC com Twig e Bootstrap",
+    "type": "project",
+    "license": "MIT",
+    "version": "1.0.0",
+    "homepage": "https://github.com/luciolemos/mvc",
+    "minimum-stability": "stable",
+    "authors": [
+      {
+        "name": "Lucio Flavio Lemos",
+        "email": "luciolemos.j5@gmail.com",
+        "role": "developer",
+        "homepage": "https://luciolemos.com"
+      }
+    ],
+    "autoload": {
+      "psr-4": {
+        "App\\\\\\": "app/",
+        "App\\\\Http\\\\": "app/Http/"
+      }
+    },
+    "require": {
+      "twig/twig": "^3.21",
+      "dompdf/dompdf": "^3.1"
+    }
+}',
+              'json',
+              'light'
+          ) }}
+        </div>
+
+        <!-- ===================== 3. Explicação ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                3. Explicação dos principais elementos
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-list"></i> Explicação dos principais elementos</span>
+            {% endif %}
+        </h3>
+
+        <ul class="small">
+            {% set elems = [
+              '<code>name</code> — Identifica o projeto e segue o formato <em>vendor/package</em>.',
+              '<code>description</code> — Breve resumo da finalidade do projeto.',
+              '<code>autoload</code> — Define a estrutura de namespaces conforme <strong>PSR-4</strong>.',
+              '<code>require</code> — Dependências externas necessárias (ex.: <strong>Twig</strong>, <strong>Dompdf</strong>).'
+            ] %}
+            {% for e in elems %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 70*loop.index }}"{% endif %}>{{ e|raw }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- ===================== 3b. PSR-4 (recorte) ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                3. O que isso faz
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-list"></i> Explicação do elemento "autoload"</span>
+            {% endif %}
+        </h3>
+
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+          {{ ui.codeblock_pro(
+              '/var/www/meuapp/composer.json',
+              '"autoload": {\n  "psr-4": {\n    "App\\\\\\\\": "app/",\n    "App\\\\Http\\\\": "app/Http/"\n  }\n}',
+              'json',
+              'light'
+          ) }}
+        </div>
+
+        <ul class="small">
+            <li {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>Tudo que começa com <code>App\</code> será buscado em <code>/app</code>.</li>
+            <li {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>Tudo que começa com <code>App\Http\</code> será resolvido em <code>/app/Http</code>.</li>
+        </ul>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>
+            Isso cobre perfeitamente os namespaces:
+        </p>
+        <ul class="small">
+            {% set nss = [
+              'App\\Core\\App',
+              'App\\Core\\Router',
+              'App\\Http\\Controllers\\Frontend\\HomeController',
+              'App\\Http\\Controllers\\Admin\\DashboardController'
+            ] %}
+            {% for n in nss %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 260 + 40*loop.index }}"{% endif %}>{{ n }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- ===================== 4. Instalação e atualização ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                4. Instalação e atualização de dependências
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-download"></i> Instalação e atualização de dependências</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O Composer utiliza comandos simples para instalar ou atualizar bibliotecas.  
+            Todos os pacotes são armazenados na pasta <code>/vendor</code> e registrados no autoload.
+        </p>
+
+        {# Explicação antes do terminal: composer install #}
+        {{ ui.note('<strong>composer install</strong> — Instala dependências do <code>composer.json</code> (respeitando o <code>composer.lock</code> se existir).', export, 'fade-up', 80) }}
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+        {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['composer install'], 'light') }}
+        </div>
+
+
+        {# Explicação antes do terminal: composer update #}
+        {{ ui.note('<strong>composer update</strong> — Atualiza dependências para as versões mais recentes compatíveis com as restrições do <code>composer.json</code>.', export, 'fade-up', 160) }}
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="200"{% endif %}>
+          {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['composer update'], 'light') }}
+        </div>
+
+        <!-- ===================== 5. Regeneração do autoload ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                5. Regeneração do autoload
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-sync-alt"></i> Regeneração do autoload</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            Sempre que novas classes ou namespaces são adicionados ao projeto, regenere o autoload para que o Composer reconheça as mudanças.
+        </p>
+
+        {# Explicação antes do terminal: dump-autoload #}
+        <p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+            <strong>composer dump-autoload</strong> — Recria o mapeamento do autoload (útil após criar/mover classes).
+        </p>
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+          {{ ui.terminal_pro('luciolemos@dev:/var/www/meuapp$', ['composer dump-autoload'], 'light') }}
+        </div>
+
+        <p class="text-justify small" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+            Execute após criar novas classes em <code>/app</code> para que o autoload detecte a estrutura atualizada.
+        </p>
+
+        <!-- ===================== 6. PSR-4 ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                6. Padrão PSR-4 e autoload automático
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-code-branch"></i> Padrão PSR-4 e autoload automático</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O <strong>PSR-4</strong> define a convenção de nomes e caminhos para o carregamento automático de classes, eliminando <code>require</code>/<code>include</code> manuais.
+        </p>
+
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+          {{ ui.codeblock_pro(
+              'app/Controllers/Public/HomeController.php',
+              '/* Namespace declarado em app/Controllers/Public/HomeController.php */
+<?php
+namespace App\\Controllers\\Public;
+
+class HomeController {
+    public function index() {
+        echo "Página inicial carregada!";
+    }
+}
+
+// O Composer localizará automaticamente essa classe com base na estrutura PSR-4',
+              'php',
+              'light'
+          ) }}
+        </div>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+            Qualquer classe em <code>App\</code> será carregada automaticamente se estiver na árvore correta de diretórios.
+        </p>
+
+        <!-- ===================== 7. composer.lock ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                7. Arquivo composer.lock
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-lock"></i> Arquivo composer.lock</span>
+            {% endif %}
+        </h3>
+
+        <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+            O <code>composer.lock</code> registra as versões exatas instaladas, garantindo que produção use as mesmas versões testadas em desenvolvimento.
+        </p>
+
+        <!-- ===================== 8. Boas práticas ===================== -->
+        <h3 class="h6 text-primary mt-4">
+            {% if export %}
+                8. Melhores práticas de uso do Composer
+            {% else %}
+                <span data-aos="zoom-in"><i class="fas fa-lightbulb"></i> Melhores práticas de uso do Composer</span>
+            {% endif %}
+        </h3>
+
+        <ul class="small list-unstyled ms-3">
+            {% set bps = [
+              'Evite editar manualmente o <code>composer.lock</code>.',
+              'Não inclua a pasta <code>/vendor</code> no repositório — gere-a via Composer.',
+              'Em produção, execute <code>composer install</code> (não <code>update</code>) para estabilidade.',
+              'Use <code>composer outdated</code> para identificar dependências antigas.',
+              'Documente dependências críticas na documentação técnica.'
+            ] %}
+            {% for tip in bps %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 70*loop.index }}"{% endif %}>
+                <i class="fas fa-check text-success"></i> {{ tip|raw }}
+              </li>
+            {% endfor %}
+        </ul>
+
+        <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="220"{% endif %}>
+            <i class="fas fa-info-circle"></i>
+            O <strong>Composer</strong> é o alicerce do ecossistema PHP moderno.  
+            No <strong>MeuApp MVC</strong>, ele garante modularidade, padronização e integração automatizada
+            entre o código da aplicação e bibliotecas externas.
+        </div>
+    </section>
+
+<!-- COMPOSER -->
+<section class="mb-5">
+  <h2 class="h6 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+    <i class="fas fa-cube"></i> Estrutura do <code>composer.json</code>
+  </h2>
+
+  {% set composer_json %}
+{
+  "name": "luciolemos/meuapp",
+  "require": {
+    "twig/twig": "^3.0",
+    "dompdf/dompdf": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\\\": "app/"
+    }
+  }
+}
+  {% endset %}
+
+  <div {% if not export %}data-aos="flip-up" data-aos-delay="80"{% endif %}>
+    {{ ui.codeblock_pro('composer.json', composer_json|trim, 'json', 'light') }}
+  </div>
+
+  <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="140"{% endif %}>
+    O Composer gerencia dependências e autoload. O namespace <code>App\</code> aponta para o diretório <code>app/</code>,
+    garantindo carregamento automático conforme o padrão <strong>PSR-4</strong>.
+  </p>
+
+  <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-right" data-aos-delay="160"{% endif %}>
+    <i class="fas fa-terminal"></i> Principais Comandos do Composer
+  </h3>
+
+  {# ======= TABELA RESUMO ======= #}
+  {% set comandos = [
+    {'cmd': 'composer install', 'desc': 'Instala todas as dependências definidas no composer.json.', 'icon': 'fas fa-download text-success'},
+    {'cmd': 'composer dump-autoload -o', 'desc': 'Regenera o autoload otimizado após criar/mover classes.', 'icon': 'fas fa-sync-alt text-primary'},
+    {'cmd': 'composer update', 'desc': 'Atualiza todas as dependências conforme versões permitidas.', 'icon': 'fas fa-arrow-up text-warning'},
+    {'cmd': 'composer show', 'desc': 'Lista pacotes instalados e suas versões.', 'icon': 'fas fa-list text-info'},
+    {'cmd': 'composer require dompdf/dompdf', 'desc': 'Adiciona uma nova dependência ao projeto.', 'icon': 'fas fa-plus-circle text-danger'}
+  ] %}
+
+  <div class="table-responsive mt-3" {% if not export %}data-aos="zoom-in" data-aos-delay="200"{% endif %}>
+    <table class="table table-bordered align-middle small mb-0">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 60px;">#</th>
+          <th>Comando</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in comandos %}
+          <tr {% if not export %}data-aos="fade-up" data-aos-delay="{{ 200 + (loop.index * 70) }}"{% endif %}>
+            <td class="text-center"><i class="{{ c.icon }}"></i></td>
+            <td><code>{{ c.cmd }}</code></td>
+            <td>{{ c.desc }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# ======= BLOCO DE TERMINAL ======= #}
+  <div class="mt-4" {% if not export %}data-aos="flip-up" data-aos-delay="400"{% endif %}>
+    {{ ui.codeblock_pro(
+      "Terminal — Composer",
+      "luciolemos@dev:/var/www/meuapp$ composer install
+# Instala todas as dependências definidas no composer.json
+
+luciolemos@dev:/var/www/meuapp$ composer dump-autoload -o
+# Regenera o autoload (otimizado), usado após mover ou criar novas classes
+
+luciolemos@dev:/var/www/meuapp$ composer update
+# Atualiza todas as dependências conforme as versões especificadas
+
+luciolemos@dev:/var/www/meuapp$ composer show
+# Lista todos os pacotes instalados e suas versões
+
+luciolemos@dev:/var/www/meuapp$ composer require dompdf/dompdf
+# Adiciona uma nova dependência e atualiza o composer.json",
+      "bash",
+      "light"
+    ) }}
+  </div>
+
+  <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="460"{% endif %}>
+    Esses comandos são essenciais para o fluxo de desenvolvimento do <strong>MeuApp MVC</strong>,
+    garantindo integridade, atualização e controle sobre todas as bibliotecas do projeto.
+  </p>
+</section>
+
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,152 @@
+{# =============================================================
+   Arquivo: documentacao/configuração.twig
+   Seção: Configuração do projeto
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Configuração{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+  <div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+      <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="120">
+        <a href="/pdf/configuracao" class="btn btn-outline-danger">
+          <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    <header class="mb-4 text-center">
+        <h1 class="display-4 fw-bold mb-3"
+            {% if not export %}data-aos="zoom-in"{% endif %}>
+            {{ title }}
+        </h1>
+
+        <h2 class="text-success"
+            {% if not export %}data-aos="zoom-in" data-aos-delay="120"{% endif %}>
+            {{ subtitle }}
+        </h2>
+
+        <p class="lead"
+           {% if not export %}data-aos="zoom-in" data-aos-delay="240"{% endif %}>
+           {{ description }}
+        </p>
+
+        {% if author and date %}
+            <p class="text-muted small"
+               {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
+                <i class="fas fa-user"></i> {{ author }} &nbsp; | &nbsp;
+                <i class="fas fa-calendar-alt"></i> {{ date|date("d/m/Y") }}
+            </p>
+        {% endif %}
+    </header>
+
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        DESCRIÇÃO DO PROJETO
+      </h2>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        O <strong>MeuApp MVC</strong> é um <em>laboratório de desenvolvimento web</em> criado com o propósito
+        de integrar <strong>estudo, prática e documentação técnica</strong> em um único ambiente de aprendizado
+        e experimentação. Desenvolvido sobre o padrão arquitetural <strong>Model-View-Controller (MVC)</strong>,
+        o projeto oferece uma visão clara e aplicada dos princípios que regem a estruturação de sistemas PHP
+        modernos e escaláveis.
+      </p>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        Todo o processo de desenvolvimento foi <strong>documentado de forma incremental</strong>, permitindo ao
+        estudante acompanhar a evolução do projeto de maneira orientada.  
+        O item de menu <code>Documentação → Configuração do Ambiente</code> invoca a view
+        <code>/app/Views/Public/artigo_configuracao.twig</code>, que contém seções detalhadas sobre componentes
+        essenciais da aplicação — como o <strong>arquivo .htaccess</strong>, o <strong>composer.json</strong> e
+        o <strong>VirtualHost</strong>.  
+        Cada tópico descreve a função, a estrutura e a importância de cada elemento dentro do ciclo de execução
+        do sistema.
+      </p>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+        A arquitetura do <strong>MeuApp MVC</strong> foi concebida com ênfase em
+        <strong>organização estrutural</strong>, <strong>modularidade</strong> e
+        <strong>reuso de código</strong>.  
+        Ao aplicar o princípio da <em>separação de responsabilidades</em>, o projeto proporciona maior clareza no
+        fluxo de dados, facilidade de manutenção e ampliação progressiva sem impacto sobre outras camadas do
+        sistema.
+      </p>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="280"{% endif %}>
+        Projetado tanto para o <strong>ambiente acadêmico</strong> quanto para o <strong>uso profissional</strong>,
+        o MeuApp atua como um <strong>guia conceitual e funcional</strong>, servindo de referência para o estudo
+        do MVC e suas aplicações práticas.  
+        Sua estrutura flexível permite que seja utilizado como base para protótipos, testes de integração e
+        projetos de produção reais.
+      </p>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
+        O ecossistema do MeuApp integra tecnologias modernas —
+        <strong>PHP</strong>, <strong>Apache</strong>, <strong>MySQL</strong>, <strong>Twig</strong>,
+        <strong>Bootstrap</strong>, <strong>Composer</strong> e <strong>Ubuntu WSL2</strong> —
+        consolidando um ambiente robusto, padronizado e multiplataforma.  
+        O projeto é desenvolvido no <strong>Visual Studio Code</strong>, com terminal integrado ao
+        <strong>Ubuntu 24 (WSL)</strong>, reproduzindo com fidelidade um ambiente de produção Linux.
+      </p>
+
+      {#
+      <div class="alert alert-light border-start border-primary mt-3 p-3 small"
+           {% if not export %}data-aos="fade-up" data-aos-delay="480"{% endif %}>
+        <i class="fas fa-info-circle text-primary"></i>
+        <em>View principal:</em> <code>/app/Views/Public/artigo_configuracao.twig</code>
+      </div>
+      #}
+    </section>
+
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        MENUS
+      </h2>
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        Todo item pai (ex: DOCUMENTAÇÃO, ERROS, ADMIN) fica ativo quando qualquer sublink seu estiver ativo.
+        O comportamento será consistente, estável, e 100% Twig-nativo (sem macros, sem dependências).
+      </p>
+
+      <div class="alert alert-info small mt-3"
+           {% if not export %}data-aos="flip-up" data-aos-delay="420"{% endif %}>
+        <i class="fas fa-lightbulb"></i>
+        O Twig é um dos pilares do padrão MVC — ele mantém a view limpa, desacoplada da lógica
+        e garante manutenibilidade em aplicações de médio e grande porte.
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

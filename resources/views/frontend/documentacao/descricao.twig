@@ -1,0 +1,316 @@
+{# =============================================================
+   Arquivo: documentacao/descrição.twig
+   Seção: Configuração do projeto
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Descrição{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+        <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="120">
+            <a href="/pdf/descricao" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+    <!-- TECNOLOGIAS -->
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+            <i class="fas fa-layer-group"></i> Stack e Tecnologias Utilizadas
+        </h2>
+        <ul class="list-group mb-3" data-aos="flip-up" data-aos-delay="100">
+            <li class="list-group-item" {% if not export %}data-aos="fade-up"{% endif %}>
+                <i class="fas fa-puzzle-piece text-primary"></i> <strong>MVC Pattern (Model-View-Controller):</strong>
+                separa a lógica da aplicação, a apresentação e o controle de forma clara e escalável.
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+                <i class="fas fa-cogs text-secondary"></i> <strong>Composer Autoload (PSR-4):</strong>
+                garante carregamento automático de classes conforme o padrão moderno do PHP.
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+                <i class="fas fa-paint-brush text-warning"></i> <strong>Twig Template Engine:</strong>
+                motor de templates rápido e seguro, usado para renderizar as views.
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>
+                <i class="fas fa-database text-success"></i> <strong>MySQL Database:</strong>
+                banco de dados relacional para persistência e manipulação de dados.
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="320"{% endif %}>
+                <i class="fas fa-server text-danger"></i> <strong>Apache + VirtualHost + .htaccess:</strong>
+                garante URLs limpas e controle total de reescrita via mod_rewrite.
+            </li>
+        </ul>
+    </section>
+
+    <!-- ESTRUTURA DE PASTAS -->
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+            <i class="fas fa-folder-open"></i> Estrutura de Pastas
+        </h2>
+        <p {% if not export %}data-aos="fade-up"{% endif %}>
+            A organização do projeto segue boas práticas de separação por responsabilidade:
+        </p>
+
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="120"{% endif %}>
+        
+{{ ui.codeblock_pro(
+  "Estrutura de diretórios do MeuApp MVC",
+  "
+.
+├── app
+│   ├── Bootstrap
+│   ├── Console
+│   ├── Core
+│   ├── Domain
+│   ├── Http
+│   ├── Providers
+│   ├── public
+│   ├── README.md
+│   ├── Services
+│   ├── storage
+│   └── Support
+├── bootstrap
+│   └── app.php
+├── composer.json
+├── composer.lock
+├── config
+│   ├── app.php
+│   ├── config.php
+│   ├── database.php
+│   ├── menu_documentacao.json
+│   ├── routes
+│   └── twig.php
+├── estrutura.txt
+├── phpunit.xml
+├── public
+│   ├── css
+│   ├── fonts
+│   ├── hello.php
+│   ├── images
+│   ├── index.php
+│   ├── info.php
+│   ├── js
+│   └── tmp
+├── README.md
+├── resources
+│   └── views
+├── storage
+│   ├── cache
+│   ├── fonts
+│   ├── logs
+│   ├── pdf
+│   ├── tmp
+│   └── uploads
+├── tests
+│   └── Feature
+├── tmp
+│   └── pdf
+└── vendor
+    ├── autoload.php
+    ├── composer
+    ├── dompdf
+    ├── masterminds
+    ├── sabberworm
+    ├── symfony
+    ├── tecnickcom
+    └── twig
+",
+  "bash",
+  "light"
+) }}
+
+        </div>
+
+        <p class="text-muted small" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+            Essa estrutura segue o padrão MVC com PSR-4, permitindo manutenção simples e escalabilidade futura.
+        </p>
+    </section>
+
+    <!-- COMPOSER -->
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+            <i class="fas fa-cube"></i> Estrutura do <code>composer.json</code>
+        </h2>
+
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="80"{% endif %}>
+{{ ui.codeblock_pro(
+              '/var/www/meuapp/composer.json',
+              '{
+    "name": "meuapp/mvc",
+    "description": "Aplicação PHP MVC com Twig e Bootstrap",
+    "type": "project",
+    "license": "MIT",
+    "version": "1.0.0",
+    "homepage": "https://github.com/luciolemos/mvc",
+    "minimum-stability": "stable",
+    "authors": [
+      {
+        "name": "Lucio Flavio Lemos",
+        "email": "luciolemos.j5@gmail.com",
+        "role": "developer",
+        "homepage": "https://luciolemos.com"
+      }
+    ],
+    "autoload": {
+      "psr-4": {
+        "App\\\\\\": "app/",
+        "App\\\\Http\\\\": "app/Http/"
+      }
+    },
+    "require": {
+      "twig/twig": "^3.21",
+      "dompdf/dompdf": "^3.1"
+    }
+}',
+              'json',
+              'light'
+          ) }}
+        </div>
+
+        <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+            O Composer gerencia dependências e autoload. O namespace <code>App\</code> aponta para o diretório <code>app/</code>.
+        </p>
+    </section>
+
+    <!-- VIRTUALHOST -->
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+            <i class="fas fa-server"></i> Configuração do VirtualHost
+        </h2>
+
+        <div {% if not export %}data-aos="flip-up" data-aos-delay="80"{% endif %}>
+{# <pre>
+<span class="directive">&lt;VirtualHost</span> *:80<span class="directive">&gt;</span>
+    ServerName meuapp.local
+    DocumentRoot <span class="path">/var/www/meuapp/public</span>
+
+    <span class="directive">&lt;Directory</span> <span class="path">/var/www/meuapp/public</span><span class="directive">&gt;</span>
+        AllowOverride All
+        Require all granted
+    <span class="directive">&lt;/Directory&gt;</span>
+
+    ErrorLog ${APACHE_LOG_DIR}/meuapp-error.log
+    CustomLog ${APACHE_LOG_DIR}/meuapp-access.log combined
+<span class="directive">&lt;/VirtualHost&gt;</span>
+</pre> #}
+ {{ ui.codeblock_pro(
+            'meuapp.conf',
+            '<VirtualHost *:80>
+    ServerAdmin admin@meuapp.local
+    ServerName meuapp.local
+    DocumentRoot /var/www/meuapp/public
+
+    <Directory /var/www/meuapp/public>
+        AllowOverride All
+        Options Indexes FollowSymLinks
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/meuapp-error.log
+    CustomLog ${APACHE_LOG_DIR}/meuapp-access.log combined
+</VirtualHost>',
+            'apache',
+            'light'
+        ) }}
+
+        </div>
+
+        <p class="small text-muted" {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+            Essa configuração garante que o Apache sirva o diretório público e interprete corretamente o roteamento MVC.
+        </p>
+    </section>
+
+    <!-- AMBIENTE WSL -->
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+            <i class="fas fa-laptop-code"></i> Configuração no WSL2
+        </h2>
+         <ul class="list-group mb-3" data-aos="flip-up" data-aos-delay="100">
+            <li class="list-group-item" {% if not export %}data-aos="fade-up"{% endif %}>
+                <i class="fas fa-terminal text-dark"></i> O WSL2 executa o Apache e PHP nativamente dentro do Linux.
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+                <i class="fas fa-network-wired text-info"></i> O Windows acessa o servidor via IP interno ou domínio local (<code>meuapp.local</code>).
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="160"{% endif %}>
+                <i class="fas fa-file-alt text-secondary"></i> O <code>/etc/hosts</code> do Windows deve apontar para o IP do WSL.
+            </li>
+            <li class="list-group-item" {% if not export %}data-aos="fade-up" data-aos-delay="240"{% endif %}>
+                <i class="fas fa-lightbulb text-warning"></i> Use o domínio <strong>.test</strong> se houver conflito com o Chrome/Edge e mDNS.
+            </li>
+        </ul>
+    </section>
+
+    <!-- STATUS -->
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+            <i class="fas fa-clipboard-check"></i> Status Atual do Ambiente
+        </h2>
+        <ul class="list-unstyled ms-2">
+            {% set status = [
+              'Apache rodando no WSL e servindo <code>/var/www/meuapp/public</code>;',
+              'VirtualHost ativo e configurado;',
+              '.htaccess funcional (URLs limpas);',
+              'Twig e Router operando corretamente;',
+              'Ambiente de desenvolvimento estável e pronto;',
+              'Estrutura MVC real (Controllers, Views, Layouts, Router);',
+              'Twig bem configurado com blocos reutilizáveis;',
+              'Bootstrap 5 + FontAwesome integrados;',
+              'Animações AOS aplicadas com leveza e sem travar o layout;',
+              'PDF dinâmico com Dompdf;',
+              'VirtualHost + .htaccess redirecionando tudo como deve ser.'
+            ] %}
+            {% for s in status %}
+              <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 60*loop.index }}"{% endif %}>
+                <i class="fas fa-check text-success"></i> {{ s|raw }}
+              </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="mt-5">
+        <div class="alert alert-info" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+            <i class="fas fa-rocket"></i>
+            Documentação gerada automaticamente — ambiente validado e pronto para evoluir.
+        </div>
+    </footer>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

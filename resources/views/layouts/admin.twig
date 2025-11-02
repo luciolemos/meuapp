@@ -1,0 +1,47 @@
+{% extends "layouts/base.twig" %}
+
+{% block title %}Admin | {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    <style>
+        body { background-color: #f0f2f5; }
+        .sidebar {
+            height: 100vh;
+            background: #212529;
+            color: #fff;
+            position: fixed;
+            width: 220px;
+            padding-top: 1rem;
+        }
+        .sidebar a {
+            color: #adb5bd;
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 1rem;
+        }
+        .sidebar a:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+        main {
+            margin-left: 240px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <aside class="col-md-3 sidebar">
+        <h5 class="text-light ms-3 mb-3">Painel Admin</h5>
+        <a href="/admin/dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+        <a href="/admin/users"><i class="fas fa-users me-2"></i> Usuários</a>
+        <a href="/admin/settings"><i class="fas fa-cogs me-2"></i> Configurações</a>
+    </aside>
+
+    <main class="col-md-9 offset-md-3 p-4">
+        {% block admin_content %}
+        {% endblock %}
+    </main>
+</div>
+{% endblock %}

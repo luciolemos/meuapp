@@ -1,0 +1,251 @@
+{# =============================================================
+   Arquivo: documentacao/fontawesome.twig
+   Seção: Font Awesome
+   Descrição: Guia de uso de ícones (CDN/local), acessibilidade e boas práticas no MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Font Awesome{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+  {% if not export %}
+    <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="120">
+      <a href="/pdf/fontawesome" class="btn btn-outline-danger">
+        <i class="fas fa-file-pdf"></i> Exportar PDF
+      </a>
+    </div>
+  {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+  <section class="mb-5 pdf-section">
+
+    <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+      Font Awesome no Projeto
+    </h2>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+      O <strong>Font Awesome 6</strong> fornece uma vasta biblioteca de ícones vetoriais. No <strong>MeuApp MVC</strong>, ele
+      compõe a camada visual junto ao Bootstrap e ao Twig, garantindo consistência e rapidez de desenvolvimento.
+    </p>
+
+    <!-- 1. Importação -->
+    <h3 class="h6 text-primary mt-4">
+      {% if export %}
+        1. Importação (CDN e local)
+      {% else %}
+        <span data-aos="zoom-in"><i class="fas fa-link"></i> Importação (CDN e local)</span>
+      {% endif %}
+    </h3>
+
+    {# CDN #}
+    <p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+      <strong>Via CDN:</strong> Ideal para desenvolvimento/prototipagem. Inclua a folha de estilos no <code>&lt;head&gt;</code>.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="140"{% endif %}>
+      {{ ui.codeblock_pro('cdn.html',
+'<!-- CSS Font Awesome (CDN) -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  integrity="sha512-..."
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer" />',
+      'html','light') }}
+    </div>
+
+    {# Local #}
+    <p class="small text-muted mb-1 mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="180"{% endif %}>
+      <strong>Via local:</strong> Para ambientes offline/produção, hospede os arquivos em <code>/public/vendor/fa/</code>.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="240"{% endif %}>
+      {{ ui.codeblock_pro('local.html',
+'<!-- CSS Font Awesome (local) -->
+<link rel="stylesheet" href="/vendor/fa/css/all.min.css">',
+      'html','light') }}
+    </div>
+
+    <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="300"{% endif %}>
+      <i class="fas fa-info-circle"></i>
+      <strong>PDF/Dompdf:</strong> Evite CDN no modo export. Prefira <strong>SVG inline</strong> para garantir renderização
+      no PDF. Ícones via webfont podem não aparecer se o Dompdf bloquear fontes remotas.
+    </div>
+
+    <!-- 2. Uso básico -->
+    <h3 class="h6 text-primary mt-4">
+      {% if export %}
+        2. Uso básico de ícones
+      {% else %}
+        <span data-aos="zoom-in"><i class="fas fa-icons"></i> Uso básico de ícones</span>
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+      Use classes da coleção <code>fa-solid</code>, <code>fa-regular</code> ou <code>fa-brands</code>. Combine com utilitários Bootstrap.
+    </p>
+
+    <p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+      <strong>Exemplo:</strong> Botão com ícone à esquerda.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="140"{% endif %}>
+      {{ ui.codeblock_pro('botao.html',
+'<button class="btn btn-primary">
+  <i class="fa-solid fa-download me-2"></i>Baixar relatório
+</button>',
+      'html','light') }}
+    </div>
+
+    <!-- 3. Integração com Twig -->
+    <h3 class="h6 text-primary mt-4">
+      {% if export %}
+        3. Integração com Twig (dinâmica)
+      {% else %}
+        <span data-aos="zoom-in"><i class="fas fa-adjust"></i> Integração com Twig (dinâmica)</span>
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+      Os nomes de ícones podem vir de variáveis/BD. Use condicionais para alternar coleções (solid/brands).
+    </p>
+
+    <p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+      <strong>Exemplo:</strong> Ícone definido por variável e com <code>aria-hidden</code>.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="140"{% endif %}>
+      {{ ui.codeblock_pro('dinamico.twig',
+'{% set icon = item.icon|default("fa-user") %}
+<i class="fa-solid {{ icon }}" aria-hidden="true"></i> {{ item.label }}',
+      'twig','light') }}
+    </div>
+
+    <!-- 4. Acessibilidade -->
+    <h3 class="h6 text-primary mt-4">
+      {% if export %}
+        4. Acessibilidade (ARIA e semântica)
+      {% else %}
+        <span data-aos="zoom-in"><i class="fas fa-universal-access"></i> Acessibilidade (ARIA e semântica)</span>
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3">
+      {% set a11y = [
+        'Ícones decorativos: use <code>aria-hidden="true"</code> e mantenha o rótulo no texto.',
+        'Ícones informativos: envolva com <code>&lt;span class="visually-hidden"&gt;</code> para leitores de tela.',
+        'Evite transmitir informação só por cor/ícone; inclua texto de apoio.'
+      ] %}
+      {% for tip in a11y %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 80*loop.index }}"{% endif %}>
+          <i class="fas fa-check text-success"></i> {{ tip|raw }}
+        </li>
+      {% endfor %}
+    </ul>
+
+    <p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="260"{% endif %}>
+      <strong>Exemplo (texto oculto para screen reader):</strong>
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="320"{% endif %}>
+      {{ ui.codeblock_pro('a11y.html',
+'<button class="btn btn-outline-secondary">
+  <i class="fa-solid fa-print" aria-hidden="true"></i>
+  <span class="visually-hidden">Imprimir documento</span>
+</button>',
+      'html','light') }}
+    </div>
+
+    <!-- 5. Tamanhos, rotação e stack -->
+    <h3 class="h6 text-primary mt-4">
+      {% if export %}
+        5. Tamanho, rotação e empilhamento
+      {% else %}
+        <span data-aos="zoom-in"><i class="fas fa-layer-group"></i> Tamanho, rotação e empilhamento</span>
+      {% endif %}
+    </h3>
+
+    <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+      Ajuste tamanho com <code>fa-xs/sm/lg/xl/2x...</code>, rotacione com utilitários CSS e use <em>stack</em> para compor ícones.
+    </p>
+
+    <p class="small text-muted mb-1" {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+      <strong>Exemplos:</strong> tamanhos, rotação e stack.
+    </p>
+    <div {% if not export %}data-aos="flip-up" data-aos-delay="140"{% endif %}>
+      {{ ui.codeblock_pro('sizes-stack.html',
+'<!-- Tamanhos -->
+<i class="fa-solid fa-star fa-xs"></i>
+<i class="fa-solid fa-star fa-sm"></i>
+<i class="fa-solid fa-star fa-lg"></i>
+<i class="fa-solid fa-star fa-2x"></i>
+
+<!-- Rotação usando utilitário Bootstrap -->
+<i class="fa-solid fa-sync d-inline-block" style="transform: rotate(90deg);"></i>
+
+<!-- Stack (ícone sobre círculo) -->
+<span class="fa-stack">
+  <i class="fa-solid fa-circle fa-stack-2x"></i>
+  <i class="fa-solid fa-flag fa-stack-1x fa-inverse"></i>
+</span>',
+      'html','light') }}
+    </div>
+
+    <!-- 6. Performance e fallback -->
+    <h3 class="h6 text-primary mt-4">
+      {% if export %}
+        6. Performance e fallback
+      {% else %}
+        <span data-aos="zoom-in"><i class="fas fa-gauge-high"></i> Performance e fallback</span>
+      {% endif %}
+    </h3>
+
+    <ul class="small list-unstyled ms-3">
+      {% set perf = [
+        'Prefira subset local com apenas ícones usados (reduz payload).',
+        'Em páginas críticas, inline <strong>SVG</strong> para ícones essenciais.',
+        'No PDF (Dompdf), use SVG inline; evite fontes remotas.',
+        'Defina <code>width/height</code> quando usar SVG para evitar layout shift.'
+      ] %}
+      {% for tip in perf %}
+        <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ 70*loop.index }}"{% endif %}>
+          <i class="fas fa-check text-success"></i> {{ tip|raw }}
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="220"{% endif %}>
+      <i class="fas fa-info-circle"></i>
+      Se preferir eliminar webfonts, considere <strong>Bootstrap Icons</strong> (SVG puro) como alternativa 100% compatível com PDF.
+    </div>
+
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

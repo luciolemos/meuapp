@@ -1,0 +1,143 @@
+{# =============================================================
+   Arquivo: /var/www/meuapp/resources/views/frontend/mvc.twig
+   Seção: O Design Pattern MVC
+   Descrição: Explica o padrão Model-View-Controller adotado no MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% import "partials/macros.twig" as ui %}
+{% extends "layouts/base.twig" %}
+
+{% block title %}{{ app_name }} — MVC{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+  <div class="container py-4">
+
+    {% if not export %}
+      <div class="text-end mb-3" data-aos="fade-left">
+        <a href="/pdf/mvc" class="btn btn-outline-danger">
+          <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right" data-aos-delay="60"{% endif %}>
+        O Design Pattern MVC
+      </h2>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="60"{% endif %}>
+        O <strong>Model-View-Controller (MVC)</strong> é um dos padrões de arquitetura mais consolidados
+        no desenvolvimento de aplicações web. Sua principal virtude é a <strong>separação de responsabilidades</strong>,
+        permitindo que a lógica de negócios, a interface do usuário e o controle de fluxo existam de forma independente,
+        mas coordenada.
+      </p>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        No <strong>MeuApp MVC</strong>, essa separação está refletida na estrutura de pastas:
+        os <em>Controllers</em> gerenciam as requisições HTTP, os <em>Models</em> manipulam dados e regras de negócio,
+        e as <em>Views</em> (via <strong>Twig</strong>) cuidam da apresentação. Isso reduz acoplamentos, melhora a
+        testabilidade e acelera a manutenção.
+      </p>
+
+      <ul class="list-group mb-4" {% if not export %}data-aos="flip-up" data-aos-delay="100"{% endif %}>      
+        <li class="list-group-item">
+          <i class="fas fa-database text-success"></i>
+          <strong>Model:</strong> Responsável pela <strong>lógica de negócio</strong> e comunicação com o banco de dados.
+          Define entidades, valida dados e centraliza regras do domínio.
+        </li>
+        <li class="list-group-item">
+          <i class="fas fa-eye text-info"></i>
+          <strong>View:</strong> Camada de <strong>apresentação</strong>. Usa <strong>Twig</strong> para renderizar interfaces
+          dinâmicas e seguras.
+        </li>
+        <li class="list-group-item">
+          <i class="fas fa-route text-primary"></i>
+          <strong>Controller:</strong> <strong>Ponte entre usuário e sistema</strong>: recebe requisições, aciona Models e retorna Views.
+        </li>
+      </ul>
+
+      <!-- 1 -->
+      <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
+        {% if export %}1. Benefícios do padrão MVC{% else %}
+          <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-balance-scale"></i> 1. Benefícios do padrão MVC</span>
+        {% endif %}
+      </h3>
+
+      <ul class="small list-unstyled ms-3" {% if not export %}data-aos="fade-up" data-aos-delay="220"{% endif %}>
+        <li><i class="fas fa-check text-success"></i> Código mais limpo, legível e modular.</li>
+        <li><i class="fas fa-check text-success"></i> Facilita manutenção e testes unitários.</li>
+        <li><i class="fas fa-check text-success"></i> Reuso de componentes e templates.</li>
+        <li><i class="fas fa-check text-success"></i> Evolução contínua sem quebra estrutural.</li>
+        <li><i class="fas fa-check text-success"></i> Favorece colaboração e versionamento com Git.</li>
+      </ul>
+
+      <!-- 2 -->
+      <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="260"{% endif %}>
+        {% if export %}2. Fluxo de execução do MVC no MeuApp{% else %}
+          <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-random"></i> 2. Fluxo de execução do MVC no MeuApp</span>
+        {% endif %}
+      </h3>
+
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="280"{% endif %}>
+        O fluxo principal segue uma ordem previsível:
+      </p>
+
+      <ol class="small" {% if not export %}data-aos="fade-up" data-aos-delay="300"{% endif %}>
+        <li><strong>Router:</strong> Interpreta a URL e direciona para o Controller apropriado.</li>
+        <li><strong>Controller:</strong> Recebe a requisição e aciona o Model.</li>
+        <li><strong>Model:</strong> Processa a regra de negócio e retorna dados.</li>
+        <li><strong>View (Twig):</strong> Renderiza a interface final para o usuário.</li>
+      </ol>
+
+      <pre style="font-family: monospace; white-space: pre-wrap;" {% if not export %}data-aos="flip-up" data-aos-delay="320"{% endif %}>
+# Exemplo de fluxo de execução
+URL: /documentacao/mvc
+→ Router detecta: Public\Documentacao\MvcController@index
+→ Controller processa dados via Model
+→ View (mvc.twig) é renderizada com Twig
+      </pre>
+
+      <!-- 3 -->
+      <h3 class="h6 text-primary mt-4" {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
+        {% if export %}3. Vantagens arquiteturais{% else %}
+          <span {% if not export %}data-aos="zoom-in"{% endif %}><i class="fas fa-layer-group"></i> 3. Vantagens arquiteturais</span>
+        {% endif %}
+      </h3>
+
+      <ul class="small list-unstyled ms-3" {% if not export %}data-aos="fade-up" data-aos-delay="380"{% endif %}>
+        <li><i class="fas fa-check text-success"></i> Independência entre Model, View e Controller.</li>
+        <li><i class="fas fa-check text-success"></i> Reuso de templates, controladores e componentes.</li>
+        <li><i class="fas fa-check text-success"></i> Separação clara entre regras de negócio e interface.</li>
+        <li><i class="fas fa-check text-success"></i> Escalabilidade e manutenção simplificadas.</li>
+        <li><i class="fas fa-check text-success"></i> Facilita testes e integração contínua.</li>
+      </ul>
+
+      <div class="alert alert-info small mt-3" {% if not export %}data-aos="fade-up" data-aos-delay="420"{% endif %}>
+        <i class="fas fa-info-circle"></i>
+        O <strong>MVC</strong> é a espinha dorsal do <strong>MeuApp</strong>: cada requisição segue
+        <em>Router → Controller → Model → View</em>, garantindo previsibilidade e eficiência.
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, offset: 60, duration: 550 });</script>
+  {% endif %}
+{% endblock %}

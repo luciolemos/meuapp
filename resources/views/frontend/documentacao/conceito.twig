@@ -1,0 +1,214 @@
+{# =============================================================
+   Arquivo: documentacao/conceito.twig
+   Seção: Conceito do projeto
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+
+{% block title %}{{ app_name }} — Conceito{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    {% if not export %}
+      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    {% endif %}
+    <link rel="stylesheet" href="/css/style.css">
+{% endblock %}
+
+{% block content %}
+  <div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
+
+    {% if not export %}
+      <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="80">
+        <a href="/pdf/conceito" class="btn btn-outline-danger">
+          <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
+      </div>
+    {% endif %}
+
+    {{ ui.header(title, subtitle, description, author, date, export) }}
+
+    <!-- ===================== VISÃO GERAL ===================== -->
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        1. Visão geral do MeuApp MVC
+      </h2>
+      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
+        O <strong>MeuApp MVC</strong> é um laboratório completo de desenvolvimento web em PHP 8+, criado para integrar
+        <strong>estudo, prática e documentação técnica</strong>. O projeto demonstra, na prática, como estruturar aplicações
+        seguindo o padrão <em>Model-View-Controller</em>, com foco em manutenibilidade, escalabilidade e documentação incremental.
+      </p>
+      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
+        Todo o ciclo — da configuração do ambiente até a geração de PDFs com relatórios técnicos — é rastreável. Assim, estudantes
+        e profissionais acompanham a evolução do código e entendem o porquê de cada escolha arquitetural.
+      </p>
+      {% include 'components/alert.twig' with {
+        variant: 'info',
+        size: 'sm',
+        icon: 'fas fa-lightbulb',
+        content: 'Além de documentação viva, o MeuApp oferece rotas de diagnóstico, exportação via Dompdf e exemplos de integração com ferramentas populares (Bootstrap, Font Awesome, Mermaid, AOS, entre outras).',
+        extra_class: 'mt-3',
+        export: export,
+        aos_effect: 'flip-up',
+        aos_delay: 200
+      } %}
+    </section>
+
+    <!-- ===================== OBJETIVOS E DESAFIOS ===================== -->
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        2. Objetivos e desafios abordados
+      </h2>
+      {% set objetivos = [
+        'Consolidar um ambiente PHP moderno que espelha produção (Ubuntu WSL, Apache 2, MySQL/MariaDB).',
+        'Aplicar separação de responsabilidades via MVC para facilitar manutenção e testes.',
+        'Demonstrar práticas de segurança (sanitização, logs, versionamento).',
+        'Fornecer documentação incrementada com foco em aprendizado contínuo.',
+        'Integrar ferramentas essenciais: Composer, Twig, Bootstrap, Dompdf, Font Awesome.',
+        'Permitir exportação técnica (PDF) do conhecimento acumulado durante o projeto.'
+      ] %}
+      <ul class="small text-muted mb-0">
+        {% for objetivo in objetivos %}
+          <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 80 }}"{% endif %}>
+            {{ objetivo }}
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- ===================== FLUXO MVC ===================== -->
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        3. Fluxo do MeuApp (MVC em ação)
+      </h2>
+      {% set fluxo = [
+        '<strong>Requisição</strong>: a URL é tratada pelo Router central, que identifica controller e método.',
+        '<strong>Controller</strong>: recebe a requisição, prepara dados e decide qual view (Twig) renderizar.',
+        '<strong>View (Twig)</strong>: a camada de apresentação monta a interface, com macros, componentes e parciais.',
+        '<strong>Serviços/Models</strong>: encapsulam regras de negócio, conexões com banco e integrações.',
+        '<strong>Resposta</strong>: o conteúdo HTML é entregue ao usuário. PDFs e JSONs também são suportados.'
+      ] %}
+      <ol class="small text-muted mb-0">
+        {% for etapa in fluxo %}
+          <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 90 }}"{% endif %}>
+            {{ etapa|raw }}
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <!-- ===================== PILARES TECNOLÓGICOS ===================== -->
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-4" {% if not export %}data-aos="fade-right"{% endif %}>
+        4. Pilares tecnológicos
+      </h2>
+      {% set pilares = [
+        {'icon':'fab fa-php','titulo':'PHP 8+','texto':'Tipagem forte, atributos, enums e OPcache garantem performance e modernidade.'},
+        {'icon':'fas fa-code','titulo':'Twig','texto':'Views limpas, macros reutilizáveis e camada de apresentação desacoplada.'},
+        {'icon':'fab fa-bootstrap','titulo':'Bootstrap 5','texto':'Componentes responsivos, utilitários e acessibilidade pronta.'},
+        {'icon':'fas fa-tools','titulo':'Composer','texto':'Autoload PSR-4, scripts de build e gestão de dependências.'},
+        {'icon':'fas fa-file-pdf','titulo':'Dompdf','texto':'Exportação técnica em PDF com sumário e bookmarks.'},
+        {'icon':'fas fa-server','titulo':'Apache ++','texto':'Virtual hosts, rewrite rules e .htaccess organizado.'}
+      ] %}
+      {% if export %}
+        <ol class="small text-muted mb-0">
+          {% for pilar in pilares %}
+            <li><strong>{{ pilar.titulo }}.</strong> {{ pilar.texto }}</li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <div class="row gy-4">
+          {% for pilar in pilares %}
+            <div class="col-md-4">
+              <div class="tech-card border rounded shadow-sm h-100 p-4 text-center"
+                   data-aos="zoom-in" data-aos-delay="{{ loop.index * 80 }}">
+                <i class="{{ pilar.icon }} fa-2x text-primary mb-3"></i>
+                <h3 class="h6 fw-bold mb-2">{{ pilar.titulo }}</h3>
+                <p class="small text-muted mb-0">{{ pilar.texto }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+
+    <!-- ===================== INFRAESTRUTURA E FERRAMENTAS ===================== -->
+    <section class="mb-5 pdf-section">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        5. Infraestrutura e ferramentas de apoio
+      </h2>
+      {% set ferramentas = [
+        '<strong>Ubuntu 24 (WSL)</strong>: ambiente Linux dentro do Windows, replicando produção.',
+        '<strong>VS Code</strong>: editor com terminal integrado, extensões PHP e Git.',
+        '<strong>Git / GitHub</strong>: versionamento semântico, PRs e pipelines de CI/CD.',
+        '<strong>Mermaid / AOS</strong>: diagramas e animações para apoiar a documentação visual.',
+        '<strong>Logs centralizados</strong>: App::logError armazena eventos e exceções para monitoramento.'
+      ] %}
+      <ul class="small text-muted mb-0">
+        {% for ferramenta in ferramentas %}
+          <li {% if not export %}data-aos="fade-up" data-aos-delay="{{ loop.index * 70 }}"{% endif %}>
+            {{ ferramenta|raw }}
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- ===================== CHAMADA PARA DOCUMENTAÇÃO COMPLEMENTAR ===================== -->
+    {% set ctas = [
+      {'href':'/documentacao/ambiente','icon':'fas fa-laptop-code','label':'Configurar Ambiente'},
+      {'href':'/documentacao/whatsphp','icon':'fab fa-php','label':'O que é PHP?'},
+      {'href':'/documentacao/mvc','icon':'fas fa-project-diagram','label':'Arquitetura MVC'}
+    ] %}
+    <section class="pdf-section {% if not export %}bg-light p-3 rounded{% endif %}">
+      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
+        6. Continue explorando
+      </h2>
+      <p class="small text-muted mb-3"
+         {% if not export %}data-aos="fade-up" data-aos-delay="80"{% endif %}>
+        Explore os artigos complementares para aprofundar cada pilar do MeuApp MVC.
+      </p>
+      {% if export %}
+        <ul class="small text-muted mb-0">
+          {% for cta in ctas %}
+            <li><strong>{{ cta.label }}:</strong> visite {{ cta.href }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="d-flex flex-wrap gap-2">
+          {% for cta in ctas %}
+            <span data-aos="fade-up" data-aos-delay="{{ loop.index * 90 }}">
+              {% include 'components/button.twig' with {
+                href: cta.href,
+                text: cta.label,
+                icon: cta.icon,
+                variant: 'outline-primary',
+                size: 'sm'
+              } %}
+            </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  {% if not export %}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        AOS.init({
+          duration: 550,
+          easing: 'ease-out',
+          once: true,
+          offset: 12
+        });
+      });
+    </script>
+  {% endif %}
+{% endblock %}

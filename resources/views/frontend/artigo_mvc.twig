@@ -1,0 +1,167 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="container py-4">
+    {% if not export %}
+        <div class="text-end mb-3">
+            <a href="/pdf/mvc" class="btn btn-outline-danger">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </a>
+        </div>
+    {% endif %}
+
+    <header class="mb-4">
+        <h1 class="display-5 fw-bold text-primary mb-3">
+            <i class="fas fa-project-diagram"></i> Guia de Rotas e Estrutura MVC
+        </h1>
+        <p class="lead text-muted">
+            Entenda o funcionamento do roteamento e da arquitetura MVC implementada no <strong>MeuApp MVC</strong>.
+        </p>
+    </header>
+
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3"><i class="fas fa-layer-group me-2"></i>1. O que é o MVC</h2>
+        <p>
+            A arquitetura <strong>MVC (Model-View-Controller)</strong> é um padrão que separa a lógica de negócio,
+            a apresentação e o controle de fluxo de uma aplicação. No <strong>MeuApp MVC</strong>, isso significa:
+        </p>
+
+        <ul class="list-group mb-3">
+            <li class="list-group-item">
+                <i class="fas fa-database text-success me-2"></i>
+                <strong>Model:</strong> Lida com os dados e a camada de persistência.
+            </li>
+            <li class="list-group-item">
+                <i class="fas fa-code text-primary me-2"></i>
+                <strong>Controller:</strong> Recebe as requisições e define as regras de execução.
+            </li>
+            <li class="list-group-item">
+                <i class="fas fa-desktop text-warning me-2"></i>
+                <strong>View:</strong> Exibe a interface (usando Twig para renderização HTML).
+            </li>
+        </ul>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3"><i class="fas fa-route me-2"></i>2. Entendendo as Rotas</h2>
+        <p>
+            O roteamento é controlado pelo arquivo <code>app/Core/Router.php</code>, que interpreta a URL e decide qual
+            <strong>Controller</strong> e qual método (<em>action</em>) devem ser executados.
+        </p>
+
+        <pre class="bg-light p-3 rounded border small mb-3">
+URL: http://meuapp.local/home/index
+
+Controller: HomeController.php
+Método: index()
+View: app/Views/Public/home.twig
+        </pre>
+
+        <p>
+            O roteador analisa a URL em partes e cria dinamicamente o nome da classe e do método:
+        </p>
+
+        <pre class="bg-light p-3 rounded border small">
+$controllerName = ucfirst($urlParts[0]) . 'Controller';
+$method = $urlParts[1] ?? 'index';
+$controllerClass = "\\App\\Controllers\\Public\\{$controllerName}";
+        </pre>
+
+        <div class="alert alert-warning mt-3">
+            <i class="fas fa-lightbulb"></i>
+            <strong>Dica:</strong> Se o usuário acessar apenas <code>/home</code>, o método <code>index()</code> será chamado por padrão.
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3"><i class="fas fa-cogs me-2"></i>3. O Papel do Controller</h2>
+        <p>
+            Cada controller deve estender a classe <code>App\Core\Controller</code>, que fornece a função
+            <code>view()</code> para renderizar templates Twig de forma simples:
+        </p>
+
+        <pre class="bg-light p-3 rounded border small">
+public function index() {
+    $data = [
+        'title' => 'Bem-vindo ao MeuApp MVC',
+        'message' => 'Aplicação mínima com PHP, Twig e Bootstrap!'
+    ];
+    $this->view('home.twig', $data);
+}
+        </pre>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3"><i class="fas fa-eye me-2"></i>4. A Camada de View</h2>
+        <p>
+            As views ficam em <code>app/Views/</code> e utilizam o Twig como motor de templates. Isso permite separar
+            completamente a lógica PHP da marcação HTML.
+        </p>
+        <ul class="list-group mb-3">
+            <li class="list-group-item">
+                <i class="fas fa-folder text-muted me-2"></i> <code>app/Views/Public/</code> — Páginas públicas
+            </li>
+            <li class="list-group-item">
+                <i class="fas fa-lock text-muted me-2"></i> <code>app/Views/Admin/</code> — Páginas administrativas
+            </li>
+        </ul>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-secondary mb-3"><i class="fas fa-database me-2"></i>5. Model e Banco de Dados</h2>
+        <p>
+            A camada <strong>Model</strong> é responsável por se comunicar com o banco de dados. Todos os models
+            estendem <code>App\Core\Model</code>, que fornece uma conexão PDO configurada em
+            <code>config/config.php</code>.
+        </p>
+        <p>Exemplo básico:</p>
+        <pre class="bg-light p-3 rounded border small">
+namespace App\Models;
+
+use App\Core\Model;
+
+class User extends Model {
+    public function getAll() {
+        return $this->db->query("SELECT * FROM users")->fetchAll();
+    }
+}
+        </pre>
+    </section>
+
+     <section class="mb-5">
+    <h2 class="h4 text-secondary mb-3"><i class="fas fa-sitemap me-2"></i>6. Estrutura Recomendada</h2>
+
+    {% if estrutura_pastas %}
+        <pre class="bg-light p-3 rounded border small">
+{{ estrutura_pastas }}
+        </pre>
+    {% else %}
+        <pre class="bg-light p-3 rounded border small">
+app/
+ ├── Controllers/
+ │   ├── Public/
+ │   └── Admin/
+ ├── Core/
+ ├── Models/
+ ├── Views/
+ │   ├── Public/
+ │   └── Admin/
+config/
+public/
+        </pre>
+    {% endif %}
+
+    <p>
+        Essa estrutura facilita a manutenção, a escalabilidade e o versionamento da aplicação.
+    </p>
+</section>
+
+
+    <footer class="mt-5">
+        <div class="alert alert-info">
+            <i class="fas fa-rocket"></i>
+            Documentação técnica completa — entenda, personalize e escale o <strong>MeuApp MVC</strong>.
+        </div>
+    </footer>
+</div>
+{% endblock %}

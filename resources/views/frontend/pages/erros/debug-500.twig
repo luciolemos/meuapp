@@ -1,0 +1,23 @@
+{% extends "layouts/error-base.twig" %}
+
+{% block title %}Erro 500 — {{ app_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="alert alert-danger shadow-sm">
+    <h4 class="fw-bold"><i class="fas fa-bug me-2"></i>Erro Interno do Servidor (500)</h4>
+    <p class="mb-3">{{ message }}</p>
+
+    {% if app_debug %}
+      <hr>
+      <p><strong>Arquivo:</strong> {{ file }}</p>
+      <p><strong>Linha:</strong> {{ line }}</p>
+      <p><strong>Rota:</strong> {{ route }}</p>
+
+      {% if trace %}
+        <pre class="small bg-dark text-light p-3 rounded">{{ trace }}</pre>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

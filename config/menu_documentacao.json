@@ -1,0 +1,32 @@
+{
+  "Guia do Projeto": [
+    { "label": "Conceito", "icon": "fa-lightbulb", "url": "/conceito" },
+    { "label": "Manual do Usuário", "icon": "fa-book-open", "url": "/manual" },
+    { "label": "Descrição", "icon": "fa-project-diagram", "url": "/descricao" },
+    { "label": "Configuração", "icon": "fa-cogs", "url": "/configuracao" },
+    { "label": "Diagnóstico", "icon": "fa-stethoscope", "url": "/diagnostico" }
+  ],
+  "Documentos Técnicos": [
+    { "label": "MVC", "icon": "fa-layer-group", "url": "/mvc" },
+    { "label": "Estrutura", "icon": "fa-sitemap", "url": "/estrutura" },
+    { "label": "Stack", "icon": "fa-server", "url": "/stack" },
+    { "label": "Bootstrap", "icon": "fab fa-bootstrap", "url": "/bootstrap" },
+    { "label": "Twig", "icon": "fa-code", "url": "/twig" }
+  ],
+  "Ferramentas": [
+    { "label": "DOMPDF", "icon": "fa-file-pdf", "url": "/dompdf" },
+    { "label": "Boas Práticas", "icon": "fa-check-circle", "url": "/boaspraticas" },
+    { "label": "Composer", "icon": "fa-box", "url": "/composer" },
+    { "label": "Ambiente", "icon": "fa-laptop-code", "url": "/ambiente" }
+  ],
+  "Infraestrutura & Erros": [
+    { "label": "VirtualHost", "icon": "fa-network-wired", "url": "/virtualhost" },
+    { "label": ".htaccess", "icon": "fa-file-code", "url": "/htaccess" },
+    { "label": "Escalabilidade", "icon": "fa-chart-line", "url": "/escalabilidade" },
+    { "divider": true },
+    { "label": "Erro 403 — Acesso Negado", "icon": "fa-lock text-danger", "url": "/erro/403" },
+    { "label": "Erro 404 — Não Encontrado", "icon": "fa-compass text-primary", "url": "/erro/404" },
+    { "label": "Erro 500 — Servidor", "icon": "fa-exclamation-triangle text-warning", "url": "/erro/500" },
+    { "label": "Ver Demonstração", "icon": "fa-list", "url": "/erros" }
+  ]
+}

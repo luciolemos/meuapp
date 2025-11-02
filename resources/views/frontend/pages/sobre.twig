@@ -1,0 +1,257 @@
+{# =============================================================
+   Arquivo: sobre.twig
+   Seção: Página Sobre do Projeto
+   Descrição: Detalha tecnologias, objetivos e evolução do MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% block title %}{{ app_name }} — Sobre{% endblock %}
+
+{% block extra_css %}
+{{ parent() }}
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="/css/style.css">
+
+<style>
+/* ===================== HERO SECTION ===================== */
+.hero-section {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.5s ease;
+}
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 70%),
+                radial-gradient(circle at 70% 50%, rgba(0,0,0,0.2), transparent 70%);
+    z-index: 0;
+}
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* ===================== SEÇÕES ===================== */
+section {
+    scroll-margin-top: 80px;
+}
+
+/* ===================== TECH CARD ===================== */
+.tech-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
+}
+
+/* ===================== TIMELINE ===================== */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    border-left: 3px solid var(--bs-primary);
+    margin: 3rem auto;
+    max-width: 800px;
+}
+.timeline-item {
+    margin-bottom: 2rem;
+    position: relative;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ===================== HERO ===================== -->
+<section class="container text-center py-5" data-aos="fade-up">
+    
+    
+    <header class="mb-4 text-center">
+         <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
+            <i class="fas fa-info-circle me-2 text-warning"></i> {{ title }} o <span class="text-warning">MeuApp</span> MVC
+        </h1>
+         <h2 class="text-success" data-aos="zoom-in" data-aos-delay="150">
+            {{ subtitle }}
+        </h2>
+        <p class="lead" data-aos="zoom-in"  data-aos-delay="300">{{ description }}</p>
+    </header>
+        <div class="col-lg-8 mx-auto mb-4" data-aos="zoom-in" data-aos-delay="450">
+    <p class="small text-light-50 text-justify">
+                Criado com o padrão <strong>Model–View–Controller</strong>, o MeuApp MVC integra as melhores práticas de desenvolvimento PHP moderno.
+                Combinando <strong>Twig</strong>, <strong>Bootstrap 5</strong> e <strong>Composer</strong>, o projeto oferece um ambiente limpo e escalável,
+                perfeito para aprendizado e aplicações reais.
+            </p>
+        </div>
+
+
+        <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="300">
+            <a href="/documentacao" class="btn btn-light btn-sm shadow-sm">
+                <i class="fas fa-book me-2"></i> Ver Documentação
+            </a>
+            <a href="/sobre" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-info-circle me-2"></i> Sobre o Projeto
+            </a>
+        </div>
+    
+</section>
+
+<!-- ===================== SEÇÃO PROPÓSITO ===================== -->
+<section class="container py-5" data-aos="fade-up">
+    <div class="row align-items-center gy-4">
+        <div class="col-md-6" data-aos="fade-right">
+            <img src="/images/architecture-diagram.jpg" alt="Arquitetura MVC"
+                 class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-6" data-aos="fade-left" data-aos-delay="150">
+            <h2 class="h4 text-primary fw-bold mb-3">
+                <i class="fas fa-bullseye me-2"></i> Propósito do Projeto
+            </h2>
+            <p class="text-muted small text-justify mb-3">
+                O <strong>MeuApp MVC</strong> nasceu com o objetivo de fornecer uma base sólida para estudos e implantação de aplicações PHP modernas.
+                Ele foi projetado para ensinar e aplicar conceitos como separação de responsabilidades, reutilização de código e escalabilidade.
+            </p>
+            <ul class="small list-unstyled ms-3 text-start">
+                <li><i class="fas fa-check text-success me-2"></i> Estrutura modular e padronizada.</li>
+                <li><i class="fas fa-check text-success me-2"></i> Roteamento dinâmico desacoplado.</li>
+                <li><i class="fas fa-check text-success me-2"></i> Views Twig reutilizáveis e seguras.</li>
+                <li><i class="fas fa-check text-success me-2"></i> Integração com geração de PDFs (Dompdf).</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== PILARES TÉCNICOS ===================== -->
+<section class="container text-center py-5" data-aos="fade-up">
+    <h2 class="text-primary fw-bold mb-4">
+        <i class="fas fa-layer-group me-2"></i> PILARES TÉCNICOS DO MEUAPP MVC
+    </h2>
+
+    <div class="row g-4 justify-content-center">
+        {% set pilares = [
+            {'icon': 'fab fa-php', 'title': 'PHP 8+', 'desc': 'Base principal, garantindo performance e compatibilidade moderna.'},
+            {'icon': 'fas fa-cogs', 'title': 'Arquitetura MVC', 'desc': 'Separação clara entre lógica, dados e visualização.'},
+            {'icon': 'fas fa-code', 'title': 'Twig Templates', 'desc': 'Templates elegantes, seguros e reutilizáveis.'},
+            {'icon': 'fab fa-bootstrap', 'title': 'Bootstrap 5', 'desc': 'Design responsivo e consistente com foco em UX.'}
+        ] %}
+        {% for p in pilares %}
+            <div class="col-12 col-sm-6 col-md-3 fade-in" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="tech-card p-4 border rounded shadow-sm h-100 text-center">
+                    <i class="{{ p.icon }} fa-2x mb-3 text-primary"></i>
+                    <h6 class="fw-semibold mb-1">{{ p.title }}</h6>
+                    <p class="small mb-0">{{ p.desc }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ===================== TECNOLOGIAS PRINCIPAIS ===================== -->
+<section class="container py-5" id="tecnologias">
+    <h2 class="text-primary fw-bold mb-4 text-center">
+        <i class="fas fa-microchip me-2"></i> TECNOLOGIAS PRINCIPAIS UTILIZADAS
+    </h2>
+
+    <div class="row g-4 justify-content-center text-center" data-aos="fade-up">
+        {% set tecnologias = [
+            {'href': '/documentacao/descricao', 'icon': 'fab fa-php', 'titulo': 'PHP 8+', 'desc': 'Linguagem principal do projeto, moderna, rápida e estável.'},
+            {'href': '/documentacao/mvc', 'icon': 'fas fa-cogs', 'titulo': 'Arquitetura MVC', 'desc': 'Organiza o código em camadas lógicas separadas: Modelos, Controladores e Views.'},
+            {'href': '/documentacao/twig', 'icon': 'fas fa-code', 'titulo': 'Twig Templates', 'desc': 'Engine de templates segura e elegante, com herança e blocos reutilizáveis.'},
+            {'href': '/documentacao/bootstrap', 'icon': 'fab fa-bootstrap', 'titulo': 'Bootstrap 5', 'desc': 'Framework CSS moderno para design responsivo e elegante.'},
+            {'href': '/documentacao/htaccess', 'icon': 'fas fa-server', 'titulo': 'Apache', 'desc': 'Servidor HTTP que gerencia as rotas e o .htaccess do MeuApp MVC.'},
+            {'href': '/documentacao/ambiente', 'icon': 'fab fa-linux', 'titulo': 'WSL2 / Ubuntu', 'desc': 'Ambiente de desenvolvimento robusto e compatível com Docker.'},
+            {'href': '/documentacao/composer', 'icon': 'fas fa-cube', 'titulo': 'Composer', 'desc': 'Gerencia dependências e o autoload PSR-4 de forma automática.'},
+            {'href': '/documentacao/fontawesome', 'icon': 'fab fa-font-awesome', 'titulo': 'Font Awesome', 'desc': 'Biblioteca de ícones vetoriais modernos e acessíveis.'}
+        ] %}
+
+        {% for tech in tecnologias %}
+            <div class="col-12 col-sm-6 col-md-3 fade-in">
+                <a href="{{ tech.href }}" class="text-decoration-none">
+                    <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+                        <i class="{{ tech.icon }} fa-2x mb-3 text-primary"></i>
+                        <h6 class="fw-semibold mb-1">{{ tech.titulo }}</h6>
+                        <p class="small mb-0">{{ tech.desc }}</p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ===================== LINHA DO TEMPO ===================== -->
+<section class="container py-5 text-center" data-aos="fade-up">
+    <h2 class="text-primary fw-bold mb-4">
+        <i class="fas fa-stream me-2"></i> LINHA DO TEMPO DE EVOLUÇÃO DO MEUAPP MVC
+    </h2>
+    <div class="timeline text-start mx-auto">
+        {% set eventos = [
+            {'icon': 'fas fa-lightbulb text-warning', 'title': 'Concepção da Ideia', 'ano': '2023', 'desc': 'Criação do conceito do MeuApp MVC como ambiente educacional e técnico.'},
+            {'icon': 'fas fa-project-diagram text-primary', 'title': 'Estrutura MVC Implementada', 'ano': '2024', 'desc': 'Criação da arquitetura modular com controladores e views.'},
+            {'icon': 'fas fa-code text-info', 'title': 'Integração do Twig e Bootstrap', 'ano': '2024', 'desc': 'Construção da camada visual moderna e responsiva.'},
+            {'icon': 'fas fa-file-pdf text-danger', 'title': 'Documentação e PDF', 'ano': '2025', 'desc': 'Geração de documentação automatizada via Dompdf.'},
+            {'icon': 'fas fa-file-pdf text-danger', 'title': 'CODEX', 'ano': '29/10/2025', 'desc': 'Instalação do CODEX no Debian 12 e integração com o VSCode.'}
+        ] %}
+        {% for e in eventos %}
+        <div class="timeline-item" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+            <h6><i class="{{ e.icon }} me-2"></i>{{ e.title }}</h6>
+            <small class="text-muted">{{ e.ano }}</small>
+            <p class="small text-muted mt-1">{{ e.desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+/* ===============================
+   SEÇÃO DE TECNOLOGIAS (CLARO/ESCURO)
+   =============================== */
+.tech-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
+}
+
+/* ======== TEMA ESCURO ======== */
+[data-bs-theme="dark"] .tech-card {
+  background-color: #1f1f1f !important;
+  color: #eaeaea !important;
+  border-color: #333 !important;
+}
+
+[data-bs-theme="dark"] .tech-card:hover {
+  background-color: #242424 !important;
+  border-color: #0d6efd !important;
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.25);
+}
+
+[data-bs-theme="dark"] .tech-card h6 {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .tech-card p {
+  color: #b5b5b5 !important;
+}
+
+/* ======== TRANSIÇÕES SUAVES ======== */
+.tech-card i,
+.tech-card h6,
+.tech-card p {
+  transition: all 0.3s ease-in-out;
+}
+</style>
+
+{% endblock %}

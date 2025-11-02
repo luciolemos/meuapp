@@ -1,0 +1,11 @@
+{# =============================================================
+   MACRO: dropdown_active
+   Autor: Lucio Lemos
+   Finalidade: Gerenciar o estado ativo (active) em subitens do menu
+   ============================================================= #}
+
+{% macro dropdown_active(path, current_path) %}
+    {% if current_path starts with path %}
+        active
+    {% endif %}
+{% endmacro %}

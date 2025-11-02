@@ -1,0 +1,92 @@
+{# =============================================================
+   Arquivo: documentacao/conceito.twig
+   Seção: Conceito do projeto
+   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Autor: Lucio Lemos
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+    <div class="container py-4">
+
+        {% if not export %}
+            <div class="text-end mb-3">
+                <a href="/pdf/conceito" class="btn btn-outline-danger">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+            </div>
+        {% endif %}
+
+        <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
+        <header class="mb-4 text-center">
+            <h1 class="display-5 mb-3 text-primary">
+                <i class="fas fa-cogs"></i> {{ title }}
+            </h1>
+        </header>
+
+        <section class="mb-5 pdf-section">
+            <h2 class="h4 text-secondary mb-3">
+                Descrição do Projeto
+            </h2>
+
+            <p class="text-justify">
+                O <strong>MeuApp MVC</strong> é um <em>laboratório de desenvolvimento web</em> criado com o propósito
+                de integrar <strong>estudo, prática e documentação técnica</strong> em um único ambiente de aprendizado
+                e experimentação. Desenvolvido sobre o padrão arquitetural <strong>Model-View-Controller (MVC)</strong>,
+                o projeto oferece uma visão clara e aplicada dos princípios que regem a estruturação de sistemas PHP
+                modernos e escaláveis.
+            </p>
+
+            <p class="text-justify">
+                Todo o processo de desenvolvimento foi <strong>documentado de forma incremental</strong>, permitindo ao
+                estudante acompanhar a evolução do projeto de maneira orientada.  
+                O item de menu <code>Documentação → Configuração do Ambiente</code> invoca a view
+                <code>/app/Views/Public/artigo_configuracao.twig</code>, que contém seções detalhadas sobre componentes
+                essenciais da aplicação — como o <strong>arquivo .htaccess</strong>, o <strong>composer.json</strong> e
+                o <strong>VirtualHost</strong>.  
+                Cada tópico descreve a função, a estrutura e a importância de cada elemento dentro do ciclo de execução
+                do sistema.
+            </p>
+
+            <p class="text-justify">
+                A arquitetura do <strong>MeuApp MVC</strong> foi concebida com ênfase em
+                <strong>organização estrutural</strong>, <strong>modularidade</strong> e
+                <strong>reuso de código</strong>.  
+                Ao aplicar o princípio da <em>separação de responsabilidades</em>, o projeto proporciona maior clareza no
+                fluxo de dados, facilidade de manutenção e ampliação progressiva sem impacto sobre outras camadas do
+                sistema.
+            </p>
+
+            <p class="text-justify">
+                Projetado tanto para o <strong>ambiente acadêmico</strong> quanto para o <strong>uso profissional</strong>,
+                o MeuApp atua como um <strong>guia conceitual e funcional</strong>, servindo de referência para o estudo
+                do MVC e suas aplicações práticas.  
+                Sua estrutura flexível permite que seja utilizado como base para protótipos, testes de integração e
+                projetos de produção reais.
+            </p>
+
+            <p class="text-justify">
+                O ecossistema do MeuApp integra tecnologias modernas —
+                <strong>PHP</strong>, <strong>Apache</strong>, <strong>MySQL</strong>, <strong>Twig</strong>,
+                <strong>Bootstrap</strong>, <strong>Composer</strong> e <strong>Ubuntu WSL2</strong> —
+                consolidando um ambiente robusto, padronizado e multiplataforma.  
+                O projeto é desenvolvido no <strong>Visual Studio Code</strong>, com terminal integrado ao
+                <strong>Ubuntu 24 (WSL)</strong>, reproduzindo com fidelidade um ambiente de produção Linux.
+            </p>
+
+            {% include 'components/alert.twig' with {
+                variant: 'info',
+                size: 'sm',
+                icon: 'fas fa-lightbulb',
+                content: 'O Twig é um dos pilares do padrão MVC — mantém a view limpa, desacoplada da lógica e garante manutenibilidade em aplicações de médio e grande porte.',
+                extra_class: 'mt-3',
+                export: export|default(false)
+            } %}
+
+            {#
+            <div class="alert alert-light border-start border-primary mt-3 p-3 small">
+                <i class="fas fa-info-circle text-primary"></i>
+                <em>View principal:</em> <code>/app/Views/Public/artigo_configuracao.twig</code>
+            </div>
+            #}
+        </section>
+    </div>
