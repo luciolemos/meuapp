@@ -1,17 +1,24 @@
+
 /* ============================================================
-   NAVBAR COMPONENT — Limpo, consolidado e responsivo
+   NAVBAR COMPONENT — Estilização consolidada
    ============================================================ */
 
-/* Estrutura e transições */
+/* === Seção 1. Estrutura base === */
 .navbar {
-  transition: background-color 0.4s ease, color 0.3s ease;
-  backdrop-filter: blur(8px);
-  z-index: 2100;
   position: relative;
+  z-index: 2100;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.4s ease,
+              color 0.3s ease;
 }
 
-.nav-link,
 .navbar-brand {
+  position: relative; /* garante que a logo não seja encoberta pelo mega menu */
+  z-index: 2200;
+}
+
+.navbar-brand,
+.nav-link {
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
@@ -20,13 +27,23 @@
   transform: translateY(-1px);
 }
 
-/* Dropdown */
-.dropdown-item:hover {
-  background-color: rgba(13, 110, 253, 0.1);
-  color: #0d6efd;
+.dropdown-menu {
+  margin-top: 0;
+  border-radius: 0.75rem;
+  z-index: 2050;
 }
 
-/* Botão tema */
+.dropdown-item {
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #1f1f1f;
+  color: #ffc107;
+}
+
 .theme-toggle {
   cursor: pointer;
   border: none;
@@ -34,13 +51,12 @@
   color: inherit;
   transition: transform 0.2s ease;
 }
+
 .theme-toggle:hover {
   transform: rotate(15deg);
 }
 
-/* ===========================
-   ITEM ATIVO (Normal + Dropdown)
-   =========================== */
+/* === Seção 2. Estados ativos === */
 .navbar .nav-link.active,
 .nav-item.dropdown > .nav-link.active,
 .nav-item.dropdown.active > .nav-link {
@@ -49,16 +65,13 @@
   border-bottom: 2px solid var(--bs-primary);
 }
 
-/* Subitem ativo */
 .dropdown-item.active {
-  background-color: rgba(13, 110, 253, 0.1);
-  color: var(--bs-primary) !important;
   font-weight: 600;
+  color: #ffc107 !important;
+  background-color: #1f1f1f;
 }
 
-/* ===========================
-   MODO ESCURO
-   =========================== */
+/* === Seção 3. Modo escuro === */
 [data-bs-theme="dark"] .navbar {
   background-color: #1e1e1e !important;
 }
@@ -77,12 +90,10 @@
   color: #eaeaea;
 }
 
-[data-bs-theme="dark"] .dropdown-item:hover {
+[data-bs-theme="dark"] .dropdown-item.active {
   background-color: #333;
-  color: #0d6efd;
 }
 
-/* Estado ativo (modo escuro) */
 [data-bs-theme="dark"] .navbar .nav-link.active,
 [data-bs-theme="dark"] .nav-item.dropdown > .nav-link.active,
 [data-bs-theme="dark"] .nav-item.dropdown.active > .nav-link {
@@ -90,21 +101,15 @@
   border-bottom: 2px solid #ffc107;
 }
 
-[data-bs-theme="dark"] .dropdown-item.active {
-  background-color: #333;
-  color: #ffc107 !important;
-}
-
-/* ============================================================
-   MEGAMENU — DOCUMENTAÇÃO
-   ============================================================ */
+/* === Seção 4. Mega menu de documentação === */
 .mega-menu {
+  width: 100%;
   left: 0;
   right: 0;
-  width: 100%;
+  padding: 1.5rem 2rem;
+  margin-top: 0; /* remove o gap que fazia o hover perder foco */
   border-radius: 0 0 12px 12px;
   background-color: #fff;
-  padding: 1.5rem 2rem;
 }
 
 .mega-container {
@@ -112,20 +117,19 @@
   margin: 0 auto;
 }
 
+.mega-menu .text-secondary {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .mega-menu .dropdown-item {
-  padding: 0.4rem 0;
   font-size: 0.95rem;
 }
 
 .mega-menu .dropdown-item i {
   width: 20px;
   text-align: center;
-}
-
-.mega-menu .text-secondary {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .mega-menu .row > div {
@@ -137,12 +141,10 @@
   border-left: none;
 }
 
-/* Hover suave */
 .mega-menu .dropdown-item:hover {
-  background-color: rgba(13, 110, 253, 0.05);
-  color: #0d6efd;
+  background-color: #1f1f1f;
+  color: #ffc107;
   transform: translateX(2px);
-  transition: all 0.2s ease;
 }
 
 @media (min-width: 992px) {
@@ -152,36 +154,31 @@
   }
 }
 
-/* Modo escuro */
 [data-bs-theme="dark"] .mega-menu {
   background-color: #242424;
   color: #eaeaea;
-}
-
-[data-bs-theme="dark"] .mega-menu .dropdown-item:hover {
-  background-color: #333;
-  color: #ffc107;
 }
 
 [data-bs-theme="dark"] .mega-menu .row > div {
   border-left: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Responsividade */
 @media (max-width: 992px) {
   .mega-menu {
     position: static !important;
-    width: 100%;
     padding: 1rem;
   }
+
   .mega-menu .row {
     flex-direction: column;
   }
+
   .mega-menu .row > div {
     border-left: none !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     padding-bottom: 0.75rem;
   }
+
   [data-bs-theme="dark"] .mega-menu .row > div {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }

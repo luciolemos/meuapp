@@ -46,13 +46,56 @@
         }
 
         /* ======== SEÇÕES ======== */
+        /* ===============================
+   SEÇÃO DE TECNOLOGIAS (CLARO/ESCURO)
+   =============================== */
+.tech-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
+}
+
+/* ======== TEMA ESCURO ======== */
+[data-bs-theme="dark"] .tech-card {
+  background-color: #1f1f1f !important;
+  color: #eaeaea !important;
+  border-color: #333 !important;
+}
+
+[data-bs-theme="dark"] .tech-card:hover {
+  background-color: #242424 !important;
+  border-color: #0d6efd !important;
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.25);
+}
+
+[data-bs-theme="dark"] .tech-card h6 {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .tech-card p {
+  color: #b5b5b5 !important;
+}
+
+/* ======== TRANSIÇÕES SUAVES ======== */
+.tech-card i,
+.tech-card h6,
+.tech-card p {
+  transition: all 0.3s ease-in-out;
+}
     </style>
 {% endblock %}
 
 {% block content %}
 <!-- ===================== HERO SECTION ===================== -->
-<section class="hero-section section-block text-center shadow-lg">
-    
+<section class="hero-section section-block text-center shadow-lg">    
+    <div class="hero-overlay"></div>
     <div class="container hero-content">
     <header class="mb-4 text-center">
         <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
@@ -61,7 +104,9 @@
         <h2 class="text-success" data-aos="fade-up" data-aos-delay="150">
             {{ subtitle }}
         </h2>
-        <p class="lead" data-aos="fade-up"  data-aos-delay="300">{{ description }}</p>
+        <p class="lead" data-aos="fade-up"  data-aos-delay="300">
+        {{ description }}
+        </p>
     </header>
         <div class="col-lg-8 mx-auto mb-4" data-aos="zoom-in" data-aos-delay="450">
             <p class="small text-light-50 text-justify">
@@ -221,51 +266,6 @@
     </div>
 </section>
 
-<style>
-/* ===============================
-   SEÇÃO DE TECNOLOGIAS (CLARO/ESCURO)
-   =============================== */
-.tech-card {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-  transition: all 0.3s ease;
-}
-
-.tech-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--bs-primary);
-  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
-}
-
-/* ======== TEMA ESCURO ======== */
-[data-bs-theme="dark"] .tech-card {
-  background-color: #1f1f1f !important;
-  color: #eaeaea !important;
-  border-color: #333 !important;
-}
-
-[data-bs-theme="dark"] .tech-card:hover {
-  background-color: #242424 !important;
-  border-color: #0d6efd !important;
-  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.25);
-}
-
-[data-bs-theme="dark"] .tech-card h6 {
-  color: #ffffff !important;
-}
-
-[data-bs-theme="dark"] .tech-card p {
-  color: #b5b5b5 !important;
-}
-
-/* ======== TRANSIÇÕES SUAVES ======== */
-.tech-card i,
-.tech-card h6,
-.tech-card p {
-  transition: all 0.3s ease-in-out;
-}
-</style>
 
 <!-- ===================== Aprenda e evolua com o MeuApp MVC ===================== -->
 <section class="bg-primary text-light text-center section-block" data-aos="zoom-in">

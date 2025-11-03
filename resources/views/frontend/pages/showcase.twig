@@ -1,0 +1,427 @@
+{# =============================================================
+   Arquivo: pages/showcase.twig
+   Seção: Showcase de layout dinâmico
+   Descrição: Demonstra como habilitar/desabilitar blocos via flags.
+   Autor: Equipe MeuApp
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% import "partials/macros.twig" as ui %}
+{% block title %}{{ meta.title }}{% endblock %}
+
+{% block extra_css %}
+  {{ parent() }}
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+  /* ===================== HERO SECTION ===================== */
+  .hero-section {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.5s ease;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 50%, rgba(255,255,255,0.12), transparent 70%),
+      radial-gradient(circle at 70% 50%, rgba(0,0,0,0.2), transparent 70%);
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===================== ELEMENTOS COMPARTILHADOS ===================== */
+  section {
+    scroll-margin-top: 80px;
+  }
+
+.tech-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+  .tech-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--bs-primary);
+    box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
+  }
+
+/* ======== TEMA ESCURO ======== */
+[data-bs-theme="dark"] .tech-card {
+  background-color: #1f1f1f !important;
+  color: #eaeaea !important;
+  border-color: #333 !important;
+}
+
+[data-bs-theme="dark"] .tech-card:hover {
+  background-color: #242424 !important;
+  border-color: #0d6efd !important;
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.25);
+}
+
+  [data-bs-theme="dark"] .tech-card i {
+  color: #0d6efd !important;
+  }
+  
+  [data-bs-theme="dark"] .tech-card h3 {
+  color: #ffffff !important;
+  }
+
+  [data-bs-theme="dark"] .tech-card h6 {
+  color: #ffffff !important;
+  }
+
+  [data-bs-theme="dark"] .tech-card p {
+  color: #b5b5b5 !important;
+  }
+
+  .tech-card i,
+  .tech-card h3,
+  .tech-card h6,
+  .tech-card p {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .metric-pill {
+    background: rgba(13, 110, 253, 0.08);
+    border-radius: 999px;
+    padding: 0.85rem 1.1rem;
+    text-align: center;
+  }
+
+  [data-bs-theme="dark"] .metric-pill {
+    background: rgba(255, 193, 7, 0.12);
+  }
+  </style>
+{% endblock %}
+
+{% block head_extra %}
+  {% if meta.description %}<meta name="description" content="{{ meta.description }}">{% endif %}
+  {% if meta.keywords %}<meta name="keywords" content="{{ meta.keywords }}">{% endif %}
+  {% if meta.robots %}<meta name="robots" content="{{ meta.robots }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- ===================== HERO ===================== -->
+<section class="hero-section section-block text-center shadow-lg">    
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+    <header class="mb-4 text-center">
+      <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
+        <i class="fas fa-sliders-h me-2 text-warning"></i> {{ meta.title }}
+      </h1>
+
+      {% if meta.subtitle %}
+        <h2 class="text-success" data-aos="zoom-in" data-aos-delay="120">
+          {{ meta.subtitle }}
+        </h2>
+      {% endif %}
+
+      {% if meta.description %}
+        <p class="lead col-lg-8 mx-auto" data-aos="zoom-in" data-aos-delay="220">
+          {{ meta.description }}
+        </p>
+      {% endif %}
+    </header>
+
+    <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="320">
+      {% include 'components/button.twig' with {
+        href: '/documentacao/manual',
+        text: 'Manual completo',
+        icon: 'fas fa-book',
+        variant: 'light',
+        size: 'sm',
+        attrs: {
+          'title': 'Abrir o manual completo',
+          'data-bs-toggle': 'tooltip',
+          'data-bs-placement': 'bottom'
+        }
+      } %}
+
+      {% include 'components/button.twig' with {
+        href: '/documentacao/gitgithub',
+        text: 'Fluxo Git/GitHub',
+        icon: 'fab fa-github',
+        variant: 'outline-light',
+        size: 'sm',
+        attrs: {
+          'title': 'Ver fluxo Git & GitHub',
+          'data-bs-toggle': 'tooltip',
+          'data-bs-placement': 'bottom'
+        }
+      } %}
+    </div>
+  </div>
+</section>
+<!-- ===================== CONTEÚDO DA PÁGINA ===================== -->
+
+<div class="container py-5">
+  {% set controller_snippet %}
+<?php
+namespace App\Http\Controllers\Frontend;
+
+use App\Http\Controllers\BaseController;
+
+class ShowcaseController extends BaseController
+{
+    public function index(): void
+    {
+        $this->renderView('pages/showcase.twig', [
+            'layout' => [
+                'feature_cards' => true,
+                'metrics'       => true,
+                'cta_banner'    => true,
+                'faq'           => true,
+                'newsletter'    => false,
+            ],
+            // demais dados omitidos...
+        ]);
+    }
+}
+  {% endset %}
+
+  {% set layout_variations %}
+layout:
+  feature_cards: true
+  metrics: false
+  cta_banner: true
+  faq: true
+  newsletter: false
+# Ajuste os booleanos e recarregue a página para testar novas combinações.
+  {% endset %}
+
+  <!-- ===================== VISÃO GERAL + FLAGS ===================== -->
+  <section class="py-5" data-aos="fade-up">
+    <div class="row align-items-stretch gy-4">
+      <div data-aos="fade-right">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h5 fw-semibold text-primary mb-3">
+              <i class="fas fa-bullseye me-2"></i> Por que este showcase?
+            </h2>
+            <p class="text-muted small text-justify mb-3">
+              Assim como na página <strong>Sobre</strong>, abrimos com o contexto da solução. A diferença aqui é destacar
+              como as chaves booleanas enviadas pelo controller moldam o layout em tempo real, mantendo coesão visual.
+            </p>
+            <ul class="small list-unstyled ms-2">
+              <li><i class="fas fa-check text-success me-2"></i> Mesma identidade do MeuApp MVC público.</li>
+              <li><i class="fas fa-check text-success me-2"></i> Flags simples controlam blocos complexos.</li>
+              <li><i class="fas fa-check text-success me-2"></i> Pronto para protótipos, estudos e demos internas.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- ===================== VISÃO GERAL + FLAGS ===================== -->
+  <section class="py-5" data-aos="fade-up">
+    <div class="row align-items-stretch gy-4">
+      <div data-aos="fade-left" data-aos-delay="120">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h5 fw-semibold mb-3">
+              <i class="fas fa-toggle-on text-primary me-2"></i>
+              Flags recebidas do controller
+            </h2>
+            <p class="text-muted small mb-3">
+              Ajuste as chaves no <code>ShowcaseController</code> e veja o layout reagir de imediato.
+            </p>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Flag</th>
+                    <th class="text-center" style="width: 150px;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for key, value in layout %}
+                    <tr>
+                      <td><code>{{ key }}</code></td>
+                      <td class="text-center">
+                        {% if value %}
+                          <span class="badge bg-success">true</span>
+                        {% else %}
+                          <span class="badge bg-secondary">false</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EXEMPLOS DE CÓDIGO ===================== -->
+  <section class="pb-5" data-aos="fade-up">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        {{ ui.codeblock_pro('ShowcaseController.php', controller_snippet|trim, 'php', 'dark') }}
+      </div>
+      <div class="col-lg-6">
+        {{ ui.codeblock_pro('layout.yml', layout_variations|trim, 'yaml', 'light') }}
+        <p class="small text-muted mt-2">
+          Ajuste as <code>flags</code> nesse mapa para habilitar/desabilitar seções sem tocar no template.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURES ===================== -->
+  {% if layout.feature_cards %}
+    <section class="py-5" data-aos="fade-up">
+      <header class="text-center mb-4">
+        <h2 class="h5 fw-semibold text-primary">
+          <i class="fas fa-layer-group me-2"></i> Recursos ativos (feature_cards = true)
+        </h2>
+        <p class="small text-muted mb-0">
+          Cada card abaixo é abastecido pela coleção <code>features</code>.
+        </p>
+      </header>
+      <div class="row g-4 justify-content-center">
+        {% for feature in features %}
+          <div class="col-12 col-sm-6 col-lg-4" data-aos="zoom-in" data-aos-delay="{{ loop.index * 80 }}">
+            <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+              <i class="{{ feature.icon }} fa-2x mb-3"></i>
+              <h3 class="h6 fw-semibold">{{ feature.title }}</h3>
+              <p class="small text-muted mb-0">{{ feature.text }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+  
+  
+
+  <!-- ===================== METRICS ===================== -->
+  {% if layout.metrics %}
+    <section class="py-5" data-aos="fade-up">
+      <header class="text-center mb-4">
+        <h2 class="h5 fw-semibold text-primary">
+          <i class="fas fa-chart-line me-2"></i> Métricas rápidas (metrics = true)
+        </h2>
+        <p class="small text-muted mb-0">
+          Resumo numérico para entender o cenário atual da página.
+        </p>
+      </header>
+      <div class="row g-3 justify-content-center">
+        {% for metric in metrics %}
+          <div class="col-12 col-sm-4 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ loop.index * 90 }}">
+            <div class="metric-pill shadow-sm">
+              <span class="d-block fw-bold fs-4 text-primary">{{ metric.value }}</span>
+              <span class="small text-muted">{{ metric.label }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- ===================== CTA ===================== -->
+  {% if layout.cta_banner and cta is defined %}
+    <section class="py-5" data-aos="fade-up">
+      <div class="card border-0 shadow-sm bg-primary text-white">
+        <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+          <div>
+            <h2 class="h4 fw-semibold mb-2">{{ cta.heading }}</h2>
+            <p class="mb-0">{{ cta.text }}</p>
+          </div>
+          <div>
+            <a href="{{ cta.button.url }}" class="btn btn-light btn-sm">
+              <i class="fas fa-external-link-alt me-2"></i>{{ cta.button.label }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- ===================== FAQ ===================== -->
+  {% if layout.faq and faq_items is defined %}
+    <section class="py-5" data-aos="fade-up">
+      <header class="text-center mb-4">
+        <h2 class="h5 fw-semibold text-primary">
+          <i class="fas fa-question-circle me-2"></i> Perguntas frequentes (faq = true)
+        </h2>
+        <p class="small text-muted mb-0">
+          Dicas rápidas para replicar o padrão em outras páginas.
+        </p>
+      </header>
+      <div class="accordion" id="faqAccordion">
+        {% for item in faq_items %}
+          {% set collapse_id = 'faqItem' ~ loop.index %}
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="{{ collapse_id }}Heading">
+              <button class="accordion-button {{ loop.first ? '' : 'collapsed' }}" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#{{ collapse_id }}"
+                      aria-expanded="{{ loop.first ? 'true' : 'false' }}"
+                      aria-controls="{{ collapse_id }}">
+                {{ item.question }}
+              </button>
+            </h3>
+            <div id="{{ collapse_id }}"
+                 class="accordion-collapse collapse {{ loop.first ? 'show' : '' }}"
+                 aria-labelledby="{{ collapse_id }}Heading"
+                 data-bs-parent="#faqAccordion">
+              <div class="accordion-body small text-muted">
+                {{ item.answer }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- ===================== CONCLUSÃO ===================== -->
+  <section class="py-5" data-aos="fade-up">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 fw-semibold mb-3">
+          <i class="fas fa-lightbulb text-warning me-2"></i>
+          Conclusão
+        </h2>
+        <p class="small text-muted mb-0">
+          Este showcase reforça como transportar configurações do controller para a view, mantendo a mesma identidade
+          adotada em páginas como <strong>Sobre</strong>. Combine as flags para ativar seções, componha novos arrays de dados
+          e replique o padrão sem duplicar código.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      AOS.init({
+        duration: 650,
+        easing: 'ease-out',
+        once: true,
+        offset: 12
+      });
+    });
+  </script>
+{% endblock %}
