@@ -13,7 +13,26 @@ class TestpageController extends BaseController
             'description' => 'Guia de configuração do ambiente PHP, Apache e Twig para rodar o MeuApp MVC localmente.',
             'author'      => 'Equipe MeuApp',
             'date'        => '2024-06-15',
-            'export' => false
+            'export'      => false,
+            'meta'        => [
+                'description' => 'Página de testes para desenvolvimento com MeuApp MVC e Twig.',
+                'keywords'    => 'teste, desenvolvimento, meuapp mvc',
+            ],
+                      'hero_actions' => [
+                [
+                    'label'   => 'Manual completo',
+                    'href'    => '/documentacao/conceito',
+                    'icon'    => 'fas fa-book',
+                    'variant' => 'danger',
+                ],
+                [
+                    'label'   => 'Estrutura do projeto',
+                    'href'    => '/documentacao/estrutura',
+                    'icon'    => 'fab fa-github',
+                    'variant' => 'warning',
+                ],
+            ],
+
         ]);
     }
 }

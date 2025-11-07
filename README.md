@@ -49,7 +49,7 @@ A aplicação está dividida em dois grandes blocos: **Frontend** para documenta
 %%{init: {"flowchart": {"useMaxWidth": false, "htmlLabels": true, "nodeSpacing": 50, "rankSpacing": 55}}}%%
 flowchart LR
     subgraph CLIENTE [Cliente]
-        Browser["<strong>Navegador</strong><br/>Usuário"]
+        Browser["<strong>Navegador</strong><br/>Paciente"]
     end
 
     subgraph INFRA [Infraestrutura]

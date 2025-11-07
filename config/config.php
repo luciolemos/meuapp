@@ -15,9 +15,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'db' => [
-        'host' => 'localhost',
-        'name' => 'meuapp',
-        'user' => 'root',
-        'pass' => ''
+        'driver'  => 'mysql',
+        'host'    => 'localhost',
+        'port'    => 3306,
+        'name'    => 'meuapp',
+        'user'    => 'luciolemos',
+        'pass'    => 'root',
+        'charset' => 'utf8mb4',
     ],
 ];

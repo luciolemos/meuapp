@@ -69,7 +69,7 @@ Controllers Frontend          Controllers Admin
 Camadas de dados (DB, APIs, PDFs, Storage)
             |
             v
-Views Twig => HTML entregue ao usuário
+Views Twig => HTML entregue ao paciente
     {% endset %}
 
     {% if export %}
@@ -359,7 +359,7 @@ $app->init();
 
     {% if export %}
       {{ ui.filetree_pro('Fluxo MVC', "
-Requisição HTTP (usuário)
+Requisição HTTP (paciente)
 │
 ├── Router identifica a rota
 │
@@ -374,7 +374,7 @@ Requisição HTTP (usuário)
       {% set mvc_sequence %}
         <div class="mermaid">
           sequenceDiagram
-            participant U as Usuário
+            participant U as Paciente
             participant P as public/index.php
             participant R as Router
             participant C as Controller
@@ -395,7 +395,7 @@ Requisição HTTP (usuário)
         title: 'Sequência MVC em execução',
         title_icon: 'fas fa-project-diagram',
         content: mvc_sequence,
-        caption: 'Router resolve URLs, controllers orquestram serviços/domínio e Twig entrega a interface ao usuário.',
+        caption: 'Router resolve URLs, controllers orquestram serviços/domínio e Twig entrega a interface ao paciente.',
         export: export,
         aos_effect: 'zoom-in',
         aos_delay: S + STEP

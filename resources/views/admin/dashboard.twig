@@ -1,5 +1,65 @@
 {% extends "layouts/admin.twig" %}
 
+{% block extra_css %}
+  {{ parent() }}
+  <style>
+    .dashboard-card {
+      position: relative;
+      border-radius: 1rem;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      border: 1px solid rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+    }
+
+    .dashboard-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.08), rgba(25, 135, 84, 0.08));
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 1.25rem 2.5rem rgba(15, 23, 42, 0.12);
+      border-color: rgba(13, 110, 253, 0.18);
+    }
+
+    .dashboard-card:hover::after {
+      opacity: 1;
+    }
+
+    .dashboard-card .card-title {
+      transition: color 0.25s ease;
+    }
+
+    .dashboard-card:hover .card-title {
+      color: #0d6efd;
+    }
+
+    .dashboard-card .card-body {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 200px;
+    }
+
+    .dashboard-card .card-body p {
+      margin-bottom: 0;
+      color: #475569;
+    }
+
+    .dashboard-card .btn {
+      align-self: flex-start;
+    }
+  </style>
+{% endblock %}
+
 {% block admin_content %}
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h4 mb-0"><i class="fas fa-tachometer-alt me-2"></i>{{ title }}</h1>
@@ -10,25 +70,98 @@
 
   <p>Bem-vindo, <strong>{{ user }}</strong>! Você está logado no painel administrativo.</p>
 
-  <div class="row mt-4">
+  {% if connectionOk is not null %}
+    {% if connectionOk %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i> Conexão com o banco de dados estabelecida com sucesso!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+    {% else %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-triangle-exclamation me-2"></i> Falha ao conectar ao banco de dados.
+        {% if connectionError %}
+          <div class="small mt-2 mb-0">{{ connectionError }}</div>
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="row g-4 mt-4">
     <div class="col-md-4">
-      <div class="card border-0 shadow-sm">
+      <div class="card border-0 shadow-sm dashboard-card">
         <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-users me-2"></i>Usuários</h5>
-          <p class="card-text">Gerencie os usuários do sistema.</p>
-          <a href="/admin/users" class="btn btn-sm btn-primary">Acessar</a>
+          <h5 class="card-title"><i class="fas fa-hospital-user me-2"></i>Pacientes</h5>
+          <p class="card-text">Gerencie os pacientes cadastrados no sistema.</p>
+          <a href="/admin/pacientes" class="btn btn-sm btn-primary">Acessar painel</a>
         </div>
       </div>
     </div>
 
     <div class="col-md-4">
-      <div class="card border-0 shadow-sm">
+      <div class="card border-0 shadow-sm dashboard-card">
         <div class="card-body">
           <h5 class="card-title"><i class="fas fa-cogs me-2"></i>Configurações</h5>
           <p class="card-text">Ajuste as configurações da aplicação.</p>
-          <a href="/admin/settings" class="btn btn-sm btn-secondary">Abrir</a>
+          <a href="/admin/settings" class="btn btn-sm btn-primary">Abrir painel</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm dashboard-card">
+        <div class="card-body">
+          <h5 class="card-title"><i class="fas fa-plug me-2"></i>Teste de conexão</h5>
+          <p class="card-text">Valide rapidamente se o banco de dados responde.</p>
+          <a href="/admin/dashboard?test_db=1" class="btn btn-sm btn-primary">Executar teste</a>
         </div>
       </div>
     </div>
   </div>
+
+  {% if versions is defined and versions is not empty %}
+  <section class="mt-5">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h2 class="h5 mb-0"><i class="fas fa-sliders-h me-2 text-primary"></i>Stack do ambiente</h2>
+      <span class="badge text-bg-light text-dark fw-semibold">{{ versions|length }} ferramentas monitoradas</span>
+    </div>
+    <div class="row g-3 row-cols-1 row-cols-md-3">
+      {% for tool in versions %}
+        <div class="col">
+          <div class="card border-0 shadow-sm h-100 dashboard-card">
+            <div class="card-body">
+              <div class="d-flex align-items-start justify-content-between mb-2">
+                <span class="badge rounded-pill text-bg-primary-subtle text-primary">{{ tool.value }}</span>
+                <i class="{{ tool.icon }} text-primary opacity-75"></i>
+              </div>
+              <h6 class="fw-semibold mb-1">{{ tool.name }}</h6>
+              {% if tool.description %}
+                <p class="small text-muted mb-0">{{ tool.description }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="mt-5" id="suporte">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+        <div>
+          <h5 class="card-title mb-1"><i class="fas fa-life-ring me-2 text-primary"></i>Precisa de suporte?</h5>
+          <p class="text-muted mb-0">Centralize chamados internos, consulte playbooks ou atualize documentação operacional.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="mailto:suporte@meuapp.local" class="btn btn-sm btn-primary">
+            <i class="fas fa-envelope-open me-2"></i>Enviar e-mail
+          </a>
+          <a href="https://docs.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-book me-2"></i>Ver playbook
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

@@ -1,0 +1,402 @@
+{# =============================================================
+   Arquivo: /resources/views/frontend/pages/blog.twig
+   Seção: Blog do MeuApp MVC
+   Descrição: Página de artigos com destaque principal e listagem de novidades.
+   Autor: Equipe MeuApp
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+
+{% block title %}{{ app_name }} — Blog{% endblock %}
+
+{% block extra_css %}
+    {{ parent() }}
+    <style>
+        /* ======== HERO (mesma identidade da Home) ======== */
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+            background-attachment: fixed;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(0, 0, 0, 0.2), transparent 70%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-hero-section .hero-content .row {
+            align-items: center;
+        }
+
+        .blog-hero-image {
+            position: relative;
+            border-radius: 0.50rem;
+            overflow: hidden;
+            box-shadow: 0 1.75rem 3.5rem rgba(11, 18, 31, 0.35);
+            background: rgba(255, 255, 255, 0.12);
+            aspect-ratio: 4 / 3;
+        }
+
+        .blog-hero-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.35) 100%);
+            opacity: 0.6;
+            transition: opacity 0.4s ease;
+        }
+
+        .blog-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.02);
+            transition: transform 0.6s ease;
+        }
+
+        .blog-hero-image:hover img {
+            transform: scale(1.06);
+        }
+
+        .blog-hero-image:hover::after {
+            opacity: 0.85;
+        }
+
+        .tag-badge {
+            background-color: rgba(13, 110, 253, 0.12);
+            color: #0b5ed7;
+            border: 1px solid rgba(13, 110, 253, 0.25);
+            border-radius: 999px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .blog-hero-section .lead {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .blog-hero-section .article-meta {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .blog-hero-section .article-meta i {
+            color: inherit;
+        }
+
+        .blog-hero-section .badge.rounded-pill {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+        .article-card {
+            border-radius: 16px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            height: 100%;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 1.25rem 2.5rem rgba(15, 23, 42, 0.12);
+        }
+
+        .article-badge {
+            background-color: rgba(13, 110, 253, 0.12);
+            color: #0b5ed7;
+            border: 1px solid rgba(13, 110, 253, 0.18);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .article-card img {
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            object-fit: cover;
+            height: 250px;
+            width: 100%;
+        }
+
+        .article-meta {
+            font-size: 0.85rem;
+            color: var(--bs-secondary-color);
+        }
+
+        .article-card a.article-title-link {
+            color: #0f172a;
+            transition: color 0.2s ease;
+        }
+
+        .article-card a.article-title-link:hover,
+        .article-card a.article-title-link:focus {
+            color: #0d6efd;
+        }
+
+        .topic-chip {
+            border-radius: 18px;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            padding: 1.25rem;
+            transition: border-color 0.25s ease, transform 0.25s ease;
+            height: 100%;
+        }
+
+        .topic-chip:hover {
+            border-color: #0d6efd;
+            transform: translateY(-3px);
+        }
+
+        .newsletter-card {
+            border-radius: 20px;
+            background: linear-gradient(145deg, #0d6efd, #0b5ed7);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .newsletter-card .form-control {
+            border-radius: 999px;
+            border: none;
+            padding: 0.55rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .newsletter-card .btn {
+            border-radius: 999px;
+            padding: 0.55rem 1.4rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-outline-hero {
+            border-radius: 999px;
+            border-width: 1.5px;
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.8);
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-outline-hero:hover,
+        .btn-outline-hero:focus {
+            background-color: rgba(255, 255, 255, 0.18);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-bs-theme="dark"] .blog-hero-image {
+            background: rgba(139, 185, 254, 0.18);
+            box-shadow: 0 1.75rem 3.5rem rgba(0, 0, 0, 0.45);
+        }
+
+        [data-bs-theme="dark"] .blog-hero-image::after {
+            opacity: 0.75;
+        }
+
+        [data-bs-theme="dark"] .tag-badge {
+            background-color: rgba(139, 185, 254, 0.22);
+            border-color: rgba(139, 185, 254, 0.35);
+            color: #fff;
+        }
+
+        [data-bs-theme="dark"] .article-badge {
+            background-color: rgba(139, 185, 254, 0.24);
+            border-color: rgba(139, 185, 254, 0.35);
+            color: #fff;
+        }
+
+        [data-bs-theme="dark"] .article-card a.article-title-link {
+            color: #f8fafc;
+        }
+
+        [data-bs-theme="dark"] .topic-chip {
+            border-color: rgba(139, 185, 254, 0.18);
+            background-color: rgba(13, 18, 30, 0.55);
+        }
+
+        [data-bs-theme="dark"] .btn-outline-hero {
+            color: #f8fafc;
+            border-color: rgba(139, 185, 254, 0.6);
+        }
+
+        [data-bs-theme="dark"] .btn-outline-hero:hover,
+        [data-bs-theme="dark"] .btn-outline-hero:focus {
+            background-color: rgba(139, 185, 254, 0.24);
+            border-color: rgba(139, 185, 254, 0.45);
+            color: #0b1524;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section id="artigo-principal" class="container section-block text-center py-5" data-aos="fade-up">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 order-lg-2" data-aos="fade-left" data-aos-delay="150">
+                <a href="{{ mainArticle.url }}" class="blog-hero-image d-block">
+                    <img src="{{ mainArticle.cover }}" alt="{{ mainArticle.title }}">
+                </a>
+            </div>
+            <div class="col-lg-6 order-lg-1 text-center text-lg-start" data-aos="fade-right">
+                <span class="tag-badge mb-3 d-inline-flex align-items-center gap-2">
+                    <i class="fas fa-star text-warning"></i> Artigo em destaque
+                </span>
+                <h1 class="display-5 fw-bold mb-3">{{ mainArticle.title }}</h1>
+                <p class="lead mb-4">{{ mainArticle.excerpt }}</p>
+
+                <ul class="list-inline article-meta mb-4">
+                    <li class="list-inline-item me-3">
+                        <i class="fas fa-user me-2"></i> {{ mainArticle.author }}
+                    </li>
+                    <li class="list-inline-item me-3">
+                        <i class="fas fa-calendar-alt me-2"></i> {{ mainArticle.published_at|date("d/m/Y") }}
+                    </li>
+                    <li class="list-inline-item">
+                        <i class="fas fa-clock me-2"></i> {{ mainArticle.reading_time }}
+                    </li>
+                </ul>
+
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-2 mb-4">
+                    {% for tag in mainArticle.tags %}
+                        <span class="badge rounded-pill article-badge">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row align-items-center align-items-lg-start justify-content-center justify-content-lg-start gap-3">
+                    <a href="{{ mainArticle.url }}" class="btn btn-warning btn-sm px-4 text-dark fw-semibold">
+                        <i class="fas fa-book-open me-2"></i> Ler artigo completo
+                    </a>
+                    <a href="#artigos-recentes" class="btn btn-success btn-sm px-4 fw-semibold">
+                        <i class="fas fa-stream me-2"></i> Ver novidades
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="artigos-recentes" class="py-5">
+    <div class="container">
+        <div class="row align-items-center mb-4">
+            <div class="col-lg-8">
+                <h2 class="h1 fw-bold mb-3">
+                    <i class="fas fa-bolt text-warning me-2"></i> Últimos artigos
+                </h2>
+                <p class="text-muted mb-0">
+                    Dicas práticas e narrativas da equipe para evoluir sua stack com o MeuApp MVC.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <a href="#newsletter" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-envelope-open-text me-2"></i> Receber novidades
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for article in recentArticles %}
+                <div class="col-md-6 col-lg-4">
+                    <article class="card border-0 shadow-sm article-card">
+                        <img src="{{ article.cover }}" alt="{{ article.title }}">
+                        <div class="card-body">
+                            <div class="article-meta mb-3 d-flex align-items-center gap-3 flex-wrap">
+                                <span><i class="fas fa-calendar-day me-1"></i> {{ article.published_at|date("d/m/Y") }}</span>
+                                <span><i class="fas fa-clock me-1"></i> {{ article.reading_time }}</span>
+                            </div>
+                            <h3 class="h5 fw-bold mb-2">
+                                <a href="{{ article.url }}" class="link-underline link-underline-opacity-0 article-title-link">
+                                    {{ article.title }}
+                                </a>
+                            </h3>
+                            <p class="text-muted mb-3">{{ article.excerpt }}</p>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for tag in article.tags %}
+                                    <span class="badge rounded-pill article-badge">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-7">
+                <div class="p-4 p-lg-5 bg-body-tertiary rounded-4 h-100 shadow-sm">
+                    <h2 class="h3 fw-bold mb-3">
+                        <i class="fas fa-compass me-2 text-primary"></i> Temas que estamos explorando
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Explore coleções curadas de artigos para acelerar sua jornada com o MeuApp MVC e o ecossistema PHP.
+                    </p>
+                    <div class="row g-3">
+                        {% for topic in topics %}
+                            <div class="col-md-6">
+                                <div class="topic-chip h-100">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="text-primary fs-3"><i class="{{ topic.icon }}"></i></span>
+                                        <div>
+                                            <h3 class="h6 fw-semibold mb-1">{{ topic.label }}</h3>
+                                            <p class="small text-muted mb-0">{{ topic.description }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div id="newsletter" class="newsletter-card p-4 p-lg-5 h-100 shadow">
+                    <h2 class="h3 fw-bold mb-3">
+                        <i class="fas fa-paper-plane me-2"></i> Receba o resumo quinzenal
+                    </h2>
+                    <p class="mb-4">
+                        Insights, novidades do repositório e tutoriais exclusivos direto no seu e-mail. Sem spam, prometemos.
+                    </p>
+                    <form class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="newsletter-name" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="newsletter-name" placeholder="Seu nome completo" required>
+                            <div class="invalid-feedback">
+                                Informe seu nome para personalizarmos o conteúdo.
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="newsletter-email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="newsletter-email" placeholder="voce@empresa.com" required>
+                            <div class="invalid-feedback">
+                                Informe um e-mail válido para receber a newsletter.
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-light btn-sm w-100 fw-semibold">
+                            Assinar agora
+                        </button>
+                        <p class="small opacity-75 mt-3">
+                            Ao assinar você concorda em receber comunicações sobre o MeuApp MVC. Você pode cancelar a assinatura a qualquer momento.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -89,12 +89,69 @@
 .tech-card p {
   transition: all 0.3s ease-in-out;
 }
+
+/* ======== TESTIMONIALS ======== */
+.testimonial-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1rem;
+  padding: 1.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(13, 110, 253, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 1rem 2rem rgba(13, 110, 253, 0.12);
+}
+
+.testimonial-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(13, 110, 253, 0.15), rgba(13, 110, 253, 0.45));
+  color: var(--bs-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.testimonial-quote {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] .testimonial-card {
+  background-color: #1f1f1f;
+  border-color: #2c2c2c;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.35);
+}
+
+[data-bs-theme="dark"] .testimonial-card:hover {
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.5);
+}
+
+.testimonial-role {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+}
+
+[data-bs-theme="dark"] .section-block.bg-light {
+  background-color: #161616 !important;
+}
     </style>
 {% endblock %}
 
 {% block content %}
 <!-- ===================== HERO SECTION ===================== -->
-<section class="hero-section section-block text-center shadow-lg">    
+{# <section class="container section-block text-center shadow-lg">     #}
+<section class="container section-block text-center py-5" data-aos="fade-up"> 
     <div class="hero-overlay"></div>
     <div class="container hero-content">
     <header class="mb-4 text-center">
@@ -124,7 +181,7 @@
            href: '/documentacao/conceito',
            text: 'Conceito do projeto',
            icon: 'fas fa-book me-2',
-           variant: 'primary',
+           variant: 'warning',
            attrs: {
             'role': 'button', 
             'aria-label': 'Conhecendo o MeuApp MVC', 
@@ -135,7 +192,7 @@
             'data-bs-placement': 'bottom',
             'data-bs-delay': '{"show":"500","hide":"100"}'
             },
-           extra_class: 'btn btn-light btn-sm shadow-sm'
+           extra_class: 'btn btn-warning btn-sm shadow-sm'
 
        } %}
             {# <a href="/documentacao" class="btn btn-light btn-sm shadow-sm">
@@ -230,6 +287,64 @@
     subtitle: 'Tecnologias base que sustentam o fluxo do MeuApp, do backend ao frontend.',
     icon: 'fas fa-layer-group'
 } %}
+<hr class="section-divider">
+
+<!-- ===================== Depoimentos ===================== -->
+<section class="section-block" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold">
+                <i class="fas fa-comment-dots me-2"></i> Depoimentos
+            </span>
+            <h2 class="mt-3 h4 text-primary fw-bold">
+                Quem usa o MeuApp MVC constrói com mais confiança
+            </h2>
+            <p class="small text-muted col-lg-7 mx-auto">
+                Feedback real de quem experimentou a base do MeuApp MVC para acelerar o aprendizado e entregar soluções em produção.
+            </p>
+        </div>
+
+        {% set testimonials = [
+            {
+                'initials': 'AL',
+                'name': 'Ana Lima',
+                'role': 'Líder Técnica - Inovatec',
+                'quote': '"Adotamos o MeuApp MVC como base de estudo para a equipe e vimos o conhecimento transbordar para projetos reais. A organização das camadas e a documentação viva fazem toda a diferença."'
+            },
+            {
+                'initials': 'RM',
+                'name': 'Ricardo Martins',
+                'role': 'Desenvolvedor Full-Stack',
+                'quote': '"A clareza entre controladores, modelos e views me permitiu focar em entregar valor. Em poucos dias eu já tinha um módulo completo em produção."'
+            },
+            {
+                'initials': 'SS',
+                'name': 'Sara Souza',
+                'role': 'Instrutora de PHP',
+                'quote': '"Uso o MeuApp MVC em sala de aula porque ele mostra exatamente como uma aplicação moderna deve se comportar. É didático sem perder robustez."'
+            }
+        ] %}
+
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+                <div class="col-12 col-md-4">
+                   <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="testimonial-avatar me-3">{{ testimonial.initials }}</div>
+                            <div>
+                                <h3 class="h6 fw-semibold mb-0">{{ testimonial.name }}</h3>
+                                <span class="testimonial-role">{{ testimonial.role }}</span>
+                            </div>
+                        </div>
+                        <p class="testimonial-quote mb-0">
+                            {{ testimonial.quote }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 <hr class="section-divider">
 
 <!-- ===================== Tecnologias do Projeto ===================== -->

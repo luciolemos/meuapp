@@ -1,0 +1,837 @@
+{% extends "layouts/admin.twig" %}
+
+{% block extra_css %}
+  {{ parent() }}
+  <style>
+    .patient-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(13, 110, 253, 0.1);
+      color: #0d6efd;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .patient-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .patient-avatar--fallback {
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.12), rgba(13, 110, 253, 0.22));
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+
+    .patient-avatar--preview {
+      width: 56px;
+      height: 56px;
+      font-size: 1.2rem;
+    }
+
+    .patient-avatar__hint {
+      font-size: 0.75rem;
+    }
+
+    .table-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.4rem;
+    }
+
+    .table-actions .btn {
+      border-radius: 0.65rem !important;
+      width: 2.35rem;
+      height: 2.35rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .table-actions .btn i {
+      width: 1.05rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+  </style>
+{% endblock %}
+
+{% block admin_content %}
+  <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h4 mb-1"><i class="fas fa-hospital-user me-2 text-primary"></i>{{ title }}</h1>
+      <p class="text-muted mb-0 small">Gerencie acessos internos de forma simples enquanto o banco de dados não está integrado.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modalPatientCreate">
+        <i class="fas fa-user-plus me-2"></i>Novo paciente
+      </button>
+      <a href="/admin/pacientes?status=info&message={{ 'Sincronização simulada concluída.'|url_encode }}"
+         class="btn btn-outline-secondary btn-sm px-3">
+        <i class="fas fa-rotate me-2"></i>Sincronizar
+      </a>
+    </div>
+  </div>
+
+  {% if status is defined and status %}
+    {% set alertClass = {
+      'success': 'alert-success',
+      'error': 'alert-danger',
+      'info': 'alert-info'
+    }[status] ?? 'alert-secondary' %}
+    <div class="alert {{ alertClass }} alert-dismissible fade show" role="alert">
+      {{ message ?? 'Operação realizada.' }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+  {% endif %}
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge text-bg-primary-subtle text-primary fw-semibold">{{ patients|length }} pacientes</span>
+          <span class="text-muted small">Dados armazenados em <code>meuapp.tbl_meuapp_patients</code></span>
+        </div>
+        <div class="input-group input-group-sm" style="max-width: 260px;">
+          <span class="input-group-text bg-body border-end-0"><i class="fas fa-search"></i></span>
+          <input type="search" class="form-control border-start-0" placeholder="Filtrar por nome, e-mail ou convênio" data-filter-table="#patientsTable">
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle table-hover mb-0" id="patientsTable">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col" class="d-none d-lg-table-cell">E-mail</th>
+              <th scope="col" class="d-none d-lg-table-cell">Convênio</th>
+              <th scope="col" class="d-none d-lg-table-cell">Situação do cadastro</th>
+              <th scope="col" class="d-none d-xl-table-cell">Atualizado</th>
+              <th scope="col" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% set convenio_labels = convenioOptions ?? {} %}
+          {% set situacao_labels = situacaoOptions ?? {} %}
+          {% if patients %}
+            {% for patient in patients %}
+              {% set badge_convenio = {
+                'sus': 'text-bg-success',
+                'particular': 'text-bg-primary',
+                'fusex': 'text-bg-info text-dark',
+                'unimed': 'text-bg-success',
+                'hapvida_notredame_intermedica': 'text-bg-warning text-dark',
+                'bradesco_saude': 'text-bg-danger',
+                'amil': 'text-bg-primary-subtle text-primary',
+                'sulamerica_saude': 'text-bg-info text-dark',
+                'prevent_senior': 'text-bg-dark',
+                'plansaude': 'text-bg-secondary',
+                'outro': 'text-bg-secondary'
+              }[patient.convenio|default('particular')] ?? 'text-bg-secondary' %}
+
+              {% set badge_situacao = {
+                'ativo': 'text-bg-success',
+                'incompleto': 'text-bg-warning text-dark',
+                'suspenso': 'text-bg-dark',
+                'cancelado': 'text-bg-secondary'
+              }[patient.situacao_cadastro|default('ativo')] ?? 'text-bg-secondary' %}
+
+              {% set convenio_value = (patient.convenio is defined and patient.convenio is not empty ? patient.convenio|lower : 'particular') %}
+              {% set convenio_label = convenio_labels[convenio_value] ?? convenio_value|replace({'_':' '})|title %}
+              {% set situacao_value = (patient.situacao_cadastro is defined and patient.situacao_cadastro is not empty ? patient.situacao_cadastro|lower : 'ativo') %}
+              {% set situacao_label = situacao_labels[situacao_value] ?? situacao_value|replace({'_':' '})|title %}
+
+              <tr data-patient='{{ {
+                  id: patient.id,
+                  name: patient.name,
+                  email: patient.email,
+                  convenio: convenio_value,
+                  convenio_label: convenio_label,
+                  situacao_cadastro: situacao_value,
+                  situacao_label: situacao_label,
+                  avatar: patient.avatar,
+                  initial: patient.name|slice(0,1)|upper,
+                  staff_id: patient.staff_id ?? '',
+                  birth_date: patient.birth_date ?? '',
+                  birth_label: patient.birth_date ? (patient.birth_date|date('d/m/Y')) : '—',
+                  cpf: patient.cpf ?? '',
+                  address: patient.address ?? '',
+                  created_at: patient.created_at ?? '',
+                  updated_at: patient.updated_at ?? '',
+                  created_label: patient.created_at is defined ? (patient.created_at|date("d/m/Y H:i")) : '—',
+                  updated_label: patient.updated_at is defined ? (patient.updated_at|date("d/m/Y H:i")) : '—'
+              }|json_encode|e('html_attr') }}'>
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    {% if patient.avatar %}
+                      <span class="patient-avatar">
+                        <img src="{{ patient.avatar }}" alt="Avatar de {{ patient.name }}">
+                      </span>
+                    {% else %}
+                      <span class="patient-avatar patient-avatar--fallback">{{ patient.name|slice(0,1)|upper }}</span>
+                    {% endif %}
+                    <div>
+                      <div class="fw-semibold">{{ patient.name }}</div>
+                      <div class="text-muted small d-lg-none">{{ patient.email }}</div>
+                      {% if patient.staff_id %}
+                        <div class="text-muted small">ID: {{ patient.staff_id }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td class="d-none d-lg-table-cell">{{ patient.email }}</td>
+                <td class="d-none d-lg-table-cell">
+                  <span class="badge rounded-pill {{ badge_convenio }}">{{ convenio_label }}</span>
+                </td>
+                <td class="d-none d-lg-table-cell">
+                  <span class="badge rounded-pill {{ badge_situacao }}">{{ situacao_label }}</span>
+                </td>
+                <td class="d-none d-xl-table-cell text-muted small">
+                  {{ patient.updated_at|date("d/m/Y H:i")|default('—') }}
+                </td>
+                <td class="text-end">
+                  <div class="table-actions">
+                    <button
+                      class="btn btn-outline-secondary btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalPatientView"
+                      data-action="fill-view">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button
+                      class="btn btn-outline-primary btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalPatientEdit"
+                      data-action="fill-edit">
+                      <i class="fas fa-pen"></i>
+                    </button>
+                    <form action="/admin/pacientes/delete" method="post" class="d-inline">
+                      <input type="hidden" name="id" value="{{ patient.id }}">
+                      <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Remover {{ patient.name }}?')">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">
+                <i class="fas fa-user-slash fa-2x mb-2 d-block"></i>
+                Nenhum paciente cadastrado até o momento.
+              </td>
+            </tr>
+          {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# Modal: Ver paciente #}
+  <div class="modal fade" id="modalPatientView" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-eye me-2 text-primary"></i>Detalhes do paciente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <span class="patient-avatar patient-avatar--fallback patient-avatar--preview" data-avatar-preview="view">?</span>
+            <div>
+              <h5 class="mb-1" data-view-name>Paciente</h5>
+              <p class="text-muted mb-0 small" data-view-email>email@meuapp.local</p>
+              <p class="text-muted mb-0 small" data-view-staff>ID: —</p>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <span class="text-muted text-uppercase small fw-semibold d-block">Convênio</span>
+              <div data-view-convenio></div>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted text-uppercase small fw-semibold d-block">Situação do cadastro</span>
+              <div data-view-situacao></div>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted text-uppercase small fw-semibold d-block">Data de nascimento</span>
+              <p class="mb-0" data-view-birth>—</p>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted text-uppercase small fw-semibold d-block">CPF</span>
+              <p class="mb-0" data-view-cpf>—</p>
+            </div>
+            <div class="col-12">
+              <span class="text-muted text-uppercase small fw-semibold d-block">Endereço</span>
+              <p class="mb-0" data-view-address>—</p>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted text-uppercase small fw-semibold d-block">Criado em</span>
+              <p class="mb-0" data-view-created>—</p>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted text-uppercase small fw-semibold d-block">Atualizado em</span>
+              <p class="mb-0" data-view-updated>—</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary btn-sm" data-view-open-edit>
+            <i class="fas fa-pen me-2"></i>Editar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# Modal: Criar paciente #}
+  <div class="modal fade" id="modalPatientCreate" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form action="/admin/pacientes/store" method="post" class="modal-content needs-validation" novalidate enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-user-plus me-2 text-primary"></i>Novo paciente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="createName" class="form-label">Nome completo</label>
+            <input type="text" class="form-control" name="name" id="createName" required>
+            <div class="invalid-feedback">Informe o nome do paciente.</div>
+            <div class="form-text">O ID interno será gerado automaticamente no salvamento.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="createEmail" class="form-label">E-mail</label>
+            <input type="email" class="form-control" name="email" id="createEmail" required>
+            <div class="invalid-feedback">Informe um e-mail válido.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="createAvatar" class="form-label">Avatar (URL opcional)</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-image"></i></span>
+              <input type="url" class="form-control" name="avatar" id="createAvatar" placeholder="https://exemplo.com/avatar.jpg">
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+              <span class="patient-avatar patient-avatar--fallback patient-avatar--preview" data-avatar-preview="create">?</span>
+              <span class="text-muted patient-avatar__hint">Usamos as iniciais se nenhuma imagem for informada.</span>
+            </div>
+            <div class="mt-3">
+              <label for="createAvatarFile" class="form-label">Ou envie um arquivo</label>
+              <input type="file" class="form-control" name="avatar_file" id="createAvatarFile" accept="image/*">
+              <div class="form-text">Formatos suportados: JPG ou PNG até 2MB. Ao enviar, substitui a URL acima.</div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="createConvenio" class="form-label">Convênio</label>
+              <select name="convenio" id="createConvenio" class="form-select">
+                {% for value, label in convenio_labels %}
+                  <option value="{{ value }}" {% if value == 'particular' %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="createSituacao" class="form-label">Situação do cadastro</label>
+              <select name="situacao_cadastro" id="createSituacao" class="form-select">
+                {% for value, label in situacao_labels %}
+                  <option value="{{ value }}" {% if value == 'ativo' %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <label for="createBirthDate" class="form-label">Data de nascimento</label>
+              <input type="date" class="form-control" name="birth_date" id="createBirthDate">
+            </div>
+            <div class="col-md-6">
+              <label for="createCpf" class="form-label">CPF</label>
+              <input type="text" class="form-control" name="cpf" id="createCpf" placeholder="000.000.000-00">
+            </div>
+            <div class="col-12">
+              <label for="createAddress" class="form-label">Endereço</label>
+              <textarea class="form-control" name="address" id="createAddress" rows="2" placeholder="Rua, número, complemento, cidade"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary btn-sm">Salvar paciente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# Modal: Editar paciente #}
+  <div class="modal fade" id="modalPatientEdit" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form action="/admin/pacientes/update" method="post" class="modal-content needs-validation" novalidate enctype="multipart/form-data">
+        <input type="hidden" name="id" id="editId">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-patient-edit me-2 text-primary"></i>Editar paciente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">ID interno</label>
+            <input type="text" class="form-control" id="editStaffId" readonly>
+            <div class="form-text">Gerado automaticamente e não editável.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="editName" class="form-label">Nome completo</label>
+            <input type="text" class="form-control" name="name" id="editName" required>
+            <div class="invalid-feedback">Informe o nome do paciente.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="editEmail" class="form-label">E-mail</label>
+            <input type="email" class="form-control" name="email" id="editEmail" required>
+            <div class="invalid-feedback">Informe um e-mail válido.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="editAvatar" class="form-label">Avatar (URL opcional)</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-image"></i></span>
+              <input type="text" class="form-control" name="avatar" id="editAvatar" placeholder="https://exemplo.com/avatar.jpg ou /uploads/avatars/arquivo.png" inputmode="url">
+            </div>
+            <div class="form-text">Aceita URLs completas ou caminhos internos gerados pelo upload.</div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+              <span class="patient-avatar patient-avatar--fallback patient-avatar--preview" data-avatar-preview="edit">?</span>
+              <span class="text-muted patient-avatar__hint">Atualize a imagem ou deixe em branco para usar iniciais.</span>
+            </div>
+            <div class="mt-3">
+              <label for="editAvatarFile" class="form-label">Substituir por arquivo</label>
+              <input type="file" class="form-control" name="avatar_file" id="editAvatarFile" accept="image/*">
+              <div class="form-text">Se escolher um arquivo, ignoramos a URL acima.</div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="editConvenio" class="form-label">Convênio</label>
+              <select name="convenio" id="editConvenio" class="form-select">
+                {% for value, label in convenio_labels %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="editSituacao" class="form-label">Situação do cadastro</label>
+              <select name="situacao_cadastro" id="editSituacao" class="form-select">
+                {% for value, label in situacao_labels %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <label for="editBirthDate" class="form-label">Data de nascimento</label>
+              <input type="date" class="form-control" name="birth_date" id="editBirthDate">
+            </div>
+            <div class="col-md-6">
+              <label for="editCpf" class="form-label">CPF</label>
+              <input type="text" class="form-control" name="cpf" id="editCpf" placeholder="000.000.000-00">
+            </div>
+            <div class="col-12">
+              <label for="editAddress" class="form-label">Endereço</label>
+              <textarea class="form-control" name="address" id="editAddress" rows="2" placeholder="Rua, número, complemento, cidade"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary btn-sm">Atualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block extra_js %}
+  {{ parent() }}
+  <script>
+    (function () {
+      'use strict';
+
+      function initialsFromName(name) {
+        if (!name) return '?';
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return '?';
+        if (parts.length === 1) {
+          return parts[0].slice(0, 2).toUpperCase();
+        }
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+      }
+
+      function setAvatarPreview(previewEl, url, fallbackLetter) {
+        if (!previewEl) return;
+
+        const fallback = (fallbackLetter && fallbackLetter.trim() !== '' ? fallbackLetter : '?').toUpperCase();
+        const normalizedUrl = url && url.trim() !== '' ? url.trim() : '';
+
+        if (normalizedUrl) {
+          let img = previewEl.querySelector('img');
+          if (!img) {
+            img = document.createElement('img');
+            previewEl.innerHTML = '';
+            previewEl.appendChild(img);
+          }
+          img.src = normalizedUrl;
+          img.alt = 'Avatar do paciente';
+          previewEl.classList.remove('patient-avatar--fallback');
+        } else {
+          const img = previewEl.querySelector('img');
+          if (img) {
+            img.remove();
+          }
+          previewEl.textContent = fallback;
+          previewEl.classList.add('patient-avatar--fallback');
+        }
+      }
+
+      const filterInput = document.querySelector('[data-filter-table]');
+      if (filterInput) {
+        const targetSelector = filterInput.getAttribute('data-filter-table');
+        const table = targetSelector ? document.querySelector(targetSelector) : null;
+
+        filterInput.addEventListener('input', function () {
+          if (!table) return;
+          const term = this.value.trim().toLowerCase();
+          table.querySelectorAll('tbody tr').forEach(function (row) {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(term) ? '' : 'none';
+          });
+        });
+      }
+
+      const convenioLabels = {{ convenio_labels|json_encode|raw }};
+      const situacaoLabels = {{ situacao_labels|json_encode|raw }};
+
+      function toTitle(slug) {
+        return slug
+          .split('_')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
+      }
+
+      function labelForConvenio(value) {
+        if (!value) {
+          return 'Não informado';
+        }
+        const key = value.toLowerCase();
+        return convenioLabels[key] || toTitle(key);
+      }
+
+      function labelForSituacao(value) {
+        if (!value) {
+          return '—';
+        }
+        const key = value.toLowerCase();
+        return situacaoLabels[key] || toTitle(key);
+      }
+
+      function badgeClassForConvenio(convenio) {
+        switch ((convenio || '').toLowerCase()) {
+          case 'sus':
+            return 'text-bg-success';
+          case 'particular':
+            return 'text-bg-primary';
+          case 'fusex':
+            return 'text-bg-info text-dark';
+          case 'unimed':
+            return 'text-bg-success';
+          case 'hapvida_notredame_intermedica':
+            return 'text-bg-warning text-dark';
+          case 'bradesco_saude':
+            return 'text-bg-danger';
+          case 'amil':
+            return 'text-bg-primary-subtle text-primary';
+          case 'sulamerica_saude':
+            return 'text-bg-info text-dark';
+          case 'prevent_senior':
+            return 'text-bg-dark';
+          case 'plansaude':
+            return 'text-bg-secondary';
+          default:
+            return 'text-bg-secondary';
+        }
+      }
+
+      function badgeClassForSituacao(situacao) {
+        switch ((situacao || '').toLowerCase()) {
+          case 'incompleto':
+            return 'text-bg-warning text-dark';
+          case 'suspenso':
+            return 'text-bg-dark';
+          case 'cancelado':
+            return 'text-bg-secondary';
+          default:
+            return 'text-bg-success';
+        }
+      }
+
+      function formatCpf(value) {
+        if (!value) return '—';
+        const digits = value.replace(/\D+/g, '');
+        if (digits.length !== 11) {
+          return value;
+        }
+        return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+      }
+
+      function renderBadge(container, label, className) {
+        if (!container) return;
+        container.innerHTML = '<span class="badge rounded-pill ' + className + '">' + (label || '—') + '</span>';
+      }
+
+      function parsePatientData(element) {
+        if (!element) return null;
+        const row = element.closest('tr');
+        if (!row) return null;
+        let data = row.getAttribute('data-patient');
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          data = null;
+        }
+        return data;
+      }
+
+      const editModal = document.getElementById('modalPatientEdit');
+      const viewModal = document.getElementById('modalPatientView');
+      const createNameInput = document.getElementById('createName');
+      const createAvatarInput = document.getElementById('createAvatar');
+      const createAvatarFileInput = document.getElementById('createAvatarFile');
+      const createPreview = document.querySelector('[data-avatar-preview="create"]');
+      const editAvatarInput = document.getElementById('editAvatar');
+      const editAvatarFileInput = document.getElementById('editAvatarFile');
+      const editNameInput = document.getElementById('editName');
+      const editBirthInput = document.getElementById('editBirthDate');
+      const editCpfInput = document.getElementById('editCpf');
+      const editAddressInput = document.getElementById('editAddress');
+      const editStaffInput = document.getElementById('editStaffId');
+      const editPreview = document.querySelector('[data-avatar-preview="edit"]');
+      const viewPreview = document.querySelector('[data-avatar-preview="view"]');
+      const viewNameEl = document.querySelector('[data-view-name]');
+      const viewEmailEl = document.querySelector('[data-view-email]');
+      const viewConvenioEl = document.querySelector('[data-view-convenio]');
+      const viewSituacaoEl = document.querySelector('[data-view-situacao]');
+      const viewBirthEl = document.querySelector('[data-view-birth]');
+      const viewCpfEl = document.querySelector('[data-view-cpf]');
+      const viewAddressEl = document.querySelector('[data-view-address]');
+      const viewCreatedEl = document.querySelector('[data-view-created]');
+      const viewUpdatedEl = document.querySelector('[data-view-updated]');
+      const viewEditBtn = document.querySelector('[data-view-open-edit]');
+      const viewStaffEl = document.querySelector('[data-view-staff]');
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+
+      function readFileAsPreview(fileInput, previewElement, fallbackLetter) {
+        if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+          return false;
+        }
+
+        const file = fileInput.files[0];
+        if (!file.type.startsWith('image/')) {
+          window.alert('Selecione um arquivo de imagem (JPG ou PNG).');
+          fileInput.value = '';
+          return false;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+          window.alert('Arquivo excede o limite de 2MB.');
+          fileInput.value = '';
+          return false;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          setAvatarPreview(previewElement, event.target?.result || '', fallbackLetter);
+        };
+        reader.readAsDataURL(file);
+        return true;
+      }
+
+      function refreshCreatePreview() {
+        const letter = initialsFromName(createNameInput ? createNameInput.value : '');
+
+        if (createAvatarFileInput && createAvatarFileInput.files && createAvatarFileInput.files[0]) {
+          if (readFileAsPreview(createAvatarFileInput, createPreview, letter)) {
+            return;
+          }
+        }
+
+        const avatarUrl = createAvatarInput ? createAvatarInput.value : '';
+        setAvatarPreview(createPreview, avatarUrl, letter);
+      }
+
+      function refreshEditPreview() {
+        const letter = initialsFromName(editNameInput ? editNameInput.value : '');
+
+        if (editAvatarFileInput && editAvatarFileInput.files && editAvatarFileInput.files[0]) {
+            if (readFileAsPreview(editAvatarFileInput, editPreview, letter)) {
+                return;
+            }
+        }
+
+        const avatarUrl = editAvatarInput ? editAvatarInput.value : '';
+        setAvatarPreview(editPreview, avatarUrl, letter);
+      }
+
+      if (createNameInput) {
+        createNameInput.addEventListener('input', refreshCreatePreview);
+      }
+      if (createAvatarInput) {
+        createAvatarInput.addEventListener('input', refreshCreatePreview);
+      }
+      if (createAvatarFileInput) {
+        createAvatarFileInput.addEventListener('change', refreshCreatePreview);
+      }
+      refreshCreatePreview();
+
+      if (editNameInput) {
+        editNameInput.addEventListener('input', refreshEditPreview);
+      }
+      if (editAvatarInput) {
+        editAvatarInput.addEventListener('input', function () {
+          if (editAvatarFileInput) {
+            editAvatarFileInput.value = '';
+          }
+          refreshEditPreview();
+        });
+      }
+      if (editAvatarFileInput) {
+        editAvatarFileInput.addEventListener('change', refreshEditPreview);
+      }
+
+      function populateEditForm(data) {
+        if (!editModal || !data) return;
+        editModal.querySelector('#editId').value = data.id ?? '';
+        editModal.querySelector('#editName').value = data.name ?? '';
+        editModal.querySelector('#editEmail').value = data.email ?? '';
+        const convenioSelect = editModal.querySelector('#editConvenio');
+        if (convenioSelect) {
+          convenioSelect.value = (data.convenio || 'particular').toLowerCase();
+        }
+        const situacaoSelect = editModal.querySelector('#editSituacao');
+        if (situacaoSelect) {
+          situacaoSelect.value = (data.situacao_cadastro || 'ativo').toLowerCase();
+        }
+        if (editAvatarInput) {
+          editAvatarInput.value = data.avatar ?? '';
+        }
+        if (editAvatarFileInput) {
+          editAvatarFileInput.value = '';
+        }
+        if (editBirthInput) {
+          editBirthInput.value = data.birth_date ?? '';
+        }
+        if (editCpfInput) {
+          editCpfInput.value = data.cpf ?? '';
+        }
+        if (editAddressInput) {
+          editAddressInput.value = data.address ?? '';
+        }
+        if (editStaffInput) {
+          editStaffInput.value = data.staff_id ?? '';
+        }
+        refreshEditPreview();
+      }
+
+      function populateViewModal(data) {
+        if (!viewModal || !data) return;
+        const initials = initialsFromName(data.name);
+        setAvatarPreview(viewPreview, data.avatar ?? '', initials);
+        if (viewNameEl) viewNameEl.textContent = data.name || '—';
+        if (viewEmailEl) viewEmailEl.textContent = data.email || '—';
+        if (viewStaffEl) viewStaffEl.textContent = data.staff_id ? 'ID: ' + data.staff_id : 'ID: —';
+
+        const convenioClass = badgeClassForConvenio(data.convenio);
+        const convenioText = data.convenio_label || labelForConvenio(data.convenio);
+        renderBadge(viewConvenioEl, convenioText, convenioClass);
+
+        const situacaoClass = badgeClassForSituacao(data.situacao_cadastro);
+        const situacaoText = data.situacao_label || labelForSituacao(data.situacao_cadastro);
+        renderBadge(viewSituacaoEl, situacaoText, situacaoClass);
+
+        if (viewBirthEl) viewBirthEl.textContent = data.birth_label || '—';
+        if (viewCpfEl) viewCpfEl.textContent = formatCpf(data.cpf || '');
+        if (viewAddressEl) viewAddressEl.textContent = data.address || '—';
+        if (viewCreatedEl) viewCreatedEl.textContent = data.created_label || '—';
+        if (viewUpdatedEl) viewUpdatedEl.textContent = data.updated_label || '—';
+        viewModal.dataset.currentPatient = JSON.stringify(data);
+      }
+
+      if (editModal) {
+        editModal.addEventListener('show.bs.modal', function (event) {
+          const data = parsePatientData(event.relatedTarget);
+          if (!data) return;
+          populateEditForm(data);
+        });
+      }
+
+      if (viewModal) {
+        viewModal.addEventListener('show.bs.modal', function (event) {
+          const data = parsePatientData(event.relatedTarget);
+          if (!data) return;
+          populateViewModal(data);
+        });
+      }
+
+      if (viewEditBtn) {
+        viewEditBtn.addEventListener('click', function () {
+          if (!viewModal || !editModal) return;
+          const payload = viewModal.dataset.currentPatient;
+          if (!payload) return;
+          let data;
+          try {
+            data = JSON.parse(payload);
+          } catch (e) {
+            data = null;
+          }
+          if (!data) return;
+
+          populateEditForm(data);
+
+          const viewInstance = bootstrap.Modal.getInstance(viewModal);
+          if (viewInstance) {
+            viewInstance.hide();
+          }
+          const editInstance = bootstrap.Modal.getOrCreateInstance(editModal);
+          editInstance.show();
+        });
+      }
+
+      // Validação simples bootstrap
+      document.querySelectorAll('.needs-validation').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+  </script>
+{% endblock %}

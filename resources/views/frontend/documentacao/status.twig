@@ -384,7 +384,7 @@ section { scroll-margin-top: 80px; }
 │   │   │   ├── DashboardController.php
 │   │   │   ├── IndexController.php
 │   │   │   ├── SettingsController.php
-│   │   │   └── UsersController.php
+│   │   │   └── PacientesController.php
 │   │   └── Public
 │   │       ├── ConfiguracaoController.php
 │   │       ├── ContatoController.php
@@ -482,7 +482,7 @@ section { scroll-margin-top: 80px; }
     {% set mvc_itens = [
       {'icon':'fas fa-database text-success','txt':'<strong>Model:</strong> Responsável pela <strong>lógica de negócio</strong> e comunicação com o banco de dados.'},
       {'icon':'fas fa-eye text-info','txt':'<strong>View:</strong> Representa a <strong>camada de apresentação</strong> com <strong>Twig</strong>.'},
-      {'icon':'fas fa-route text-primary','txt':'<strong>Controller:</strong> Ponte entre o usuário e o sistema; orquestra Models e Views.'}
+      {'icon':'fas fa-route text-primary','txt':'<strong>Controller:</strong> Ponte entre o paciente e o sistema; orquestra Models e Views.'}
     ] %}
     <ul class="list-group mb-4">
       {% for i in mvc_itens %}
@@ -915,7 +915,7 @@ DirectoryIndex index.php index.html
         <li><strong>Acesso ao console:</strong>  
             <code>sudo mysql -u root -p</code>
         </li>
-        <li><strong>Criação do banco e usuário:</strong> 
+        <li><strong>Criação do banco e paciente:</strong> 
         <code> 
 <pre style="font-family: monospace; white-space: pre-wrap;">
 CREATE DATABASE meuapp_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -933,7 +933,7 @@ FLUSH PRIVILEGES;
     <h3 class="h6 text-primary mt-4">Configuração de permissões</h3>
     <p class="text-justify">
         Para que o Apache consiga ler e executar os arquivos da aplicação, o diretório do projeto deve ter
-        permissões adequadas. Em ambientes Linux, o grupo <code>www-data</code> representa o usuário do servidor.
+        permissões adequadas. Em ambientes Linux, o grupo <code>www-data</code> representa o paciente do servidor.
     </p>
 
 <pre style="font-family: monospace; white-space: pre-wrap;">
@@ -1200,7 +1200,7 @@ class HomeController {
 
     <h3 class="h6 text-primary mt-4">3. Diagnóstico do Banco de Dados</h3>
     <p class="text-justify">
-        O MySQL (ou MariaDB) deve estar ativo e acessível pelo usuário configurado em 
+        O MySQL (ou MariaDB) deve estar ativo e acessível pelo paciente configurado em 
         <code>config/config.php</code>.  
         Verificações periódicas ajudam a identificar falhas de autenticação, permissões e integridade da base.
     </p>
@@ -1224,7 +1224,7 @@ class HomeController {
             </tr>
             <tr>
                 <td><code>SHOW GRANTS FOR 'meuapp_user'@'localhost';</code></td>
-                <td>Verifica permissões atribuídas ao usuário da aplicação.</td>
+                <td>Verifica permissões atribuídas ao paciente da aplicação.</td>
             </tr>
         </tbody>
     </table>
@@ -1337,7 +1337,7 @@ class HomeController {
         <li><i class="fas fa-check text-success"></i> <strong>Arquivo .htaccess:</strong> operando corretamente, com reescrita de URL e bloqueio de arquivos sensíveis.</li>
         <li><i class="fas fa-check text-success"></i> <strong>VirtualHost:</strong> configurado em <code>/etc/apache2/sites-available/meuapp.conf</code>, mapeando o domínio local <code>meuapp.local</code>.</li>
         <li><i class="fas fa-check text-success"></i> <strong>PHP 8.3:</strong> instalado e integrado ao Apache, com módulos essenciais (mbstring, xml, dom, curl, mysqli).</li>
-        <li><i class="fas fa-check text-success"></i> <strong>Banco de dados MySQL:</strong> ativo, com base <code>meuapp_db</code> acessível pelo usuário <code>meuapp_user</code>.</li>
+        <li><i class="fas fa-check text-success"></i> <strong>Banco de dados MySQL:</strong> ativo, com base <code>meuapp_db</code> acessível pelo paciente <code>meuapp_user</code>.</li>
         <li><i class="fas fa-check text-success"></i> <strong>Composer:</strong> instalado e configurado com autoload PSR-4, gerenciando corretamente Twig e Dompdf.</li>
         <li><i class="fas fa-check text-success"></i> <strong>Twig Template Engine:</strong> renderizando corretamente as views e heranças de layout.</li>
         <li><i class="fas fa-check text-success"></i> <strong>Bootstrap:</strong> aplicado com responsividade e consistência visual.</li>
@@ -1490,10 +1490,10 @@ namespace App\Controllers\Api;
 
 use App\Core\Controller;
 
-class UsersController extends Controller {
+class PacientesController extends Controller {
     public function index() {
-        $users = ['id' => 1, 'name' => 'Lucio Lemos'];
-        echo json_encode($users);
+        $patients = ['id' => 1, 'name' => 'Lucio Lemos'];
+        echo json_encode($patients);
     }
 }
 </pre>

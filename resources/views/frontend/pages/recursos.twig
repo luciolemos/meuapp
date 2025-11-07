@@ -34,7 +34,9 @@
 {% endblock %}
 
 {% block content %}
-<section class="container text-center py-5" data-aos="fade-up">
+{# <section class="section-block text-center shadow-lg" data-aos="fade-up"> #}
+<section class="container section-block text-center py-5" data-aos="fade-up"> 
+  <div class="hero-overlay"></div>
     <header class="mb-4 text-center">
          <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
             <i class="fas fa-toolbox me-2 text-warning"></i> {{ title }} do <span class="text-warning">MeuApp</span> MVC
@@ -52,7 +54,7 @@
     </p>
     </div>
 
-    <div class="row g-4 justify-content-center">
+<div class="row g-4 justify-content-center">
         <div class="col-md-4" data-aos="fade-right">
             
                  <div class="tech-card p-4 border rounded shadow-sm h-100 text-center">
@@ -98,6 +100,9 @@
 
 
 </section>
+
+
+
 
 <style>
 /* ===============================

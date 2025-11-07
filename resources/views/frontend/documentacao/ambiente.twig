@@ -200,12 +200,12 @@
     </div>
   </li>
 
-  {# 4) Criação de um usuário dedicado à aplicação #}
+  {# 4) Criação de um paciente dedicado à aplicação #}
   <li {% if not export %}data-aos="fade-up" data-aos-delay="320"{% endif %}>
-    <strong>Usuário de aplicação (escopo local e senha forte):</strong>
+    <strong>Paciente de aplicação (escopo local e senha forte):</strong>
     <span class="d-block text-justify">
       <code>CREATE USER 'meuapp_user'@'localhost' IDENTIFIED BY 'senha_segura';</code>
-      cria um usuário restrito ao host local. Troque <code>senha_segura</code> por uma senha forte.
+      cria um paciente restrito ao host local. Troque <code>senha_segura</code> por uma senha forte.
       Evite usar <em>root</em> na aplicação.
     </span>
     <div {% if not export %}data-aos="flip-up" data-aos-delay="380"{% endif %}>

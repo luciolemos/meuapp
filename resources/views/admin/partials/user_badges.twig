@@ -1,0 +1,52 @@
+{% set convenios = {
+  'particular': 'Particular',
+  'sus': 'SUS',
+  'fusex': 'FUSEX',
+  'unimed': 'Unimed',
+  'hapvida_notredame_intermedica': 'Hapvida Notredame Intermédica',
+  'bradesco_saude': 'Bradesco Saúde',
+  'amil': 'Amil',
+  'sulamerica_saude': 'SulAmérica Saúde',
+  'prevent_senior': 'Prevent Senior',
+  'plansaude': 'Plansaúde',
+  'outro': 'Outro Convênio'
+} %}
+
+{% set situacoes = {
+  'ativo': 'Ativo',
+  'incompleto': 'Incompleto',
+  'suspenso': 'Suspenso',
+  'cancelado': 'Cancelado'
+} %}
+
+{% set convenio_valor = user.convenio|default('particular') %}
+{% set situacao_valor = user.situacao_cadastro|default('ativo') %}
+
+{% set badge_convenio = {
+  'sus': 'text-bg-success',
+  'particular': 'text-bg-primary',
+  'fusex': 'text-bg-info text-dark',
+  'unimed': 'text-bg-success',
+  'hapvida_notredame_intermedica': 'text-bg-warning text-dark',
+  'bradesco_saude': 'text-bg-danger',
+  'amil': 'text-bg-primary-subtle text-primary',
+  'sulamerica_saude': 'text-bg-info text-dark',
+  'prevent_senior': 'text-bg-dark',
+  'plansaude': 'text-bg-secondary',
+  'outro': 'text-bg-secondary'
+}[convenio_valor] ?? 'text-bg-secondary' %}
+
+{% set badge_situacao = {
+  'ativo': 'text-bg-success',
+  'incompleto': 'text-bg-warning text-dark',
+  'suspenso': 'text-bg-dark',
+  'cancelado': 'text-bg-secondary'
+}[situacao_valor] ?? 'text-bg-secondary' %}
+
+{% set convenio_label = convenios[convenio_valor] ?? convenio_valor|replace({'_':' '})|title %}
+{% set situacao_label = situacoes[situacao_valor] ?? situacao_valor|replace({'_':' '})|title %}
+
+<div class="d-flex flex-wrap align-items-center gap-2">
+  <span class="badge rounded-pill {{ badge_convenio }}">{{ convenio_label }}</span>
+  <span class="badge rounded-pill {{ badge_situacao }}">{{ situacao_label }}</span>
+</div>

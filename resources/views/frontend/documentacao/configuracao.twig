@@ -1,7 +1,7 @@
 {# =============================================================
-   Arquivo: documentacao/configuração.twig
+   Arquivo: documentacao/configuracao.twig
    Seção: Configuração do projeto
-   Descrição: Detalha as tecnologias, frameworks e ferramentas utilizadas no projeto MeuApp MVC.
+   Descrição: Guia para preparar e manter o ambiente do MeuApp MVC.
    Autor: Lucio Lemos
    Última atualização: {{ "now"|date("d/m/Y") }}
    ============================================================= #}
@@ -12,126 +12,379 @@
 {% block title %}{{ app_name }} — Configuração{% endblock %}
 
 {% block extra_css %}
-    {{ parent() }}
-    {% if not export %}
-      <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    {% endif %}
-    <link rel="stylesheet" href="/css/style.css">
+  {{ parent() }}
+  {% if not export %}
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+  {% endif %}
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    .hero-section {
+      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.5s ease;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 50%, rgba(255,255,255,0.12), transparent 70%),
+        radial-gradient(circle at 70% 50%, rgba(0,0,0,0.2), transparent 70%);
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    section {
+      scroll-margin-top: 80px;
+    }
+
+     /* ======== CARDS ======== */
+    .card {
+            transition: all 0.3s ease;
+    }
+    .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+    }
+
+
+         /* ===============================
+   SEÇÃO DE TECNOLOGIAS (CLARO/ESCURO)
+   =============================== */
+.tech-card {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  border-color: var(--bs-border-color);
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.2);
+}
+
+/* ======== TEMA ESCURO ======== */
+[data-bs-theme="dark"] .tech-card {
+  background-color: #1f1f1f !important;
+  color: #eaeaea !important;
+  border-color: #333 !important;
+}
+
+[data-bs-theme="dark"] .tech-card:hover {
+  background-color: #242424 !important;
+  border-color: #0d6efd !important;
+  box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.25);
+}
+
+[data-bs-theme="dark"] .tech-card h6 {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .tech-card p {
+  color: #b5b5b5 !important;
+}
+
+/* ======== TRANSIÇÕES SUAVES ======== */
+.tech-card i,
+.tech-card h6,
+.tech-card p {
+  transition: all 0.3s ease-in-out;
+}
+    .metric-pill {
+      background: rgba(13, 110, 253, 0.08);
+      border-radius: 999px;
+      padding: 0.85rem 1.1rem;
+      text-align: center;
+    }
+    pre.code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      font-family: "Fira Code", "Source Code Pro", Consolas, monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+    @media (max-width: 768px) {
+      .hero-section {
+        border-radius: 1rem;
+      }
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
-  <div class="container py-4" {% if not export %}data-aos="fade-in"{% endif %}>
-
+<!-- ===================== HERO ===================== -->
+<section class="container section-block text-center py-5" data-aos="fade-up"> 
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+    <header class="mb-4 text-center">
+      <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
+        <i class="fas fa-sliders-h me-2 text-warning"></i> {{ title }}
+      </h1>
+      <h2 class="text-success" data-aos="zoom-in" data-aos-delay="120">{{ subtitle }}</h2>
+      <p class="lead col-lg-8 mx-auto" data-aos="zoom-in" data-aos-delay="220">{{ description }}</p>
+      {% if author or date %}
+        <p class="text-light-50 small mb-0" data-aos="fade-up" data-aos-delay="300">
+          <i class="fas fa-user"></i> {{ author|default('Equipe MeuApp') }}
+          &nbsp;|&nbsp;
+          <i class="fas fa-calendar-alt"></i> {{ date ? date|date('d/m/Y') : "now"|date('d/m/Y') }}
+        </p>
+      {% endif %}
+    </header>
     {% if not export %}
-      <div class="text-end mb-3" data-aos="fade-left" data-aos-delay="120">
-        <a href="/pdf/configuracao" class="btn btn-outline-danger">
-          <i class="fas fa-file-pdf"></i> Exportar PDF
+      <div class="d-flex justify-content-center flex-wrap gap-3" data-aos="zoom-in" data-aos-delay="360">
+        <a href="/pdf/configuracao" class="btn btn-light btn-sm shadow-sm">
+          <i class="fas fa-file-pdf me-2"></i>Exportar PDF
+        </a>
+        <a href="/documentacao/estrutura" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-sitemap me-2"></i>Ver estrutura
         </a>
       </div>
     {% endif %}
-
-    <!-- ===================== CABEÇALHO PRINCIPAL ===================== -->
-    <header class="mb-4 text-center">
-        <h1 class="display-4 fw-bold mb-3"
-            {% if not export %}data-aos="zoom-in"{% endif %}>
-            {{ title }}
-        </h1>
-
-        <h2 class="text-success"
-            {% if not export %}data-aos="zoom-in" data-aos-delay="120"{% endif %}>
-            {{ subtitle }}
-        </h2>
-
-        <p class="lead"
-           {% if not export %}data-aos="zoom-in" data-aos-delay="240"{% endif %}>
-           {{ description }}
-        </p>
-
-        {% if author and date %}
-            <p class="text-muted small"
-               {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
-                <i class="fas fa-user"></i> {{ author }} &nbsp; | &nbsp;
-                <i class="fas fa-calendar-alt"></i> {{ date|date("d/m/Y") }}
-            </p>
-        {% endif %}
-    </header>
-
-    <section class="mb-5 pdf-section">
-      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
-        DESCRIÇÃO DO PROJETO
-      </h2>
-
-      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
-        O <strong>MeuApp MVC</strong> é um <em>laboratório de desenvolvimento web</em> criado com o propósito
-        de integrar <strong>estudo, prática e documentação técnica</strong> em um único ambiente de aprendizado
-        e experimentação. Desenvolvido sobre o padrão arquitetural <strong>Model-View-Controller (MVC)</strong>,
-        o projeto oferece uma visão clara e aplicada dos princípios que regem a estruturação de sistemas PHP
-        modernos e escaláveis.
-      </p>
-
-      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="120"{% endif %}>
-        Todo o processo de desenvolvimento foi <strong>documentado de forma incremental</strong>, permitindo ao
-        estudante acompanhar a evolução do projeto de maneira orientada.  
-        O item de menu <code>Documentação → Configuração do Ambiente</code> invoca a view
-        <code>/app/Views/Public/artigo_configuracao.twig</code>, que contém seções detalhadas sobre componentes
-        essenciais da aplicação — como o <strong>arquivo .htaccess</strong>, o <strong>composer.json</strong> e
-        o <strong>VirtualHost</strong>.  
-        Cada tópico descreve a função, a estrutura e a importância de cada elemento dentro do ciclo de execução
-        do sistema.
-      </p>
-
-      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="200"{% endif %}>
-        A arquitetura do <strong>MeuApp MVC</strong> foi concebida com ênfase em
-        <strong>organização estrutural</strong>, <strong>modularidade</strong> e
-        <strong>reuso de código</strong>.  
-        Ao aplicar o princípio da <em>separação de responsabilidades</em>, o projeto proporciona maior clareza no
-        fluxo de dados, facilidade de manutenção e ampliação progressiva sem impacto sobre outras camadas do
-        sistema.
-      </p>
-
-      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="280"{% endif %}>
-        Projetado tanto para o <strong>ambiente acadêmico</strong> quanto para o <strong>uso profissional</strong>,
-        o MeuApp atua como um <strong>guia conceitual e funcional</strong>, servindo de referência para o estudo
-        do MVC e suas aplicações práticas.  
-        Sua estrutura flexível permite que seja utilizado como base para protótipos, testes de integração e
-        projetos de produção reais.
-      </p>
-
-      <p class="text-justify" {% if not export %}data-aos="fade-up" data-aos-delay="360"{% endif %}>
-        O ecossistema do MeuApp integra tecnologias modernas —
-        <strong>PHP</strong>, <strong>Apache</strong>, <strong>MySQL</strong>, <strong>Twig</strong>,
-        <strong>Bootstrap</strong>, <strong>Composer</strong> e <strong>Ubuntu WSL2</strong> —
-        consolidando um ambiente robusto, padronizado e multiplataforma.  
-        O projeto é desenvolvido no <strong>Visual Studio Code</strong>, com terminal integrado ao
-        <strong>Ubuntu 24 (WSL)</strong>, reproduzindo com fidelidade um ambiente de produção Linux.
-      </p>
-
-      {#
-      <div class="alert alert-light border-start border-primary mt-3 p-3 small"
-           {% if not export %}data-aos="fade-up" data-aos-delay="480"{% endif %}>
-        <i class="fas fa-info-circle text-primary"></i>
-        <em>View principal:</em> <code>/app/Views/Public/artigo_configuracao.twig</code>
-      </div>
-      #}
-    </section>
-
-    <section class="mb-5 pdf-section">
-      <h2 class="h4 text-secondary mb-3" {% if not export %}data-aos="fade-right"{% endif %}>
-        MENUS
-      </h2>
-      <p class="text-justify" {% if not export %}data-aos="fade-up"{% endif %}>
-        Todo item pai (ex: DOCUMENTAÇÃO, ERROS, ADMIN) fica ativo quando qualquer sublink seu estiver ativo.
-        O comportamento será consistente, estável, e 100% Twig-nativo (sem macros, sem dependências).
-      </p>
-
-      <div class="alert alert-info small mt-3"
-           {% if not export %}data-aos="flip-up" data-aos-delay="420"{% endif %}>
-        <i class="fas fa-lightbulb"></i>
-        O Twig é um dos pilares do padrão MVC — ele mantém a view limpa, desacoplada da lógica
-        e garante manutenibilidade em aplicações de médio e grande porte.
-      </div>
-    </section>
   </div>
+</section>
+
+
+  <section class="py-5" id="visao-geral">
+    <div class="row g-4">
+      <div class="col-lg-6" data-aos="fade-right">
+        <h2 class="h4 fw-semibold text-primary mb-3">Um laboratório completo de MVC moderno</h2>
+        <p>
+          O <strong>MeuApp MVC</strong> integra aprendizado prático, documentação e experimentação
+          em um ambiente único. A aplicação segue o padrão <strong>Model-View-Controller</strong>,
+          utilizando <em>Twig</em> para as views, <em>Bootstrap 5</em> para o layout responsivo e
+          <em>Composer</em> para o autoload PSR-4.
+        </p>
+        <p>
+          O projeto serve como uma base sólida para estudos e prototipagem: cada etapa é registrada
+          na documentação, permitindo acompanhar a montagem do stack e o refinamento da arquitetura
+          com foco em boas práticas de separação de responsabilidades.
+        </p>
+        <div class="row g-3 mt-3">
+          <div class="col-sm-6">
+            <div class="metric-pill small">
+              <i class="fas fa-folder-tree me-2 text-primary"></i>Controllers isolados por domínio
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="metric-pill small">
+              <i class="fas fa-code-branch me-2 text-primary"></i>Templates Twig exportáveis em PDF
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="metric-pill small">
+              <i class="fas fa-hospital-user me-2 text-primary"></i>Painel admin com gestão integrada
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="120">
+        <div class="tech-card h-100 p-4">
+          <i class="fas fa-diagram-project fa-2x text-primary mb-3"></i>
+          <h3 class="h5 fw-semibold">Componentes principais</h3>
+          <p>O ecossistema combina ferramentas consolidadas para oferecer uma experiência fluida de desenvolvimento local.</p>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>PHP 8+ com PDO e camada de serviços.</li>
+            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Apache com VirtualHost e .htaccess dedicados.</li>
+            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>MySQL/MariaDB versionados via script oficial.</li>
+            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Twig cacheado em <code>storage/twig</code>.</li>
+            <li><i class="fas fa-check-circle text-success me-2"></i>Bootstrap 5 + Font Awesome para UI responsiva.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+<!-- ===================== CONTEÚDO ===================== -->
+<div class="container py-5">
+  <section class="py-4">
+    <div class="row g-4">
+      <div class="col-md-3" data-aos="fade-up">
+         <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <span class="text-uppercase fw-semibold text-muted small">Autor</span>
+          <h6 class="mt-2 mb-0">{{ author|default('Equipe MeuApp') }}</h6>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="60">
+        <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <span class="text-uppercase fw-semibold text-muted small">Atualizado em</span>
+          <h6 class="mt-2 mb-0">{{ date ? date|date('d/m/Y') : "now"|date('d/m/Y') }}</h6>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="120">
+         <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <span class="text-uppercase fw-semibold text-muted small">Ambiente alvo</span>
+          <h6 class="mt-2 mb-0">PHP 8+, Apache 2.4, MySQL/MariaDB</h6>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="180">
+       <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <span class="text-uppercase fw-semibold text-muted small">Documentação relacionada</span>
+          <a href="/documentacao/descricao" class="fw-semibold text-decoration-none mt-2 d-inline-flex align-items-center gap-1">
+            Estrutura geral <i class="fas fa-arrow-up-right-from-square fa-xs"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5" id="requisitos">
+    <h2 class="h4 fw-semibold text-primary mb-4" data-aos="fade-right">Requisitos essenciais</h2>
+    <div class="row g-4">
+      {% set requirements = [
+        {'icon': 'fab fa-php', 'title': 'PHP 8.1+', 'desc': 'Interpretador principal. Confirme com <code>php -v</code>.'},
+        {'icon': 'fas fa-cubes', 'title': 'Composer 2', 'desc': 'Gerencia dependências e autoload PSR-4.'},
+        {'icon': 'fab fa-node-js', 'title': 'Node.js & NPM', 'desc': 'Scripts auxiliares, lint e build de assets.'},
+        {'icon': 'fas fa-database', 'title': 'MySQL/MariaDB', 'desc': 'Persistência de dados do painel administrativo.'},
+        {'icon': 'fas fa-server', 'title': 'Apache 2.4', 'desc': 'Servidor com <code>mod_rewrite</code> habilitado.'},
+        {'icon': 'fas fa-laptop-code', 'title': 'WSL2 ou Linux', 'desc': 'Ambiente Unix-like recomendado para desenvolvimento.'}
+      ] %}
+      {% for req in requirements %}
+        <div class="col-sm-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 70 }}">
+          {# <div class="tech-card p-4 h-100"> #}
+           <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+            <i class="{{ req.icon }} fa-2x text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ req.title }}</h5>
+            <p class="small mb-0">{{ req.desc|raw }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="py-5" id="passo-a-passo">
+    <h2 class="h4 fw-semibold text-primary mb-4" data-aos="fade-right">Configure o ambiente em cinco etapas</h2>
+    <div class="row g-4">
+      {% set steps = [
+        {'title': '1. Clonar e instalar dependências', 'body': 'Execute <code>git clone</code> no repositório e rode <code>composer install</code>. Compile assets com <code>npm install && npm run build</code> se necessário.'},
+        {'title': '2. Preparar variáveis e permissões', 'body': 'Ajuste <code>config/config.php</code> com credenciais locais e garanta escrita em <code>storage/</code> e <code>public/uploads/</code>.'},
+        {'title': '3. Criar banco e tabela de pacientes', 'body': 'Use o script SQL disponível em <code>/whatsmysql</code> para gerar <code>tbl_meuapp_patients</code>.'},
+        {'title': '4. Configurar Apache', 'body': 'Crie um VirtualHost apontando para <code>public/</code> e habilite <code>AllowOverride All</code> para usar o <code>.htaccess</code>.'},
+        {'title': '5. Validar o painel administrativo', 'body': 'Acesse <code>/admin</code>, efetue login e teste o card de teste de conexão e os novos painéis de configuração.'}
+      ] %}
+      {% for step in steps %}
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 80 }}">
+           <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+            <h5 class="fw-semibold mb-2">{{ step.title|raw }}</h5>
+            <p class="small mb-0">{{ step.body|raw }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="py-5" id="arquivos-chave">
+    <h2 class="h4 fw-semibold text-primary mb-4" data-aos="fade-right">Arquivos-chave do ambiente</h2>
+    <div class="row g-4">
+      {% set htaccess_code %}
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+      {% endset %}
+      {% set config_code %}
+return [
+    'app_name' => 'MeuApp MVC',
+    'app_env'  => 'development',
+    'app_debug' => true,
+    'db' => [
+        'driver' => 'mysql',
+        'host'   => 'localhost',
+        'name'   => 'meuapp',
+        'user'   => 'seu_usuario',
+        'pass'   => 'sua_senha',
+    ],
+];
+      {% endset %}
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="tech-card p-4 h-100">
+          <h6 class="text-uppercase text-muted small mb-2">.htaccess</h6>
+          <p class="small">
+            Direciona todas as requisições para <code>public/index.php</code>, mantendo URLs limpas e permitindo que o roteador central resolva as rotas.
+          </p>
+          {{ ui.codeblock_pro('.htaccess', htaccess_code|trim, 'apache', 'dark') }}
+        </div>
+      </div>
+      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="120">
+        <div class="tech-card p-4 h-100">
+          <h6 class="text-uppercase text-muted small mb-2">config/config.php</h6>
+          <p class="small">
+            Centraliza variáveis globais como nome da aplicação, ambiente e credenciais do banco. Ajuste antes de subir para produção.
+          </p>
+          {{ ui.codeblock_pro('config/config.php', config_code|trim, 'php', 'dark') }}
+        </div>
+      </div>
+    </div>
+    <div class="alert alert-info mt-4 small" data-aos="fade-up" data-aos-delay="180">
+      <i class="fas fa-circle-info me-2"></i>
+      Em produção, defina <code>app_debug = false</code> e garanta que <code>storage/logs</code> e <code>storage/cache</code> sejam graváveis pelo usuário do servidor.
+    </div>
+  </section>
+
+  <section class="py-5" id="painel-admin">
+    <h2 class="h4 fw-semibold text-primary mb-4" data-aos="fade-right">Recursos do painel administrativo</h2>
+    <div class="row g-4">
+      {% set adminFeatures = [
+        {'icon': 'fas fa-hospital-user', 'title': 'Gestão de pacientes', 'desc': 'CRUD completo com avatar, papéis e status por paciente.'},
+        {'icon': 'fas fa-sliders-h', 'title': 'Parâmetros globais', 'desc': 'Formulário em <code>/admin/settings</code> grava JSON com nome do app, contatos e modo debug.'},
+        {'icon': 'fas fa-microchip', 'title': 'Stack monitorada', 'desc': 'Dashboard exibe versões de PHP, Composer, Node, NPM, NVM, Git, Apache, banco e sistema operacional.'},
+        {'icon': 'fas fa-plug', 'title': 'Teste de conexão', 'desc': 'Card dedicado executa a conexão PDO e mostra alertas na interface.'}
+      ] %}
+      {% for feature in adminFeatures %}
+        <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ loop.index * 70 }}">
+           <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+            <i class="{{ feature.icon }} fa-2x text-primary mb-3"></i>
+            <h5 class="fw-semibold mb-2">{{ feature.title }}</h5>
+            <p class="small mb-0">{{ feature.desc|raw }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="py-5" id="referencias">
+    <h2 class="h4 fw-semibold text-primary mb-4" data-aos="fade-right">Referências rápidas</h2>
+    <div class="row g-4">
+      <div class="col-lg-4" data-aos="fade-up">
+        {# <div class="tech-card p-4 h-100 d-flex flex-column gap-2"> #}
+        <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <h5 class="fw-semibold mb-0">Guia de arquitetura</h5>
+          <p class="small mb-0 flex-grow-1">Conheça mais sobre camadas, roteamento e contratos em <code>Documentação → Estrutura</code>.</p>
+          <a href="/documentacao/estrutura" class="btn btn-sm btn-outline-primary align-self-start">
+            <i class="fas fa-sitemap me-2"></i>Ver estrutura
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="80">
+        {# <div class="tech-card p-4 h-100 d-flex flex-column gap-2"> #}
+        <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <h5 class="fw-semibold mb-0">Stack de tecnologias</h5>
+          <p class="small mb-0 flex-grow-1">Entenda o papel de cada ferramenta, do servidor aos scripts de build.</p>
+          <a href="/documentacao/stack" class="btn btn-sm btn-outline-primary align-self-start">
+            <i class="fas fa-layer-group me-2"></i>Explorar stack
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="160">
+        {# <div class="tech-card p-4 h-100 d-flex flex-column gap-2"> #}
+        <div class="tech-card p-4 border rounded shadow-sm h-100 text-center transition-all">
+          <h5 class="fw-semibold mb-0">Scripts SQL oficiais</h5>
+          <p class="small mb-0 flex-grow-1">Veja o artigo “O que é MySQL?” para copiar o schema de <code>tbl_meuapp_patients</code>.</p>
+          <a href="/whatsmysql" class="btn btn-sm btn-outline-primary align-self-start">
+            <i class="fas fa-database me-2"></i>Abrir tutorial
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 {% endblock %}
 
 {% block extra_js %}

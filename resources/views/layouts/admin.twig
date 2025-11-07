@@ -1,47 +1,336 @@
-{% extends "layouts/base.twig" %}
+<!DOCTYPE html>
+<html lang="pt-BR" class="admin-html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Painel Admin · {{ app_name }}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
-{% block title %}Admin | {{ app_name }}{% endblock %}
-
-{% block extra_css %}
-    {{ parent() }}
+    {% block extra_css %}
     <style>
-        body { background-color: #f0f2f5; }
-        .sidebar {
-            height: 100vh;
-            background: #212529;
-            color: #fff;
-            position: fixed;
-            width: 220px;
-            padding-top: 1rem;
+        :root {
+            --admin-sidebar-width: 260px;
+            --admin-sidebar-bg: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
+            --admin-sidebar-border: rgba(255, 255, 255, 0.08);
+            --admin-nav-color: rgba(255, 255, 255, 0.72);
+            --admin-nav-color-muted: rgba(255, 255, 255, 0.5);
+            --admin-nav-active-bg: rgba(110, 168, 254, 0.16);
+            --admin-nav-active-color: #8bb9fe;
+            --admin-main-bg: #f5f7fb;
         }
-        .sidebar a {
-            color: #adb5bd;
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body.admin-layout {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--admin-main-bg);
+            min-height: 100vh;
+            color: #0f172a;
+        }
+
+        .admin-shell {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: var(--admin-sidebar-width);
+            background: var(--admin-sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--admin-sidebar-border);
+            position: sticky;
+            top: 0;
+            max-height: 100vh;
+        }
+
+        .admin-sidebar__brand {
+            padding: 1.75rem 1.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .admin-sidebar__brand-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(110, 168, 254, 0.18);
+            display: grid;
+            place-items: center;
+            color: var(--admin-nav-active-color);
+            font-size: 1.1rem;
+        }
+
+        .admin-sidebar__brand h1 {
+            font-size: 1.05rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .admin-sidebar__meta {
+            padding: 0 1.75rem 1.75rem;
+            border-bottom: 1px solid var(--admin-sidebar-border);
+            color: var(--admin-nav-color-muted);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .admin-sidebar__meta .badge {
+            background: rgba(8, 189, 104, 0.18);
+            color: #37e298;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+        }
+
+        .admin-nav {
+            flex: 1;
+            padding: 1.25rem 1.1rem 1.5rem;
+            overflow-y: auto;
+        }
+
+        .admin-nav__group-title {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--admin-nav-color-muted);
+            margin: 1.5rem 0 0.6rem 0.65rem;
+        }
+
+        .admin-nav__list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .admin-nav__link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.95rem;
+            border-radius: 12px;
+            color: var(--admin-nav-color);
+            font-size: 0.92rem;
+            font-weight: 500;
             text-decoration: none;
-            display: block;
-            padding: 0.5rem 1rem;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
         }
-        .sidebar a:hover {
+
+        .admin-nav__link i {
+            font-size: 1rem;
+            width: 1.4rem;
+            text-align: center;
+        }
+
+        .admin-nav__link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
             color: #fff;
-            background: rgba(255,255,255,0.1);
         }
-        main {
-            margin-left: 240px;
+
+        .admin-nav__link.is-active {
+            background: var(--admin-nav-active-bg);
+            color: var(--admin-nav-active-color);
+            border: 1px solid rgba(139, 185, 254, 0.3);
+            box-shadow: inset 0 0 0 1px rgba(139, 185, 254, 0.12);
+        }
+
+        .admin-nav__footer {
+            padding: 1rem 1.75rem 1.5rem;
+            border-top: 1px solid var(--admin-sidebar-border);
+            font-size: 0.78rem;
+            color: var(--admin-nav-color-muted);
+        }
+
+        .admin-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--admin-main-bg);
+        }
+
+        .admin-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.1rem 2rem;
+            background: #fff;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .admin-breadcrumb {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .admin-breadcrumb span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .admin-topbar .btn-ghost {
+            font-size: 0.85rem;
+            color: #0f172a;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 999px;
+            padding: 0.45rem 1rem;
+            background: transparent;
+            text-decoration: none;
+        }
+
+        .admin-topbar .btn-ghost:hover {
+            background: rgba(15, 23, 42, 0.05);
+        }
+
+        .admin-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --admin-sidebar-width: 220px;
+            }
+
+            .admin-sidebar {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 20;
+                transform: translateX(0);
+            }
+
+            .admin-main {
+                margin-left: var(--admin-sidebar-width);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar {
+                display: none;
+            }
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+            .admin-content {
+                padding: 1.5rem 1.25rem;
+            }
         }
     </style>
-{% endblock %}
+    {% endblock %}
+</head>
+{% set current = current_path ?? '/' %}
+{% if current is empty %}
+    {% set current = '/' %}
+{% endif %}
+{% block body %}
+<body class="admin-layout">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__brand">
+                <div class="admin-sidebar__brand-badge">
+                    <i class="fas fa-gauge"></i>
+                </div>
+                <h1>{{ app_name }}<br><small class="text-secondary fw-normal" style="font-size:0.75rem;">Painel administrativo</small></h1>
+            </div>
+            <div class="admin-sidebar__meta">
+                <span><i class="fas fa-user-shield me-2"></i>Área restrita</span>
+                <span class="badge text-uppercase">Acesso interno</span>
+            </div>
 
-{% block content %}
-<div class="row">
-    <aside class="col-md-3 sidebar">
-        <h5 class="text-light ms-3 mb-3">Painel Admin</h5>
-        <a href="/admin/dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
-        <a href="/admin/users"><i class="fas fa-users me-2"></i> Usuários</a>
-        <a href="/admin/settings"><i class="fas fa-cogs me-2"></i> Configurações</a>
-    </aside>
+            <nav class="admin-nav">
+                <p class="admin-nav__group-title">Principal</p>
+                <ul class="admin-nav__list">
+                    <li>
+                        <a href="/admin/dashboard" class="admin-nav__link {% if current starts with '/admin/dashboard' %}is-active{% endif %}">
+                            <i class="fas fa-chart-pie"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/pacientes" class="admin-nav__link {% if current starts with '/admin/pacientes' %}is-active{% endif %}">
+                            <i class="fas fa-hospital-user"></i>
+                            Pacientes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/health" class="admin-nav__link {% if current starts with '/admin/health' %}is-active{% endif %}">
+                            <i class="fas fa-heartbeat"></i>
+                            Saúde
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/settings" class="admin-nav__link {% if current starts with '/admin/settings' %}is-active{% endif %}">
+                            <i class="fas fa-sliders"></i>
+                            Configurações
+                        </a>
+                    </li>
+                </ul>
 
-    <main class="col-md-9 offset-md-3 p-4">
-        {% block admin_content %}
-        {% endblock %}
-    </main>
-</div>
+                <p class="admin-nav__group-title">Atalhos</p>
+                <ul class="admin-nav__list">
+                    <li>
+                        <a href="/" class="admin-nav__link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Ver site público
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/dashboard#suporte" class="admin-nav__link">
+                            <i class="fas fa-life-ring"></i>
+                            Suporte interno
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="admin-nav__footer">
+                <small>&copy; {{ "now"|date("Y") }} · {{ app_name }}<br>Área administrativa</small>
+            </div>
+        </aside>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div class="admin-breadcrumb">
+                    <span><i class="fas fa-house-chimney"></i> Área admin</span>
+                    <i class="fas fa-chevron-right fa-xs text-muted"></i>
+                    <span>{{ title ?? 'Dashboard' }}</span>
+                </div>
+                <a href="/" class="btn-ghost">
+                    <i class="fas fa-globe me-2"></i>Voltar ao site
+                </a>
+            </header>
+
+            <main class="admin-content">
+                {% block admin_content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
 {% endblock %}
+</html>

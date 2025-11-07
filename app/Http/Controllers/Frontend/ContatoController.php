@@ -13,7 +13,14 @@ class ContatoController extends BaseController
             'description' => 'Formulário de contato para dúvidas, sugestões ou suporte relacionado ao MeuApp MVC.',
             'author'      => 'Equipe MeuApp',
             'date'        => '2025-10-16',
-            'export' => false
+            'meta' => [
+                'description' => 'Entre em contato com a equipe do MeuApp MVC para suporte, dúvidas ou parcerias.',
+                'keywords'    => 'contato, suporte, meuapp mvc',
+                'robots'      => 'index, follow',
+            ],
+            'layout' => [
+                'hero' => true,
+            ],
         ]);
     }
 

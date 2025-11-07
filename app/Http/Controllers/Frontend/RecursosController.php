@@ -13,7 +13,13 @@ class RecursosController extends BaseController
             'description' => 'Guia de configuração do ambiente PHP, Apache e Twig para rodar o MeuApp MVC localmente.',
             'author'      => 'Equipe MeuApp',
             'date'        => '2025-10-24',
-            'export' => false
+            'meta' => [
+                'description' => 'Conheça os componentes de infraestrutura, documentação e utilidades oferecidos pelo MeuApp MVC.',
+                'keywords'    => 'recursos, funcionalidades, meuapp mvc',
+            ],
+            'layout' => [
+                'feature_cards' => true,
+            ],
         ]);
     }
 }

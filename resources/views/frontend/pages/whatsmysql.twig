@@ -1,0 +1,279 @@
+{# =============================================================
+   Arquivo: whatsmysql.twig
+   Seção: Artigo educativo sobre MySQL
+   Descrição: Explica fundamentos do MySQL e disponibiliza os scripts
+               das tabelas de pacientes e atendimentos do MeuApp.
+   Autor: Equipe MeuApp
+   Última atualização: {{ "now"|date("d/m/Y") }}
+   ============================================================= #}
+
+{% extends "layouts/base.twig" %}
+{% block title %}{{ app_name }} — {{ title }}{% endblock %}
+
+{% block extra_css %}
+{{ parent() }}
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="/css/style.css">
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #198754, #0d6efd);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15), transparent 70%),
+                radial-gradient(circle at 80% 30%, rgba(0,0,0,0.25), transparent 70%);
+    z-index: 0;
+}
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+.section-label {
+    font-size: .75rem;
+    letter-spacing: .15rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--bs-primary);
+}
+.highlight-card {
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+.highlight-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 1rem 2rem rgba(25, 135, 84, .15);
+}
+.sql-snippet {
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: .75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, .35);
+}
+.sql-snippet code {
+    white-space: pre;
+    font-family: "Fira Code", "Source Code Pro", Consolas, monospace;
+    font-size: .9rem;
+    display: block;
+}
+.badge-column {
+    font-size: .7rem;
+    letter-spacing: .08rem;
+}
+.faq-accordion .accordion-button {
+    font-size: .95rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section py-5">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <header class="mb-4" data-aos="fade-up">
+          <span class="section-label mb-2 d-inline-block" data-aos="zoom-in" data-aos-delay="100">Banco de Dados</span>
+          <h1 class="display-5 fw-bold mb-3" data-aos="zoom-in" data-aos-delay="200">
+            <i class="fas fa-database me-2 text-warning"></i>{{ title }}
+          </h1>
+          <h2 class="h5 text-light-50 mb-3" data-aos="zoom-in" data-aos-delay="300">{{ subtitle }}</h2>
+          <p class="lead text-light" data-aos="fade-up" data-aos-delay="350">{{ description }}</p>
+        </header>
+
+        {% set actions = page.actions is defined and page.actions is iterable ? page.actions : hero_actions|default([]) %}
+        {% if actions %}
+          <div class="d-flex flex-wrap justify-content-center gap-3" data-aos="fade-up" data-aos-delay="420">
+            {% for action in actions %}
+              {% include 'components/button.twig' with {
+                href: action.href|default('#'),
+                text: action.label|default('Saiba mais'),
+                icon: action.icon|default(null),
+                variant: action.variant|default('light'),
+                size: action.size|default('sm'),
+                attrs: action.attrs|default({}),
+                extra_class: action.extra_class|default('')
+              } %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5" data-aos="fade-up">
+  <div class="row gy-4 align-items-center">
+    <div class="col-lg-6" data-aos="fade-right">
+      <img src="/images/architecture-diagram.jpg" alt="Ilustração técnica do MeuApp" class="img-fluid rounded shadow-sm">
+    </div>
+    <div class="col-lg-6" data-aos="fade-left" data-aos-delay="150">
+      <span class="section-label mb-2 d-inline-block">Fundamentos</span>
+      <h2 class="h3 fw-semibold mb-3">Por que o MySQL continua relevante?</h2>
+      <p class="text-muted small mb-3 text-justify">
+        O <strong>MySQL</strong> é um motor de banco de dados relacional maduro, utilizado amplamente em projetos PHP devido à sua estabilidade,
+        suporte a transações e integração simples com drivers PDO. Ele é a espinha dorsal dos dados do MeuApp MVC, armazenando pacientes,
+        permissões e metadados do painel administrativo.
+      </p>
+      <ul class="small text-muted list-unstyled ms-3">
+        <li><i class="fas fa-check text-success me-2"></i>Comunidade ativa, documentação acessível e ferramentas multiplataforma.</li>
+        <li><i class="fas fa-check text-success me-2"></i>Compatibilidade com rotinas de backup e replicação do ecossistema LAMP.</li>
+        <li><i class="fas fa-check text-success me-2"></i>Integração direta com frameworks, ORMs e bibliotecas PHP modernas.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-body-tertiary">
+  <div class="container" data-aos="fade-up">
+    <span class="section-label mb-2 d-inline-block text-uppercase">Destaques</span>
+    <h2 class="h3 fw-semibold mb-4">O que você ganha ao usar MySQL com o MeuApp MVC</h2>
+    <div class="row g-4">
+      {% for item in mysql_highlights %}
+        <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+          <article class="highlight-card border rounded p-4 h-100">
+            <i class="{{ item.icon }} fa-2x text-primary mb-3"></i>
+            <h3 class="h6 fw-semibold mb-2">{{ item.title }}</h3>
+            <p class="small text-muted mb-0">{{ item.description }}</p>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="container py-5" data-aos="fade-up">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <span class="section-label mb-2 d-inline-block text-uppercase">Scripts oficiais</span>
+      <h2 class="h3 fw-semibold mb-3">Estruturas SQL para pacientes e atendimentos</h2>
+      <p class="small text-muted mb-4">
+        O MeuApp mantém dois módulos principais no banco: <strong>pacientes</strong>, responsável pelo cadastro e metadados de cada perfil, e <strong>atendimentos</strong>,
+        que registra os prontuários médicos vinculados. Copie os scripts abaixo (também disponíveis em <code>/pacientes.sql</code> e <code>/atendimentos.sql</code>)
+        para recriar rapidamente o ambiente em qualquer servidor MySQL ou MariaDB.
+      </p>
+      <div class="row g-4">
+        <div class="col-12" data-aos="fade-up" data-aos-delay="50">
+          <div class="sql-snippet">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between mb-3 gap-2">
+              <div>
+                <span class="badge text-bg-success text-uppercase small">Pacientes</span>
+                <h3 class="h6 fw-semibold mb-0 mt-2"><code>tbl_meuapp_patients</code></h3>
+              </div>
+              <span class="small text-light">Arquivo: <code>pacientes.sql</code></span>
+            </div>
+            <pre><code class="language-sql">{{ pacientes_sql|e }}</code></pre>
+          </div>
+        </div>
+        <div class="col-12" data-aos="fade-up" data-aos-delay="150">
+          <div class="sql-snippet">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between mb-3 gap-2">
+              <div>
+                <span class="badge text-bg-primary text-uppercase small">Atendimentos</span>
+                <h3 class="h6 fw-semibold mb-0 mt-2"><code>tbl_meuapp_health</code></h3>
+              </div>
+              <span class="small text-light">Arquivo: <code>atendimentos.sql</code></span>
+            </div>
+            <pre><code class="language-sql">{{ atendimentos_sql|e }}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5" data-aos="fade-up">
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <span class="section-label mb-2 d-inline-block text-uppercase">Colunas em detalhe</span>
+      <h2 class="h4 fw-semibold mb-3">Como cada campo dá suporte ao painel de pacientes</h2>
+      {% set columns = [
+        {'name': 'staff_id', 'type': 'VARCHAR(30)', 'desc': 'Identificador interno único utilizado para integrações e relatórios.'},
+        {'name': 'convenio', 'type': 'VARCHAR(80)', 'desc': 'Registra o convênio do paciente (FuSEx, Unimed, Hapvida, SUS, particular, etc.).'},
+        {'name': 'situacao_cadastro', 'type': 'ENUM', 'desc': 'Acompanha o andamento do cadastro (ativo, incompleto, suspenso ou cancelado).'},
+        {'name': 'avatar', 'type': 'VARCHAR(255)', 'desc': 'Armazena URL ou caminho relativo do avatar enviado pelo painel.'},
+        {'name': 'birth_date', 'type': 'DATE', 'desc': 'Permite personalizar comunicações e métricas demográficas.'},
+        {'name': 'cpf', 'type': 'CHAR(11)', 'desc': 'Guarda apenas os dígitos do CPF para validações e conformidade.'},
+        {'name': 'address', 'type': 'VARCHAR(255)', 'desc': 'Campo livre para endereço completo do paciente.'},
+        {'name': 'last_consulta_em', 'type': 'DATETIME', 'desc': 'Registra a data e hora do último atendimento para exibição rápida no painel.'},
+        {'name': 'last_health_state', 'type': 'ENUM', 'desc': 'Mantém o status clínico mais recente (leve, grave, crítico, etc.).'},
+        {'name': 'last_cid', 'type': 'VARCHAR(10)', 'desc': 'Armazena o último CID associado ao paciente para consultas futuras.'},
+        {'name': 'ultima_clinica', 'type': 'VARCHAR(150)', 'desc': 'Indica a clínica ou instituição do atendimento mais recente.'},
+        {'name': 'created_at / updated_at', 'type': 'TIMESTAMP', 'desc': 'Auditoria básica das operações realizadas no painel.'}
+      ] %}
+      <div class="list-group shadow-sm">
+        {% for col in columns %}
+          <div class="list-group-item d-flex flex-column flex-md-row align-items-md-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge text-bg-primary badge-column">{{ col.type }}</span>
+              <span class="fw-semibold">{{ col.name }}</span>
+            </div>
+            <p class="small text-muted mb-0 ms-md-auto">{{ col.desc }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="border rounded p-4 h-100 shadow-sm">
+        <span class="section-label mb-2 d-inline-block text-uppercase">Passos rápidos</span>
+        <h3 class="h5 fw-semibold mb-3">Como executar o script no seu ambiente</h3>
+        <ol class="small text-muted ps-3">
+          <li class="mb-2">Acesse o MySQL com um usuário que possua permissão de criação: <code>mysql -u root -p meuapp</code>.</li>
+          <li class="mb-2">Copie os scripts <code>pacientes.sql</code> e <code>atendimentos.sql</code> para o terminal (ou importe via MySQL Workbench).</li>
+          <li class="mb-2">Depois de executar, confirme a existência das tabelas:<br><code>SHOW TABLES LIKE 'tbl_meuapp_patients';</code><br><code>SHOW TABLES LIKE 'tbl_meuapp_health';</code></li>
+          <li class="mb-2">Valide os esquemas com <code>DESCRIBE tbl_meuapp_patients;</code> e <code>DESCRIBE tbl_meuapp_health;</code>.</li>
+          <li>Por fim, teste a conexão abrindo <code>/admin/dashboard?test_db=1</code> no MeuApp.</li>
+        </ol>
+        <div class="alert alert-success mt-3 mb-0 small">
+          <i class="fas fa-lightbulb me-2"></i> Dica: mantenha backups do banco e versionamento SQL sempre que ajustar o schema.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-body-tertiary">
+  <div class="container faq-accordion" data-aos="fade-up">
+    <span class="section-label mb-2 d-inline-block text-uppercase">FAQ</span>
+    <h2 class="h4 fw-semibold mb-4">Perguntas frequentes sobre MySQL no MeuApp</h2>
+    <div class="accordion" id="faqMysql">
+      {% for item in faq_items %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faqHeading{{ loop.index }}">
+            <button class="accordion-button {{ not loop.first ? 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse{{ loop.index }}" aria-expanded="{{ loop.first ? 'true' : 'false' }}" aria-controls="faqCollapse{{ loop.index }}">
+              {{ item.question }}
+            </button>
+          </h2>
+          <div id="faqCollapse{{ loop.index }}" class="accordion-collapse collapse {{ loop.first ? 'show' }}" aria-labelledby="faqHeading{{ loop.index }}" data-bs-parent="#faqMysql">
+            <div class="accordion-body small text-muted">
+              {{ item.answer }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="container py-5" data-aos="fade-up">
+  <div class="rounded border p-4 p-lg-5 shadow-sm text-center bg-body">
+    <span class="section-label mb-2 d-inline-block text-uppercase">Próximos passos</span>
+    <h2 class="h4 fw-semibold mb-3">Quer praticar ainda mais?</h2>
+    <p class="small text-muted mb-4">Explore a documentação do MeuApp para ver como o MySQL se integra a outras camadas, ou implemente novas tabelas usando as mesmas convenções.</p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="/documentacao/database" class="btn btn-primary btn-sm">
+        <i class="fas fa-database me-2"></i> Documentação de banco
+      </a>
+      <a href="/admin/pacientes" class="btn btn-outline-primary btn-sm">
+        <i class="fas fa-hospital-user me-2"></i> Abrir painel de pacientes
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

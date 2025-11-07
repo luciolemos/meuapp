@@ -20,7 +20,7 @@ celke
 │   │   │   ├── DashboardController.php
 │   │   │   ├── IndexController.php
 │   │   │   ├── SettingsController.php
-│   │   │   └── UsersController.php
+│   │   │   └── PacientesController.php
 │   │   └── Public
 │   │       ├── ConfiguracaoController.php
 │   │       ├── ContatoController.php
@@ -73,7 +73,7 @@ Quer que eu te mostre como configurar o launch.json no VS Code pra abrir automat
 │   │   │   ├── DashboardController.php
 │   │   │   ├── IndexController.php
 │   │   │   ├── SettingsController.php
-│   │   │   └── UsersController.php
+│   │   │   └── PacientesController.php
 │   │   └── Public
 │   │       ├── ConfiguracaoController.php
 │   │       ├── ContatoController.php

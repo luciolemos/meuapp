@@ -122,7 +122,7 @@ use App\Core\Model;
 
 class User extends Model {
     public function getAll() {
-        return $this->db->query("SELECT * FROM users")->fetchAll();
+        return $this->db->query("SELECT * FROM patients")->fetchAll();
     }
 }
         </pre>

@@ -70,7 +70,8 @@ section {
 
 {% block content %}
 <!-- ===================== HERO SECTION ===================== -->
-<section class="hero-section text-center py-5 mb-5 shadow-lg">
+{# <section class="hero-section section-block text-center shadow-lg">     #}
+<section class="container section-block text-center py-5" data-aos="fade-up"> 
     <div class="hero-overlay"></div>
     <div class="container hero-content">
         {# <img src="/images/logo.png" alt="Arquitetura MVC" class="img-fluid rounded shadow-sm"> #}
@@ -100,14 +101,33 @@ section {
             </p>
         </div>
         <!-- Botões de ação -->
-        <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="400">
+         {% set actions = page.actions is defined and page.actions is iterable ? page.actions : hero_actions|default([]) %}
+    {% if actions %}
+      <div class="d-flex justify-content-center flex-wrap gap-3" data-aos="zoom-in" data-aos-delay="320">
+        {% for action in actions %}
+          {% include 'components/button.twig' with {
+            href: action.href|default('#'),
+            text: action.label|default('Saiba mais'),
+            icon: action.icon|default(null),
+            variant: action.variant|default('light'),
+            size: action.size|default('sm'),
+            attrs: action.attrs|default({
+              'data-bs-toggle': 'tooltip',
+              'data-bs-placement': 'bottom'
+            }),
+            extra_class: action.extra_class|default('')
+          } %}
+        {% endfor %}
+      </div>
+    {% endif %}
+{#         <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="400">
             <a href="/documentacao" class="btn btn-light btn-sm shadow-sm">
                 <i class="fas fa-book me-2"></i> Ver Documentação
             </a>
             <a href="/sobre" class="btn btn-outline-light btn-sm">
                 <i class="fas fa-info-circle me-2"></i> Sobre o Projeto
             </a>
-        </div>
+        </div> #}
     </div>
 </section>
 

@@ -1,7 +1,7 @@
 {
   "Guia do Projeto": [
     { "label": "Conceito", "icon": "fa-lightbulb", "url": "/conceito" },
-    { "label": "Manual do Usuário", "icon": "fa-book-open", "url": "/manual" },
+    { "label": "Manual do Paciente", "icon": "fa-book-open", "url": "/manual" },
     { "label": "Descrição", "icon": "fa-project-diagram", "url": "/descricao" },
     { "label": "Configuração", "icon": "fa-cogs", "url": "/configuracao" },
     { "label": "Diagnóstico", "icon": "fa-stethoscope", "url": "/diagnostico" }

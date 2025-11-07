@@ -8,7 +8,8 @@
 
 {% extends "layouts/base.twig" %}
 {% import "partials/macros.twig" as ui %}
-{% block title %}{{ meta.title }}{% endblock %}
+{# {% block title %}{{ meta.title }}{% endblock %} #}
+{% block title %}{{ app_name }} — Showcase{% endblock %}
 
 {% block extra_css %}
   {{ parent() }}
@@ -114,7 +115,7 @@
 
 {% block content %}
 <!-- ===================== HERO ===================== -->
-<section class="hero-section section-block text-center shadow-lg">    
+<section class="container section-block text-center py-5" data-aos="fade-up"> 
     <div class="hero-overlay"></div>
     <div class="container hero-content">
     <header class="mb-4 text-center">
@@ -135,33 +136,25 @@
       {% endif %}
     </header>
 
-    <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="320">
-      {% include 'components/button.twig' with {
-        href: '/documentacao/manual',
-        text: 'Manual completo',
-        icon: 'fas fa-book',
-        variant: 'light',
-        size: 'sm',
-        attrs: {
-          'title': 'Abrir o manual completo',
-          'data-bs-toggle': 'tooltip',
-          'data-bs-placement': 'bottom'
-        }
-      } %}
-
-      {% include 'components/button.twig' with {
-        href: '/documentacao/gitgithub',
-        text: 'Fluxo Git/GitHub',
-        icon: 'fab fa-github',
-        variant: 'outline-light',
-        size: 'sm',
-        attrs: {
-          'title': 'Ver fluxo Git & GitHub',
-          'data-bs-toggle': 'tooltip',
-          'data-bs-placement': 'bottom'
-        }
-      } %}
-    </div>
+    {% set actions = page.actions is defined and page.actions is iterable ? page.actions : hero_actions|default([]) %}
+    {% if actions %}
+      <div class="d-flex justify-content-center flex-wrap gap-3" data-aos="zoom-in" data-aos-delay="320">
+        {% for action in actions %}
+          {% include 'components/button.twig' with {
+            href: action.href|default('#'),
+            text: action.label|default('Saiba mais'),
+            icon: action.icon|default(null),
+            variant: action.variant|default('light'),
+            size: action.size|default('sm'),
+            attrs: action.attrs|default({
+              'data-bs-toggle': 'tooltip',
+              'data-bs-placement': 'bottom'
+            }),
+            extra_class: action.extra_class|default('')
+          } %}
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 </section>
 <!-- ===================== CONTEÚDO DA PÁGINA ===================== -->
@@ -204,7 +197,7 @@ layout:
   <!-- ===================== VISÃO GERAL + FLAGS ===================== -->
   <section class="py-5" data-aos="fade-up">
     <div class="row align-items-stretch gy-4">
-      <div data-aos="fade-right">
+      <div class="col-lg-5" data-aos="fade-right">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <h2 class="h5 fw-semibold text-primary mb-3">
@@ -222,13 +215,8 @@ layout:
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-    <!-- ===================== VISÃO GERAL + FLAGS ===================== -->
-  <section class="py-5" data-aos="fade-up">
-    <div class="row align-items-stretch gy-4">
-      <div data-aos="fade-left" data-aos-delay="120">
+      <div class="col-lg-7" data-aos="fade-left" data-aos-delay="120">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <h2 class="h5 fw-semibold mb-3">
@@ -264,7 +252,6 @@ layout:
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </section>

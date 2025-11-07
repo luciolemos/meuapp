@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="{{ asset_url(asset_base, 'css/navbar.css') }}">
   <link rel="stylesheet" href="{{ asset_url(asset_base, 'css/theme-dark.css') }}">
   <!-- Inicializa tema antes do carregamento -->
+  
   <script>
     (() => {
       try {
@@ -135,9 +136,8 @@
         (function () {
             function initThemeAndDropdowns() {
             const html = document.documentElement;
-            const navbar = document.getElementById('mainNavbar');
             const themeToggle = document.getElementById('themeToggle');
-            if (!navbar || !themeToggle) {
+            if (!themeToggle) {
                 return;
             }
 
@@ -146,7 +146,6 @@
             const initialTheme = savedTheme === 'dark' ? 'dark' : 'light';
 
             html.setAttribute('data-bs-theme', initialTheme);
-            updateNavbarTheme(initialTheme);
             updateBodyTheme(initialTheme);
             updateIcon(initialTheme);
 
@@ -154,20 +153,9 @@
                 const newTheme = html.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
                 html.setAttribute('data-bs-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
-                updateNavbarTheme(newTheme);
                 updateBodyTheme(newTheme);
                 updateIcon(newTheme);
             });
-
-            function updateNavbarTheme(theme) {
-                if (theme === 'dark') {
-                    navbar.classList.remove('navbar-light', 'bg-light');
-                    navbar.classList.add('navbar-dark', 'bg-dark');
-                } else {
-                    navbar.classList.remove('navbar-dark', 'bg-dark');
-                    navbar.classList.add('navbar-light', 'bg-light');
-                }
-            }
 
             function updateBodyTheme(theme) {
                 const body = document.body;

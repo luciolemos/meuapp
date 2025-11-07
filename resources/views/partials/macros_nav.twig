@@ -4,6 +4,18 @@
    Finalidade: Gerenciar o estado ativo (active) em subitens do menu
    ============================================================= #}
 
+{% macro build_url(base, path) %}
+    {%- set cleaned = path|trim('/') -%}
+    {%- set base = base is defined and base is not null ? base : '/' -%}
+    {%- if base == '' or base == '/' -%}
+        /{{ cleaned }}
+    {%- elseif base matches '/^https?:\\/\\//' -%}
+        {{ base|trim('/') ~ '/' ~ cleaned }}
+    {%- else -%}
+        /{{ base|trim('/') ~ '/' ~ cleaned }}
+    {%- endif -%}
+{% endmacro %}
+
 {% macro dropdown_active(path, current_path) %}
     {% if current_path starts with path %}
         active

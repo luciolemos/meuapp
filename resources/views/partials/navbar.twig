@@ -37,7 +37,17 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3 transition-all" id="mainNavbar">
   <div class="container">
     <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{{ build_url(base, 'home') }}">
-      <img src="{{ build_url(base, 'images/full_stack1.png') }}" alt="MeuApp MVC — arquitetura" class="img-fluid shadow-sm" width="100">
+     <img 
+        src="{{ build_url(base, 'images/full_stack3.png') }}"
+        alt="MeuApp MVC — arquitetura (tema claro)"
+        class="img-fluid logo-light"
+        width="120" height="60" loading="eager">
+
+      <img 
+        src="{{ build_url(base, 'images/full_stack2.png') }}"
+        alt="MeuApp MVC — arquitetura (tema escuro)"
+        class="img-fluid logo-dark"
+        width="120" height="60" loading="eager">
     </a>
 
     <button
@@ -89,6 +99,13 @@
           </a>
         </li>
 
+        <li class="nav-item">
+          <a class="nav-link {% if current starts with '/blog' %}active{% endif %}"
+             href="{{ build_url(base, 'blog') }}">
+            <i class="fas fa-newspaper me-1"></i> BLOG
+          </a>
+        </li>
+
         <li class="nav-item dropdown position-static">
           <a
             class="nav-link dropdown-toggle d-flex align-items-center
@@ -112,7 +129,7 @@
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/conceito', current) }}"
                      href="{{ build_url(base, 'documentacao/conceito') }}"><i class="fas fa-lightbulb me-2"></i> Conceito</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/manual', current) }}"
-                     href="{{ build_url(base, 'documentacao/manual') }}"><i class="fas fa-book-open me-2"></i> Manual do Usuário</a>
+                     href="{{ build_url(base, 'documentacao/manual') }}"><i class="fas fa-book-open me-2"></i> Manual do Paciente</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/descricao', current) }}"
                      href="{{ build_url(base, 'documentacao/descricao') }}"><i class="fas fa-project-diagram me-2"></i> Descrição</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/configuracao', current) }}"
@@ -121,6 +138,13 @@
                      href="{{ build_url(base, 'documentacao/links') }}"><i class="fas fa-stethoscope me-2"></i> Links úteis</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/testpage', current) }}"
                      href="{{ build_url(base, 'documentacao/testpage') }}"><i class="fas fa-vial me-1"></i> Página de testes do projeto</a>
+                   <hr class="dropdown-divider">
+
+                  <h6 class="text-uppercase text-secondary fw-semibold mb-2">Pages &amp; Pages</h6>
+                  <a class="dropdown-item {{ nav.dropdown_active('/recursos', current) }}"
+                     href="{{ build_url(base, 'recursos') }}"><i class="fas fa-lock text-danger me-2"></i> Recursos</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/showcase', current) }}"
+                     href="{{ build_url(base, 'showcase') }}"><i class="fas fa-compass text-primary me-2"></i> Showcase de layout dinâmico</a>  
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">
@@ -146,6 +170,8 @@
                      href="{{ build_url(base, 'documentacao/whatsphp') }}"><i class="fab fa-php me-2"></i> O que é PHP?</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/whatsapache', current) }}"
                      href="{{ build_url(base, 'documentacao/whatsapache') }}"><i class="fab fa-php me-2"></i> O que é o Apache?</a>
+                  <a class="dropdown-item {{ nav.dropdown_active('/whatsmysql', current) }}"
+                     href="{{ build_url(base, 'whatsmysql') }}"><i class="fas fa-database me-2"></i> O que é MySQL?</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/bootstrap', current) }}"
                      href="{{ build_url(base, 'documentacao/bootstrap') }}"><i class="fab fa-bootstrap me-2"></i> Bootstrap</a>
                   <a class="dropdown-item {{ nav.dropdown_active('/documentacao/twig', current) }}"
@@ -188,7 +214,7 @@
         <li class="nav-item dropdown ms-lg-3">
           <a
             class="nav-link dropdown-toggle d-flex align-items-center
-            {% if current matches '/^(\\/)?(admin|dashboard|settings|users)(\\/.*)?$/' %}
+            {% if current matches '/^(\\/)?(admin|dashboard|settings|pacientes)(\\/.*)?$/' %}
               active
             {% endif %}"
             href="#"
@@ -202,10 +228,12 @@
           <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3">
             <li><a class="dropdown-item {{ nav.dropdown_active('/admin/dashboard', current) }}"
                    href="{{ build_url(base, 'admin/dashboard') }}"><i class="fas fa-chart-pie me-2"></i> Dashboard</a></li>
+            <li><a class="dropdown-item {{ nav.dropdown_active('/admin/pacientes', current) }}"
+                   href="{{ build_url(base, 'admin/pacientes') }}"><i class="fas fa-hospital-user me-2"></i> Pacientes</a></li>
+            <li><a class="dropdown-item {{ nav.dropdown_active('/admin/health', current) }}"
+                   href="{{ build_url(base, 'admin/health') }}"><i class="fas fa-heartbeat me-2"></i> Saúde</a></li>
             <li><a class="dropdown-item {{ nav.dropdown_active('/admin/settings', current) }}"
                    href="{{ build_url(base, 'admin/settings') }}"><i class="fas fa-cog me-2"></i> Configurações</a></li>
-            <li><a class="dropdown-item {{ nav.dropdown_active('/admin/users', current) }}"
-                   href="{{ build_url(base, 'admin/users') }}"><i class="fas fa-users me-2"></i> Usuários</a></li>
           </ul>
         </li>
 

@@ -72,8 +72,9 @@ section {
 
 {% block content %}
 <!-- ===================== HERO ===================== -->
-<section class="container text-center py-5" data-aos="fade-up">  
-    
+<section class="container section-block text-center py-5" data-aos="fade-up">  
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
     <header class="mb-4 text-center">
          <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
             <i class="fas fa-info-circle me-2 text-warning"></i> {{ title }} o <span class="text-warning">MeuApp</span> MVC
@@ -91,16 +92,36 @@ section {
             </p>
         </div>
 
+        {% set actions = page.actions is defined and page.actions is iterable ? page.actions : hero_actions|default([]) %}
+    {% if actions %}
+      <div class="d-flex justify-content-center flex-wrap gap-3" data-aos="zoom-in" data-aos-delay="320">
+        {% for action in actions %}
+          {% include 'components/button.twig' with {
+            href: action.href|default('#'),
+            text: action.label|default('Saiba mais'),
+            icon: action.icon|default(null),
+            variant: action.variant|default('light'),
+            size: action.size|default('sm'),
+            attrs: action.attrs|default({
+              'data-bs-toggle': 'tooltip',
+              'data-bs-placement': 'bottom'
+            }),
+            extra_class: action.extra_class|default('')
+          } %}
+        {% endfor %}
+      </div>
+    {% endif %}
 
-        <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="300">
+
+{#         <div class="d-flex justify-content-center gap-3" data-aos="zoom-in" data-aos-delay="300">
             <a href="/documentacao" class="btn btn-light btn-sm shadow-sm">
                 <i class="fas fa-book me-2"></i> Ver Documentação
             </a>
             <a href="/sobre" class="btn btn-outline-light btn-sm">
                 <i class="fas fa-info-circle me-2"></i> Sobre o Projeto
             </a>
-        </div>
-    
+        </div> #}
+     </div>
 </section>
 
 <!-- ===================== SEÇÃO PROPÓSITO ===================== -->

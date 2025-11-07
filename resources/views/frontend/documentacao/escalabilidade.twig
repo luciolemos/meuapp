@@ -255,15 +255,15 @@ total 36
 
     <div {% if not export %}data-aos="flip-up" data-aos-delay="{{ S + STEP }}"{% endif %}>
       {{ ui.codeblock_pro(
-        'UsersController.php',
+        'PacientesController.php',
         'namespace App\\Controllers\\Api;
 
 use App\\Core\\Controller;
 
-class UsersController extends Controller {
+class PacientesController extends Controller {
     public function index() {
-        $users = ["id" => 1, "name" => "Lucio Lemos"];
-        echo json_encode($users);
+        $patients = ["id" => 1, "name" => "Lucio Lemos"];
+        echo json_encode($patients);
     }
 }',
         'php', 'light'
@@ -350,7 +350,7 @@ curl -X GET http://localhost:9090/api/v1/query?query=up
 PHPUnit 10.5.3 by Sebastian Bergmann and contributors.
 
 UserController
- ✔ Deve retornar lista de usuários
+ ✔ Deve retornar lista de pacientes
  ✔ Deve retornar erro 404 para ID inválido',
         'bash', 'light'
       ) }}
@@ -365,7 +365,7 @@ UserController
     </h3>
 
     {% set arquitetura_ascii %}
-Usuário HTTP -> Load Balancer (HAProxy/Nginx)
+Paciente HTTP -> Load Balancer (HAProxy/Nginx)
 Load Balancer -> Web 1 (Apache + PHP)
 Load Balancer -> Web 2 (Nginx + PHP-FPM)
 Web Nodes -> Camada API (Controllers REST)
@@ -381,7 +381,7 @@ Banco Primário -> Réplica MySQL
         <div class="mermaid">
           %%{init: {"flowchart": {"useMaxWidth": false, "htmlLabels": false}}}%%
           flowchart LR
-            U([Usuário HTTP]) -->|HTTP| LB([Load Balancer\nHAProxy/Nginx])
+            U([Paciente HTTP]) -->|HTTP| LB([Load Balancer\nHAProxy/Nginx])
 
             subgraph Web_Tier ["Web Tier"]
               direction TB

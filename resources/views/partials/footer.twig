@@ -1,12 +1,68 @@
-<footer class="site-footer text-center py-3 mt-auto">
-  <small>&copy; {{ "now"|date("Y") }} - MeuApp MVC</small>
-  <div class="container text-center">
-    <small>Desenvolvido com Apache, PHP, MySql, Bootstrap + Twig em WSL</small>
-    <p class="mb-1 small">
-      <a href="http://lattes.cnpq.br/6156274538172427" class="footer-link">
-        <i>by</i> Lúcio Lemos
-      </a>
-    </p>
-    <small>Ambiente: {{ app_env }} • App: {{ app_name }}</small>
+{% import "partials/macros_nav.twig" as nav_helpers %}
+{% set base = base_url ?? '/' %}
+
+<footer class="site-footer mt-auto">
+  <div class="container py-5">
+    <div class="row g-4">
+      <div class="col-md-5 col-lg-4">
+        <a class="footer-brand d-inline-flex align-items-center gap-2" href="{{ nav_helpers.build_url(base, 'home') }}">
+          <img src="{{ nav_helpers.build_url(base, 'images/full_stack3.png') }}" alt="MeuApp MVC" class="logo-light" width="52" height="52">
+          <img src="{{ nav_helpers.build_url(base, 'images/full_stack2.png') }}" alt="MeuApp MVC" class="logo-dark" width="52" height="52">
+          <span>MeuApp MVC</span>
+        </a>
+        <p class="small text-muted mb-3">
+          Base de estudos e prototipação full-stack desenvolvida em PHP, Apache e Bootstrap, com renderização Twig e suporte a tema escuro.
+        </p>
+        <div class="social-links">
+          <a href="https://github.com/luciolemos" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/lucio-lemos" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="https://www.youtube.com/@luciolemos" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-2">
+        <h6 class="footer-heading">Navegação</h6>
+        <ul class="list-unstyled footer-list">
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'home') }}"><i class="fas fa-home me-2"></i>Home</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'sobre') }}"><i class="fas fa-info-circle me-2"></i>Sobre</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'recursos') }}"><i class="fas fa-toolbox me-2"></i>Recursos</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'blog') }}"><i class="fas fa-newspaper me-2"></i>Blog</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'contato') }}"><i class="fas fa-envelope me-2"></i>Contato</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-md-4 col-lg-3">
+        <h6 class="footer-heading">Documentação</h6>
+        <ul class="list-unstyled footer-list">
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'documentacao/conceito') }}"><i class="fas fa-lightbulb me-2"></i>Conceito</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'documentacao/configuracao') }}"><i class="fas fa-cogs me-2"></i>Configuração</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'showcase') }}"><i class="fas fa-sliders-h me-2"></i>Showcase</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'documentacao/testpage') }}"><i class="fas fa-vial me-2"></i>Testes</a></li>
+          <li><a class="footer-link" href="{{ nav_helpers.build_url(base, 'pdf/recursos') }}"><i class="fas fa-file-pdf me-2"></i>Exportar PDF</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 col-lg-3">
+        <h6 class="footer-heading">Contato</h6>
+        <ul class="list-unstyled footer-list">
+          <li><span class="footer-link"><i class="fas fa-map-marker-alt me-2"></i>Rio Grande do Norte · BR</span></li>
+          <li><a class="footer-link" href="mailto:contato@meuapp.local"><i class="fas fa-envelope-open-text me-2"></i>luciolemos@luciolemos.com</a></li>
+          <li><a class="footer-link" href="tel:+5511999999999"><i class="fas fa-phone me-2"></i>+55 (84) 99636-0721</a></li>
+          <li><a class="footer-link" href="http://lattes.cnpq.br/6156274538172427" target="_blank" rel="noopener noreferrer"><i class="fas fa-id-card me-2"></i>Currículo Lattes</a></li>
+        </ul>
+        <p class="small text-muted mb-0">Desenvolvido com Apache, PHP, MySQL, Bootstrap e Twig sobre WSL.</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom mt-4 pt-3 border-top text-center">
+      <div class="small">&copy; {{ "now"|date("Y") }} · {{ app_name }} • Ambiente: {{ app_env }}</div>
+      <div class="small text-muted mt-1">Deploy de referência para estudos full-stack em PHP — mantenedor <a href="https://github.com/luciolemos" target="_blank" rel="noopener noreferrer" class="footer-link">Lúcio Lemos</a>.</div>
+    </div>
   </div>
 </footer>

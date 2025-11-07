@@ -13,7 +13,13 @@ class TestandoController extends BaseController
             'description' => 'Guia de configuração do ambiente PHP, Apache e Twig para rodar o MeuApp MVC localmente.',
             'author'      => 'Equipe MeuApp',
             'date'        => '2025-10-27',
-            'export' => false
+            'meta' => [
+                'description' => 'Ambiente de testes para validar componentes e layouts do MeuApp MVC.',
+                'robots'      => 'noindex, nofollow',
+            ],
+            'layout' => [
+                'hero' => true,
+            ],
         ]);
     }
 }

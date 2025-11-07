@@ -4,30 +4,9 @@
 
 {% block extra_css %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-    <link rel="stylesheet" href="/css/style.css">
-
-    <style>
-        /* ======== HERO SECTION ======== */
-        .hero-section {
-            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
-            background-attachment: fixed;
-            color: #fff;
-            position: relative;
-            overflow: hidden;
-            transition: background 0.5s ease;
-        }
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 70%),
-                        radial-gradient(circle at 70% 50%, rgba(0,0,0,0.2), transparent 70%);
-            z-index: 0;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
+        <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+        <link rel="stylesheet" href="/css/style.css">
+        <style>
 
         /* ======== CARDS ======== */
         .card {
@@ -46,7 +25,8 @@
 {% endblock %}
 
 {% block content %}
-<section class="container text-center py-5" data-aos="fade-up">
+<section class="container section-block text-center py-5" data-aos="fade-up"> 
+  <div class="hero-overlay"></div>
      <header class="mb-4 text-center">
          <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
             <i class="fas fa-bug me-2 text-warning"></i> {{ title }}

@@ -99,7 +99,7 @@ $options->set("isRemoteEnabled", true);
 $dompdf = new Dompdf($options);
 
 $html = $twig->render("pdf/manual.twig", [
-    "title" => "Manual do Usuário",
+    "title" => "Manual do Paciente",
     "content" => $conteudo
 ]);
 
