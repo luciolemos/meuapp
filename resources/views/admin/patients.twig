@@ -1,5 +1,10 @@
 {% extends "layouts/admin.twig" %}
 
+{% set convenio_labels = convenioOptions ?? {} %}
+{% set situacao_labels = situacaoOptions ?? {} %}
+{% set health_states = healthStates ?? {} %}
+{% set health_treatments = healthTreatments ?? {} %}
+
 {% block extra_css %}
   {{ parent() }}
   <style>
@@ -48,19 +53,49 @@
     }
 
     .table-actions .btn {
-      border-radius: 0.65rem !important;
-      width: 2.35rem;
-      height: 2.35rem;
+      border-radius: 0.35rem !important;
+      width: 2.5rem;
+      height: 2.5rem;
+      flex: 0 0 2.5rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
+      padding: 0 !important;
     }
 
     .table-actions .btn i {
       width: 1.05rem;
       text-align: center;
       font-size: 0.95rem;
+    }
+
+    .table-actions .btn[data-action="open-health"] {
+      width: auto;
+      min-width: 2.35rem;
+      padding: 0 0.85rem;
+      gap: 0.35rem;
+    }
+
+    .patient-edit-photo {
+      border: 1px dashed rgba(13, 110, 253, 0.2);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      background: rgba(13, 110, 253, 0.03);
+    }
+
+    .patient-edit-photo .patient-avatar {
+      width: 82px;
+      height: 82px;
+      font-size: 1.4rem;
+      margin: 0 auto 0.75rem;
+    }
+
+    .patient-edit-photo .form-text {
+      font-size: 0.75rem;
+    }
+
+    .modal-dialog.modal-xxl {
+      max-width: min(99vw, 1300px);
     }
   </style>
 {% endblock %}
@@ -208,6 +243,13 @@
                       <i class="fas fa-eye"></i>
                     </button>
                     <button
+                      class="btn btn-outline-danger btn-sm"
+                      type="button"
+                      data-action="open-health"
+                      title="Registrar atendimento">
+                      <i class="fas fa-heartbeat"></i>
+                    </button>
+                    <button
                       class="btn btn-outline-primary btn-sm"
                       data-bs-toggle="modal"
                       data-bs-target="#modalPatientEdit"
@@ -238,9 +280,97 @@
     </div>
   </div>
 
+  {# Modal: Registrar atendimento #}
+  <div class="modal fade" id="modalPatientHealth" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <form action="/admin/health/store" method="post" class="modal-content needs-validation" novalidate>
+        <input type="hidden" name="user_id" id="healthPatientId">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-heartbeat me-2 text-danger"></i>Registrar atendimento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Paciente</label>
+              <input type="text" class="form-control" id="healthPatientName" readonly>
+              <div class="form-text">Selecionado a partir da lista.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">E-mail</label>
+              <input type="text" class="form-control" id="healthPatientEmail" readonly>
+            </div>
+            <div class="col-md-6">
+              <label for="healthConsulta" class="form-label">Data da consulta</label>
+              <input type="datetime-local" class="form-control" name="consulta_data" id="healthConsulta" required>
+              <div class="invalid-feedback">Informe a data da consulta.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="healthEstado" class="form-label">Estado clínico</label>
+              <select name="estado" id="healthEstado" class="form-select" required>
+                <option value="" selected disabled>Selecione o estado</option>
+                {% for key, label in health_states %}
+                  <option value="{{ key }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+              <div class="invalid-feedback">Escolha o estado clínico.</div>
+            </div>
+            <div class="col-md-8">
+              <label for="healthDiagnostico" class="form-label">Diagnóstico</label>
+              <input type="text" class="form-control" name="diagnostico" id="healthDiagnostico" required>
+              <div class="invalid-feedback">Informe o diagnóstico.</div>
+            </div>
+            <div class="col-md-4">
+              <label for="healthCid" class="form-label">CID</label>
+              <input type="text" class="form-control" name="cid" id="healthCid" placeholder="Ex.: J45">
+            </div>
+            <div class="col-md-6">
+              <label for="healthMedico" class="form-label">Médico responsável</label>
+              <input type="text" class="form-control" name="medico_responsavel" id="healthMedico">
+            </div>
+            <div class="col-md-6">
+              <label for="healthInstituicao" class="form-label">Instituição/Clínica</label>
+              <input type="text" class="form-control" name="instituicao" id="healthInstituicao">
+            </div>
+            <div class="col-md-6">
+              <label for="healthTratamentoStatus" class="form-label">Status do tratamento</label>
+              <select name="status_tratamento" id="healthTratamentoStatus" class="form-select" required>
+                <option value="" selected disabled>Selecione o status</option>
+                {% for key, label in health_treatments %}
+                  <option value="{{ key }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+              <div class="invalid-feedback">Escolha o status do tratamento.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="healthProxima" class="form-label">Próxima consulta</label>
+              <input type="datetime-local" class="form-control" name="proxima_consulta" id="healthProxima">
+            </div>
+            <div class="col-12">
+              <label for="healthTratamento" class="form-label">Tratamento</label>
+              <textarea class="form-control" name="tratamento" id="healthTratamento" rows="2"></textarea>
+            </div>
+            <div class="col-12">
+              <label for="healthPrescricoes" class="form-label">Prescrições</label>
+              <textarea class="form-control" name="prescricoes" id="healthPrescricoes" rows="2"></textarea>
+            </div>
+            <div class="col-12">
+              <label for="healthObservacoes" class="form-label">Observações</label>
+              <textarea class="form-control" name="observacoes" id="healthObservacoes" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger btn-sm">Salvar atendimento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   {# Modal: Ver paciente #}
   <div class="modal fade" id="modalPatientView" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title"><i class="fas fa-eye me-2 text-primary"></i>Detalhes do paciente</h5>
@@ -257,33 +387,74 @@
           </div>
 
           <div class="row g-3">
-            <div class="col-sm-6">
-              <span class="text-muted text-uppercase small fw-semibold d-block">Convênio</span>
-              <div data-view-convenio></div>
-            </div>
-            <div class="col-sm-6">
-              <span class="text-muted text-uppercase small fw-semibold d-block">Situação do cadastro</span>
-              <div data-view-situacao></div>
-            </div>
-            <div class="col-sm-6">
-              <span class="text-muted text-uppercase small fw-semibold d-block">Data de nascimento</span>
-              <p class="mb-0" data-view-birth>—</p>
-            </div>
-            <div class="col-sm-6">
-              <span class="text-muted text-uppercase small fw-semibold d-block">CPF</span>
-              <p class="mb-0" data-view-cpf>—</p>
+            <div class="col-12">
+              <div class="row g-3">
+                <div class="col-12 col-lg-3">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">Convênio</span>
+                  <div data-view-convenio></div>
+                </div>
+                <div class="col-12 col-lg-3">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">Situação do cadastro</span>
+                  <div data-view-situacao></div>
+                </div>
+                <div class="col-12 col-lg-3">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">Data de nascimento</span>
+                  <p class="mb-0" data-view-birth>—</p>
+                </div>
+                <div class="col-12 col-lg-3">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">CPF</span>
+                  <p class="mb-0" data-view-cpf>—</p>
+                </div>
+              </div>
             </div>
             <div class="col-12">
-              <span class="text-muted text-uppercase small fw-semibold d-block">Endereço</span>
-              <p class="mb-0" data-view-address>—</p>
+              <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">Endereço</span>
+                  <p class="mb-0" data-view-address>—</p>
+                </div>
+                <div class="col-12 col-lg-3">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">Criado em</span>
+                  <p class="mb-0" data-view-created>—</p>
+                </div>
+                <div class="col-12 col-lg-3">
+                  <span class="text-muted text-uppercase small fw-semibold d-block">Atualizado em</span>
+                  <p class="mb-0" data-view-updated>—</p>
+                </div>
+              </div>
             </div>
-            <div class="col-sm-6">
-              <span class="text-muted text-uppercase small fw-semibold d-block">Criado em</span>
-              <p class="mb-0" data-view-created>—</p>
+          </div>
+
+          <div class="mt-4">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div>
+                <span class="text-muted text-uppercase small fw-semibold d-block">Histórico de atendimentos</span>
+                <p class="text-muted small mb-0">Consultas registradas no módulo de saúde.</p>
+              </div>
+              <span class="badge text-bg-danger-subtle text-danger" data-history-count>—</span>
             </div>
-            <div class="col-sm-6">
-              <span class="text-muted text-uppercase small fw-semibold d-block">Atualizado em</span>
-              <p class="mb-0" data-view-updated>—</p>
+            <div class="border rounded">
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0 d-none" data-view-history-table>
+                  <thead class="table-light">
+                    <tr>
+                      <th>Consulta</th>
+                      <th>Estado</th>
+                      <th>Diagnóstico</th>
+                      <th>CID</th>
+                      <th>Médico</th>
+                      <th>Instituição</th>
+                      <th>Status trat.</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="d-flex align-items-center justify-content-center py-3 d-none" data-history-loading>
+                <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+                <span class="text-muted small">Carregando histórico...</span>
+              </div>
+              <p class="text-muted small py-3 px-3 mb-0" data-view-history-empty>Sem atendimentos registrados para este paciente.</p>
             </div>
           </div>
         </div>
@@ -380,7 +551,7 @@
 
   {# Modal: Editar paciente #}
   <div class="modal fade" id="modalPatientEdit" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-xxl">
       <form action="/admin/pacientes/update" method="post" class="modal-content needs-validation" novalidate enctype="multipart/form-data">
         <input type="hidden" name="id" id="editId">
         <div class="modal-header">
@@ -388,73 +559,68 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
         <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">ID interno</label>
-            <input type="text" class="form-control" id="editStaffId" readonly>
-            <div class="form-text">Gerado automaticamente e não editável.</div>
-          </div>
-
-          <div class="mb-3">
-            <label for="editName" class="form-label">Nome completo</label>
-            <input type="text" class="form-control" name="name" id="editName" required>
-            <div class="invalid-feedback">Informe o nome do paciente.</div>
-          </div>
-
-          <div class="mb-3">
-            <label for="editEmail" class="form-label">E-mail</label>
-            <input type="email" class="form-control" name="email" id="editEmail" required>
-            <div class="invalid-feedback">Informe um e-mail válido.</div>
-          </div>
-
-          <div class="mb-3">
-            <label for="editAvatar" class="form-label">Avatar (URL opcional)</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-image"></i></span>
-              <input type="text" class="form-control" name="avatar" id="editAvatar" placeholder="https://exemplo.com/avatar.jpg ou /uploads/avatars/arquivo.png" inputmode="url">
+          <div class="row g-3 align-items-start">
+            <div class="col-12 col-lg-3">
+              <div class="patient-edit-photo text-center h-100">
+                <span class="patient-avatar patient-avatar--fallback patient-avatar--preview" data-avatar-preview="edit">?</span>
+                <p class="text-muted small mb-3">Use uma URL ou envie um arquivo.</p>
+                <div class="mb-3">
+                  <label for="editAvatar" class="form-label">Avatar (URL)</label>
+                  <input type="text" class="form-control" name="avatar" id="editAvatar" placeholder="https://exemplo.com/avatar.jpg" inputmode="url">
+                  <div class="form-text">Aceita URLs completas ou caminhos internos.</div>
+                </div>
+                <div>
+                  <label for="editAvatarFile" class="form-label">Upload</label>
+                  <input type="file" class="form-control" name="avatar_file" id="editAvatarFile" accept="image/*">
+                  <div class="form-text">O arquivo substitui a URL acima.</div>
+                </div>
+              </div>
             </div>
-            <div class="form-text">Aceita URLs completas ou caminhos internos gerados pelo upload.</div>
-            <div class="d-flex align-items-center gap-2 mt-2">
-              <span class="patient-avatar patient-avatar--fallback patient-avatar--preview" data-avatar-preview="edit">?</span>
-              <span class="text-muted patient-avatar__hint">Atualize a imagem ou deixe em branco para usar iniciais.</span>
-            </div>
-            <div class="mt-3">
-              <label for="editAvatarFile" class="form-label">Substituir por arquivo</label>
-              <input type="file" class="form-control" name="avatar_file" id="editAvatarFile" accept="image/*">
-              <div class="form-text">Se escolher um arquivo, ignoramos a URL acima.</div>
-            </div>
-          </div>
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="editConvenio" class="form-label">Convênio</label>
-              <select name="convenio" id="editConvenio" class="form-select">
-                {% for value, label in convenio_labels %}
-                  <option value="{{ value }}">{{ label }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="editSituacao" class="form-label">Situação do cadastro</label>
-              <select name="situacao_cadastro" id="editSituacao" class="form-select">
-                {% for value, label in situacao_labels %}
-                  <option value="{{ value }}">{{ label }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <div class="row g-3 mt-1">
-            <div class="col-md-6">
-              <label for="editBirthDate" class="form-label">Data de nascimento</label>
-              <input type="date" class="form-control" name="birth_date" id="editBirthDate">
-            </div>
-            <div class="col-md-6">
-              <label for="editCpf" class="form-label">CPF</label>
-              <input type="text" class="form-control" name="cpf" id="editCpf" placeholder="000.000.000-00">
-            </div>
-            <div class="col-12">
-              <label for="editAddress" class="form-label">Endereço</label>
-              <textarea class="form-control" name="address" id="editAddress" rows="2" placeholder="Rua, número, complemento, cidade"></textarea>
+            <div class="col-12 col-lg-9">
+              <div class="row g-3">
+                <div class="col-xxl-4 col-lg-4 col-md-5">
+                  <label class="form-label">ID interno</label>
+                  <input type="text" class="form-control" id="editStaffId" readonly>
+                </div>
+                <div class="col-xxl-4 col-lg-4 col-md-7">
+                  <label for="editName" class="form-label">Nome completo</label>
+                  <input type="text" class="form-control" name="name" id="editName" required>
+                  <div class="invalid-feedback">Informe o nome do paciente.</div>
+                </div>
+                <div class="col-xxl-4 col-lg-4 col-md-12">
+                  <label for="editEmail" class="form-label">E-mail</label>
+                  <input type="email" class="form-control" name="email" id="editEmail" required>
+                  <div class="invalid-feedback">Informe um e-mail válido.</div>
+                </div>
+                <div class="col-xxl-3 col-lg-3 col-md-4">
+                  <label for="editConvenio" class="form-label">Convênio</label>
+                  <select name="convenio" id="editConvenio" class="form-select">
+                    {% for value, label in convenio_labels %}
+                      <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-xxl-3 col-lg-3 col-md-4">
+                  <label for="editSituacao" class="form-label">Situação</label>
+                  <select name="situacao_cadastro" id="editSituacao" class="form-select">
+                    {% for value, label in situacao_labels %}
+                      <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-xxl-3 col-lg-3 col-md-4">
+                  <label for="editBirthDate" class="form-label">Nascimento</label>
+                  <input type="date" class="form-control" name="birth_date" id="editBirthDate">
+                </div>
+                <div class="col-xxl-3 col-lg-3 col-md-4">
+                  <label for="editCpf" class="form-label">CPF</label>
+                  <input type="text" class="form-control" name="cpf" id="editCpf" placeholder="000.000.000-00">
+                </div>
+                <div class="col-12">
+                  <label for="editAddress" class="form-label">Endereço completo</label>
+                  <textarea class="form-control" name="address" id="editAddress" rows="5" placeholder="Rua, número, complemento, cidade"></textarea>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -527,7 +693,6 @@
 
       const convenioLabels = {{ convenio_labels|json_encode|raw }};
       const situacaoLabels = {{ situacao_labels|json_encode|raw }};
-
       function toTitle(slug) {
         return slug
           .split('_')
@@ -591,6 +756,41 @@
         }
       }
 
+      const healthStateLabels = {{ health_states|json_encode|raw }};
+      const healthTreatmentLabels = {{ health_treatments|json_encode|raw }};
+      const historyEmptyDefault = 'Sem atendimentos registrados para este paciente.';
+      let activeHistoryPatientId = null;
+
+      function labelForHealthState(value) {
+        if (!value) return '—';
+        const key = value.toLowerCase();
+        return healthStateLabels[key] || toTitle(key);
+      }
+
+      function badgeClassForHealthState(value) {
+        switch ((value || '').toLowerCase()) {
+          case 'inspira_cuidados':
+            return 'text-bg-warning text-dark';
+          case 'grave':
+          case 'critico':
+            return 'text-bg-danger';
+          case 'terminal':
+            return 'text-bg-dark';
+          case 'recuperado':
+            return 'text-bg-success';
+          case 'estavel':
+            return 'text-bg-info text-dark';
+          default:
+            return 'text-bg-primary';
+        }
+      }
+
+      function labelForTreatmentStatus(value) {
+        if (!value) return '—';
+        const key = value.toLowerCase();
+        return healthTreatmentLabels[key] || toTitle(key);
+      }
+
       function formatCpf(value) {
         if (!value) return '—';
         const digits = value.replace(/\D+/g, '');
@@ -603,6 +803,130 @@
       function renderBadge(container, label, className) {
         if (!container) return;
         container.innerHTML = '<span class="badge rounded-pill ' + className + '">' + (label || '—') + '</span>';
+      }
+
+      function escapeHtml(value) {
+        if (value === null || value === undefined) {
+          return '';
+        }
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function setHistoryLoading(isLoading) {
+        if (!viewHistoryLoading) return;
+        viewHistoryLoading.classList.toggle('d-none', !isLoading);
+      }
+
+      function renderHistory(records) {
+        if (!viewHistoryTable || !viewHistoryEmpty) {
+          return;
+        }
+
+        const body = viewHistoryTable.querySelector('tbody');
+        if (body) {
+          body.innerHTML = '';
+        }
+
+        if (!records || records.length === 0) {
+          viewHistoryTable.classList.add('d-none');
+          viewHistoryEmpty.textContent = historyEmptyDefault;
+          viewHistoryEmpty.classList.remove('d-none');
+          if (viewHistoryCount) {
+            viewHistoryCount.textContent = '0 registros';
+          }
+          return;
+        }
+
+        viewHistoryTable.classList.remove('d-none');
+        viewHistoryEmpty.classList.add('d-none');
+        if (viewHistoryCount) {
+          viewHistoryCount.textContent = records.length + (records.length === 1 ? ' registro' : ' registros');
+        }
+
+        records.forEach(function (item) {
+          const consultaLabel = item.consulta_label || item.consulta_data || '—';
+          const estadoClass = badgeClassForHealthState(item.estado);
+          const estadoLabel = item.estado_label || labelForHealthState(item.estado);
+          const diagnostico = item.diagnostico || '—';
+          const cid = item.cid || '—';
+          const medico = item.medico_responsavel || '—';
+          const instituicao = item.instituicao || '—';
+          const statusLabel = item.status_label || labelForTreatmentStatus(item.status_tratamento);
+
+          const tr = document.createElement('tr');
+          tr.innerHTML =
+            '<td class="text-muted small">' + escapeHtml(consultaLabel) + '</td>' +
+            '<td><span class="badge ' + estadoClass + '">' + escapeHtml(estadoLabel) + '</span></td>' +
+            '<td>' + escapeHtml(diagnostico) + '</td>' +
+            '<td class="text-uppercase small text-muted">' + escapeHtml(cid) + '</td>' +
+            '<td>' + escapeHtml(medico) + '</td>' +
+            '<td>' + escapeHtml(instituicao) + '</td>' +
+            '<td><span class="badge text-bg-secondary">' + escapeHtml(statusLabel) + '</span></td>';
+
+          if (body) {
+            body.appendChild(tr);
+          }
+        });
+      }
+
+      function loadPatientHistory(patientId) {
+        if (!viewHistoryTable || !viewHistoryEmpty) {
+          return;
+        }
+
+        activeHistoryPatientId = patientId;
+        viewHistoryTable.classList.add('d-none');
+        viewHistoryEmpty.classList.add('d-none');
+        viewHistoryEmpty.textContent = historyEmptyDefault;
+        if (viewHistoryCount) {
+          viewHistoryCount.textContent = '—';
+        }
+
+        if (!patientId) {
+          viewHistoryEmpty.textContent = 'Paciente inválido.';
+          viewHistoryEmpty.classList.remove('d-none');
+          return;
+        }
+
+        setHistoryLoading(true);
+
+        fetch('/admin/health/history?patient=' + encodeURIComponent(patientId), {
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error('Falha ao carregar');
+            }
+            return response.json();
+          })
+          .then(function (payload) {
+            if (patientId !== activeHistoryPatientId) {
+              return;
+            }
+            renderHistory(payload.data || []);
+          })
+          .catch(function () {
+            if (patientId === activeHistoryPatientId) {
+              viewHistoryTable.classList.add('d-none');
+              viewHistoryEmpty.textContent = 'Não foi possível carregar o histórico.';
+              viewHistoryEmpty.classList.remove('d-none');
+              if (viewHistoryCount) {
+                viewHistoryCount.textContent = '—';
+              }
+            }
+          })
+          .finally(function () {
+            if (patientId === activeHistoryPatientId) {
+              setHistoryLoading(false);
+            }
+          });
       }
 
       function parsePatientData(element) {
@@ -644,7 +968,28 @@
       const viewUpdatedEl = document.querySelector('[data-view-updated]');
       const viewEditBtn = document.querySelector('[data-view-open-edit]');
       const viewStaffEl = document.querySelector('[data-view-staff]');
+      const viewHistoryTable = document.querySelector('[data-view-history-table]');
+      const viewHistoryEmpty = document.querySelector('[data-view-history-empty]');
+      const viewHistoryCount = document.querySelector('[data-history-count]');
+      const viewHistoryLoading = document.querySelector('[data-history-loading]');
       const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+
+      const healthModal = document.getElementById('modalPatientHealth');
+      const healthForm = healthModal ? healthModal.querySelector('form') : null;
+      const healthPatientIdInput = document.getElementById('healthPatientId');
+      const healthPatientNameInput = document.getElementById('healthPatientName');
+      const healthPatientEmailInput = document.getElementById('healthPatientEmail');
+      const healthConsultaInput = document.getElementById('healthConsulta');
+      const healthEstadoSelect = document.getElementById('healthEstado');
+      const healthDiagnosticoInput = document.getElementById('healthDiagnostico');
+      const healthCidInput = document.getElementById('healthCid');
+      const healthMedicoInput = document.getElementById('healthMedico');
+      const healthInstituicaoInput = document.getElementById('healthInstituicao');
+      const healthStatusSelect = document.getElementById('healthTratamentoStatus');
+      const healthProximaInput = document.getElementById('healthProxima');
+      const healthTratamentoInput = document.getElementById('healthTratamento');
+      const healthPrescricoesInput = document.getElementById('healthPrescricoes');
+      const healthObservacoesInput = document.getElementById('healthObservacoes');
 
       function readFileAsPreview(fileInput, previewElement, fallbackLetter) {
         if (!fileInput || !fileInput.files || !fileInput.files[0]) {
@@ -780,6 +1125,7 @@
         if (viewCreatedEl) viewCreatedEl.textContent = data.created_label || '—';
         if (viewUpdatedEl) viewUpdatedEl.textContent = data.updated_label || '—';
         viewModal.dataset.currentPatient = JSON.stringify(data);
+        loadPatientHistory(data.id ?? null);
       }
 
       if (editModal) {
@@ -822,12 +1168,53 @@
         });
       }
 
+      if (healthModal && healthForm) {
+        document.querySelectorAll('[data-action="open-health"]').forEach(function (button) {
+          button.addEventListener('click', function () {
+            const data = parsePatientData(this);
+            if (!data) {
+              return;
+            }
+
+            healthForm.reset();
+            healthForm.classList.remove('was-validated');
+
+            if (healthPatientIdInput) healthPatientIdInput.value = data.id ?? '';
+            if (healthPatientNameInput) healthPatientNameInput.value = data.name ?? 'Paciente';
+            if (healthPatientEmailInput) healthPatientEmailInput.value = data.email ?? '—';
+            if (healthEstadoSelect) healthEstadoSelect.value = '';
+            if (healthStatusSelect) healthStatusSelect.value = '';
+            if (healthConsultaInput) healthConsultaInput.value = '';
+            if (healthDiagnosticoInput) healthDiagnosticoInput.value = '';
+            if (healthCidInput) healthCidInput.value = '';
+            if (healthMedicoInput) healthMedicoInput.value = '';
+            if (healthInstituicaoInput) healthInstituicaoInput.value = '';
+            if (healthProximaInput) healthProximaInput.value = '';
+            if (healthTratamentoInput) healthTratamentoInput.value = '';
+            if (healthPrescricoesInput) healthPrescricoesInput.value = '';
+            if (healthObservacoesInput) healthObservacoesInput.value = '';
+
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(healthModal);
+            modalInstance.show();
+            setTimeout(function () {
+              if (healthConsultaInput) {
+                healthConsultaInput.focus();
+              }
+            }, 200);
+          });
+        });
+      }
+
       // Validação simples bootstrap
       document.querySelectorAll('.needs-validation').forEach(function (form) {
         form.addEventListener('submit', function (event) {
           if (!form.checkValidity()) {
             event.preventDefault();
             event.stopPropagation();
+            const firstInvalid = form.querySelector(':invalid');
+            if (firstInvalid) {
+              firstInvalid.focus({ preventScroll: false });
+            }
           }
           form.classList.add('was-validated');
         }, false);
