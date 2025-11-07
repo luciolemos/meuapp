@@ -578,6 +578,29 @@
         });
       }
 
+      function applyFormValidation(form) {
+        if (!form) {
+          return;
+        }
+
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+
+            const firstInvalid = form.querySelector(':invalid');
+            if (firstInvalid) {
+              firstInvalid.focus({ preventScroll: false });
+              firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        });
+      }
+
+      applyFormValidation(document.querySelector('#modalHealthCreate form'));
+      applyFormValidation(document.querySelector('#modalHealthEdit form'));
+
       function fillViewModal(data) {
         const avatar = document.querySelector('[data-view-avatar]');
         const patient = document.querySelector('[data-view-patient]');

@@ -1,0 +1,10 @@
+{
+    "app_name": "MeuApp MVC",
+    "app_tagline": "Painel administrativo do MeuApp - MVC",
+    "contact_email": "luciolemos@luciolemos.com",
+    "support_phone": "+55 84 99636-0721",
+    "timezone": "America\/Sao_Paulo",
+    "app_env": "dev",
+    "app_debug": true,
+    "updated_at": "2025-11-06T12:28:41+00:00"
+}

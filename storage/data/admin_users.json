@@ -1,0 +1,55 @@
+[
+    {
+        "id": 1,
+        "name": "Nathan Nogueira Lemos",
+        "email": "admin@meuapp.local",
+        "role": "editor",
+        "status": "active",
+        "created_at": "2025-11-05T01:21:41+00:00",
+        "updated_at": "2025-11-05T15:08:23+00:00",
+        "avatar": null,
+        "birth_date": null,
+        "cpf": "",
+        "address": "",
+        "staff_id": "USER20251105164458EF46"
+    },
+    {
+        "id": 2,
+        "name": "Silvana Lemos",
+        "email": "demo@meuapp.local",
+        "role": "viewer",
+        "status": "active",
+        "created_at": "2025-11-05T01:21:41+00:00",
+        "updated_at": "2025-11-05T09:28:25+00:00",
+        "avatar": null,
+        "staff_id": "USER202511051644586D69"
+    },
+    {
+        "id": 3,
+        "name": "Lúcio Flávio",
+        "email": "luciolemos.j5@gmail.com",
+        "role": "admin",
+        "status": "active",
+        "created_at": "2025-11-05T01:24:20+00:00",
+        "updated_at": "2025-11-05T10:33:33+00:00",
+        "avatar": null,
+        "birth_date": "2025-11-19",
+        "cpf": "38578760344",
+        "address": "Rua Lúcia Viveiros nº 255",
+        "staff_id": "USER20251105164458E792"
+    },
+    {
+        "id": 4,
+        "name": "Dávide Nogueira Lemos",
+        "email": "davide@davide.com",
+        "role": "admin",
+        "status": "invited",
+        "avatar": null,
+        "birth_date": "2025-06-29",
+        "cpf": "12332145644",
+        "address": "Rua Lúcia Viveiros nº 255",
+        "created_at": "2025-11-05T15:08:04+00:00",
+        "updated_at": "2025-11-05T15:08:04+00:00",
+        "staff_id": "USER20251105164458BC23"
+    }
+]
