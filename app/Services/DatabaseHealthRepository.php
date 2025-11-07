@@ -19,7 +19,9 @@ class DatabaseHealthRepository
                        h.user_id    AS patient_id,
                        u.name       AS patient_name,
                        u.email      AS patient_email,
-                       u.staff_id   AS patient_staff_id
+                       u.staff_id   AS patient_staff_id,
+                       u.last_health_state AS patient_last_health_state,
+                       u.last_consulta_em  AS patient_last_consulta_em
                   FROM tbl_meuapp_health h
                   INNER JOIN tbl_meuapp_patients u ON u.id = h.user_id';
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\BaseController;
 use App\Services\DatabasePatientRepository;
 use App\Support\PatientOptions;
+use App\Support\HealthOptions;
 
 class PacientesController extends BaseController
 {
@@ -25,6 +26,8 @@ class PacientesController extends BaseController
             'message' => $_GET['message'] ?? null,
             'convenioOptions' => PatientOptions::CONVENIOS,
             'situacaoOptions' => PatientOptions::SITUACOES,
+            'healthStates' => HealthOptions::stateLabels(),
+            'healthTreatments' => HealthOptions::treatmentStatuses(),
         ]);
     }
 

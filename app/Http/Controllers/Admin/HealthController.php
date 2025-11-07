@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\BaseController;
 use App\Services\DatabaseHealthRepository;
 use App\Services\DatabasePatientRepository;
+use App\Support\HealthOptions;
 use Throwable;
 
 class HealthController extends BaseController
@@ -24,8 +25,8 @@ class HealthController extends BaseController
             'title' => 'Acompanhamento de Saúde',
             'records' => $this->health->all(),
             'patients' => $this->patients->all(),
-            'states' => $this->stateOptions(),
-            'treatment_statuses' => $this->treatmentStatuses(),
+            'states' => HealthOptions::states(),
+            'treatment_statuses' => HealthOptions::treatmentStatuses(),
             'status' => $_GET['status'] ?? null,
             'message' => $_GET['message'] ?? null,
         ]);
@@ -103,26 +104,48 @@ class HealthController extends BaseController
         $this->redirect('/admin/health?status=success&message=' . urlencode('Atendimento removido com sucesso.'));
     }
 
-    private function stateOptions(): array
+    public function history(): void
     {
-        return [
-            'leve' => ['label' => 'Leve', 'badge' => 'text-bg-success'],
-            'inspira_cuidados' => ['label' => 'Inspira cuidados', 'badge' => 'text-bg-warning text-dark'],
-            'grave' => ['label' => 'Grave', 'badge' => 'text-bg-danger'],
-            'critico' => ['label' => 'Crítico', 'badge' => 'text-bg-danger'],
-            'terminal' => ['label' => 'Terminal', 'badge' => 'text-bg-dark'],
-            'recuperado' => ['label' => 'Recuperado', 'badge' => 'text-bg-primary'],
-            'estavel' => ['label' => 'Estável', 'badge' => 'text-bg-info text-dark'],
-        ];
-    }
+        header('Content-Type: application/json; charset=utf-8');
 
-    private function treatmentStatuses(): array
-    {
-        return [
-            'em_andamento' => 'Em andamento',
-            'concluido' => 'Concluído',
-            'suspenso' => 'Suspenso',
-        ];
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Método inválido.']);
+            return;
+        }
+
+        $patientId = isset($_GET['patient']) ? (int)$_GET['patient'] : 0;
+        if ($patientId <= 0) {
+            http_response_code(422);
+            echo json_encode(['error' => 'Paciente inválido.']);
+            return;
+        }
+
+        $records = $this->health->all($patientId);
+        $states = HealthOptions::states();
+        $statuses = HealthOptions::treatmentStatuses();
+
+        $data = array_map(function (array $record) use ($states, $statuses): array {
+            $consulta = $record['consulta_data'] ?? null;
+            $estado = $record['estado'] ?? null;
+            $status = $record['status_tratamento'] ?? null;
+
+            return [
+                'id' => (int)($record['id'] ?? 0),
+                'consulta_data' => $consulta,
+                'consulta_label' => $consulta ? date('d/m/Y H:i', strtotime($consulta)) : '—',
+                'estado' => $estado,
+                'estado_label' => $states[$estado]['label'] ?? ucfirst((string)$estado),
+                'diagnostico' => $record['diagnostico'] ?? '',
+                'cid' => $record['cid'] ?? '',
+                'medico_responsavel' => $record['medico_responsavel'] ?? '',
+                'instituicao' => $record['instituicao'] ?? '',
+                'status_tratamento' => $status,
+                'status_label' => $statuses[$status] ?? ucfirst((string)$status),
+            ];
+        }, $records);
+
+        echo json_encode(['data' => $data]);
     }
 
     private function collectPayload(array $input): array
@@ -130,7 +153,7 @@ class HealthController extends BaseController
         return [
             'user_id' => $input['user_id'] ?? null,
             'consulta_data' => $input['consulta_data'] ?? null,
-            'estado' => $input['estado'] ?? 'leve',
+            'estado' => $input['estado'] ?? HealthOptions::defaultState(),
             'diagnostico' => $input['diagnostico'] ?? '',
             'cid' => $input['cid'] ?? null,
             'tratamento' => $input['tratamento'] ?? null,
@@ -144,7 +167,7 @@ class HealthController extends BaseController
             'peso_kg' => $input['peso_kg'] ?? null,
             'altura_m' => $input['altura_m'] ?? null,
             'proxima_consulta' => $input['proxima_consulta'] ?? null,
-            'status_tratamento' => $input['status_tratamento'] ?? 'em_andamento',
+            'status_tratamento' => $input['status_tratamento'] ?? HealthOptions::defaultTreatmentStatus(),
         ];
     }
 
